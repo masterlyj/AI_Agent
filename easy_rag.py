@@ -53,7 +53,7 @@ retriever_tool = create_retriever_tool(
 llm = init_chat_model(
     model="gemini-2.5-flash",
     model_provider="google_genai",
-    api_key="AIzaSyA3ESlDpHlLq-rQJa_ycsrdtUwYBm1UpEc",
+    api_key="",
 )
 
 # 5. 决策节点：决定是检索还是直接回答
