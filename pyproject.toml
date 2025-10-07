@@ -4,16 +4,40 @@ version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.11"
+
+# --- 核心依赖 ---
 dependencies = [
+    "langchain-community>=0.3.30",
+    "langchain-text-splitters>=0.3.11",
+    "langgraph>=0.6.8",
+    "langchain-openai>=0.3.27",
+    "langchain-google-genai>=2.1.12",
+    "langchain-ollama>=0.3.10",
+]
+
+# --- 可选依赖 ---
+# 按功能分组
+[project.optional-dependencies]
+local_embeddings = [
+    "langchain-huggingface>=0.3.1",
+    "sentence-transformers>=5.1.1",
+]
+vectorstore = [
+    "faiss-cpu>=1.12.0",
+]
+loaders = [
+    "pymupdf>=1.26.4",
     "arxiv>=2.2.0",
     "beautifulsoup4>=4.14.2",
-    "faiss-cpu>=1.12.0",
+]
+ui = [
     "gradio>=5.49.0",
-    "langchain-community>=0.3.30",
-    "langchain-google-genai>=2.1.12",
-    "langchain-huggingface>=0.3.1",
-    "langchain-text-splitters>=0.3.11",
-    "langchain[openai]>=0.3.27",
-    "langgraph>=0.6.8",
-    "pymupdf>=1.26.4",
+]
+
+# 完整依赖
+all = [
+    "ai-agent[local_embeddings]",
+    "ai-agent[vectorstore]",
+    "ai-agent[loaders]",
+    "ai-agent[ui]",
 ]

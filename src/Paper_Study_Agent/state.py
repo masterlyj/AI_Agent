@@ -24,4 +24,3 @@ class Paper_Study_State(TypedDict):
 
     context_retrieved: str
     history_retrieved: str
-    answer: str
