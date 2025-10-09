@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 
 @dataclass
 class Entity:
-    """实体数据结构"""
+    """实体数据结构""" 
     id: str
     name: str
     type: str

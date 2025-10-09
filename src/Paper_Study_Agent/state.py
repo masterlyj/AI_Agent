@@ -17,6 +17,7 @@ class Paper_Study_State(TypedDict):
     query: QueryParam
     context: List[Document]
     answer: str
+    # TODO： answer: Annotated[list, add_messages]  ----> from langgraph.graph.message import add_messages
 
     embedder: Embeddings
     vectorstore: FAISS

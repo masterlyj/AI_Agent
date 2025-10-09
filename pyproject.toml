@@ -13,6 +13,9 @@ dependencies = [
     "langchain-openai>=0.3.27",
     "langchain-google-genai>=2.1.12",
     "langchain-ollama>=0.3.10",
+    "nano-vectordb>=0.0.4.3",
+    "networkx>=3.5",
+    "langchain-deepseek>=0.1.4",
 ]
 
 # --- 可选依赖 ---
