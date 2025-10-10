@@ -118,21 +118,22 @@ STORAGES = {
 
 
 def verify_storage_implementation(storage_type: str, storage_name: str) -> None:
-    """Verify if storage implementation is compatible with specified storage type
+    """
+    验证存储实现是否与指定的存储类型兼容
 
-    Args:
-        storage_type: Storage type (KV_STORAGE, GRAPH_STORAGE etc.)
-        storage_name: Storage implementation name
+    参数:
+        storage_type: 存储类型（如 KV_STORAGE、GRAPH_STORAGE 等）
+        storage_name: 存储实现名称
 
-    Raises:
-        ValueError: If storage implementation is incompatible or missing required methods
+    异常:
+        ValueError: 如果存储实现不兼容或缺少所需方法
     """
     if storage_type not in STORAGE_IMPLEMENTATIONS:
-        raise ValueError(f"Unknown storage type: {storage_type}")
+        raise ValueError(f"未知的存储类型: {storage_type}")
 
     storage_info = STORAGE_IMPLEMENTATIONS[storage_type]
     if storage_name not in storage_info["implementations"]:
         raise ValueError(
-            f"Storage implementation '{storage_name}' is not compatible with {storage_type}. "
-            f"Compatible implementations are: {', '.join(storage_info['implementations'])}"
+            f"存储实现 '{storage_name}' 与 {storage_type} 不兼容。"
+            f"兼容的实现有: {', '.join(storage_info['implementations'])}"
         )

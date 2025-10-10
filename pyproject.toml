@@ -16,6 +16,7 @@ dependencies = [
     "nano-vectordb>=0.0.4.3",
     "networkx>=3.5",
     "langchain-deepseek>=0.1.4",
+    "json-repair>=0.52.0",
 ]
 
 # --- 可选依赖 ---

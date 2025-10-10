@@ -1,54 +1,86 @@
 """
-Centralized configuration constants for LightRAG.
+LightRAG 配置常量集中定义
 
-This module defines default values for configuration constants used across
-different parts of the LightRAG system. Centralizing these values ensures
-consistency and makes maintenance easier.
+本模块集中定义了 LightRAG 系统在不同部分使用的默认配置常量。
+通过集中配置，确保各部分一致性和便于维护。
 """
 
-# Default values for server settings
-DEFAULT_WOKERS = 2
-DEFAULT_TIMEOUT = 150
+# 服务器参数默认值
+DEFAULT_WOKERS = 2  # Gunicorn 默认工作进程数
+DEFAULT_MAX_GRAPH_NODES = 1000  # 知识图谱允许的最大节点数
 
-# Default values for extraction settings
-DEFAULT_SUMMARY_LANGUAGE = "English"  # Default language for summaries
-DEFAULT_FORCE_LLM_SUMMARY_ON_MERGE = 4
-DEFAULT_MAX_GLEANING = 1
-DEFAULT_SUMMARY_MAX_TOKENS = 10000  # Default maximum token size
+# 信息抽取相关默认值
+DEFAULT_SUMMARY_LANGUAGE = "Chinese"  # 文档处理默认使用的语言
+DEFAULT_MAX_GLEANING = 1  # 默认最多梳理轮次
 
-# Separator for graph fields
+# 触发LLM总结的描述片段数量与最大令牌数
+DEFAULT_FORCE_LLM_SUMMARY_ON_MERGE = 8  # 描述片段数量达到该值则触发 LLM 总结
+DEFAULT_SUMMARY_MAX_TOKENS = 1200       # 触发 LLM 总结时允许的最大描述令牌数量
+DEFAULT_SUMMARY_LENGTH_RECOMMENDED = 600  # 推荐的 LLM 输出摘要字数（单位：token）
+DEFAULT_SUMMARY_CONTEXT_SIZE = 12000    # 总结时传给 LLM 的最大上下文 token 数
+
+# 如果 .env 未指定 ENTITY_TYPES 时的默认实体类型
+DEFAULT_ENTITY_TYPES = [
+    "Person",
+    "Creature",
+    "Organization",
+    "Location",
+    "Event",
+    "Concept",
+    "Method",
+    "Content",
+    "Data",
+    "Artifact",
+    "NaturalObject",
+]
+
+# 知识图谱字段分隔符
 GRAPH_FIELD_SEP = "<SEP>"
 
-# Query and retrieval configuration defaults
-DEFAULT_TOP_K = 40
-DEFAULT_CHUNK_TOP_K = 10
-DEFAULT_MAX_ENTITY_TOKENS = 10000
-DEFAULT_MAX_RELATION_TOKENS = 10000
-DEFAULT_MAX_TOTAL_TOKENS = 30000
-DEFAULT_HISTORY_TURNS = 0
-DEFAULT_COSINE_THRESHOLD = 0.2
-DEFAULT_RELATED_CHUNK_NUMBER = 5
+# 查询和检索参数默认值
+DEFAULT_TOP_K = 40             # 全局召回召回数
+DEFAULT_CHUNK_TOP_K = 20       # 文档片段召回 top-K
+DEFAULT_MAX_ENTITY_TOKENS = 6000      # 实体最大 token 数
+DEFAULT_MAX_RELATION_TOKENS = 8000    # 关系描述最大 token 数
+DEFAULT_MAX_TOTAL_TOKENS = 30000      # LLM 单轮最大可处理 token 数
+DEFAULT_COSINE_THRESHOLD = 0.2        # 向量检索相似度阈值
+DEFAULT_RELATED_CHUNK_NUMBER = 5      # 相关文档片段默认数量
+DEFAULT_KG_CHUNK_PICK_METHOD = "VECTOR"  # 知识片段选择方法
 
-# Rerank configuration defaults
-DEFAULT_ENABLE_RERANK = True
-DEFAULT_MIN_RERANK_SCORE = 0.0
+# 历史轮次，仅作兼容保留，所有历史消息已传递给 LLM
+DEFAULT_HISTORY_TURNS = 0  # TODO: 已废弃
 
-# File path configuration for vector and graph database
-DEFAULT_MAX_FILE_PATH_LENGTH = 4090
+# 重排序参数默认值
+DEFAULT_MIN_RERANK_SCORE = 0.0  # 最小 rerank 分数
+DEFAULT_RERANK_BINDING = "null" # rerank 绑定参数（保留）
 
-# Async configuration defaults
-DEFAULT_MAX_ASYNC = 4  # Default maximum async operations
+# 向量和图数据库的文件路径参数（不可修改，Milvus Schema 用到）
+DEFAULT_MAX_FILE_PATH_LENGTH = 32768  # 文件路径最大长度
 
-# Embedding configuration defaults
-DEFAULT_EMBEDDING_FUNC_MAX_ASYNC = 8  # Default max async for embedding functions
-DEFAULT_EMBEDDING_BATCH_NUM = 10  # Default batch size for embedding computations
+# LLM 默认温度参数
+DEFAULT_TEMPERATURE = 1.0
 
-# Logging configuration defaults
-DEFAULT_LOG_MAX_BYTES = 10485760  # Default 10MB
-DEFAULT_LOG_BACKUP_COUNT = 5  # Default 5 backups
-DEFAULT_LOG_FILENAME = "lightrag.log"  # Default log filename
+# 异步处理相关默认值
+DEFAULT_MAX_ASYNC = 4  # 最大异步执行数量
+DEFAULT_MAX_PARALLEL_INSERT = 2  # 最大并发插入操作数
 
-# Ollama server configuration defaults
+# 向量嵌入相关配置默认值
+DEFAULT_EMBEDDING_FUNC_MAX_ASYNC = 8  # 嵌入计算最大异步数量
+DEFAULT_EMBEDDING_BATCH_NUM = 10      # 嵌入批处理默认数量
+
+# Gunicorn 服务超时时间
+DEFAULT_TIMEOUT = 300  # 单位：秒
+
+# LLM 及嵌入超时时间（秒）
+DEFAULT_LLM_TIMEOUT = 180
+DEFAULT_EMBEDDING_TIMEOUT = 30
+
+# 日志配置默认值
+DEFAULT_LOG_MAX_BYTES = 10485760  # 日志文件最大 10MB
+DEFAULT_LOG_BACKUP_COUNT = 5      # 保留日志备份数量
+DEFAULT_LOG_FILENAME = "lightrag.log"  # 默认日志文件名
+
+# Ollama 服务默认参数
 DEFAULT_OLLAMA_MODEL_NAME = "lightrag"
 DEFAULT_OLLAMA_MODEL_TAG = "latest"
 DEFAULT_OLLAMA_MODEL_SIZE = 7365960935

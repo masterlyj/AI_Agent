@@ -8,6 +8,8 @@ import time
 import logging
 from typing import Any, Dict, List, Optional, Union, TypeVar, Generic
 
+from ..exceptions import PipelineNotInitializedError
+
 
 # Define a direct print function for critical logs that must be visible in all processes
 def direct_log(message, enable_output: bool = False, level: str = "DEBUG"):
@@ -116,7 +118,7 @@ def get_debug_n_locks_acquired():
 
 
 class UnifiedLock(Generic[T]):
-    """Provide a unified lock interface type for asyncio.Lock and multiprocessing.Lock"""
+    """为asyncio.Lock和multiprocessing.Lock提供一个统一的锁接口类型"""
 
     def __init__(
         self,
@@ -824,7 +826,7 @@ class _KeyedLockContext:
 
 
 def get_internal_lock(enable_logging: bool = False) -> UnifiedLock:
-    """return unified storage lock for data consistency"""
+    """为保证数据一致性，返回统一的存储锁"""
     async_lock = _async_locks.get("internal_lock") if _is_multiprocess else None
     return UnifiedLock(
         lock=_internal_lock,
@@ -1054,33 +1056,33 @@ def initialize_share_data(workers: int = 1):
 
 async def initialize_pipeline_status():
     """
-    Initialize pipeline namespace with default values.
-    This function is called during FASTAPI lifespan for each worker.
+    初始化pipeline命名空间为默认值。
+    该函数会在每个FASTAPI worker生命周期中调用。
     """
-    pipeline_namespace = await get_namespace_data("pipeline_status")
+    pipeline_namespace = await get_namespace_data("pipeline_status", first_init=True)
 
     async with get_internal_lock():
-        # Check if already initialized by checking for required fields
+        # 检查是否已初始化，通过检查关键字段
         if "busy" in pipeline_namespace:
             return
 
-        # Create a shared list object for history_messages
+        # 为history_messages创建共享列表对象
         history_messages = _manager.list() if _is_multiprocess else []
         pipeline_namespace.update(
             {
-                "autoscanned": False,  # Auto-scan started
-                "busy": False,  # Control concurrent processes
-                "job_name": "-",  # Current job name (indexing files/indexing texts)
-                "job_start": None,  # Job start time
-                "docs": 0,  # Total number of documents to be indexed
-                "batchs": 0,  # Number of batches for processing documents
-                "cur_batch": 0,  # Current processing batch
-                "request_pending": False,  # Flag for pending request for processing
-                "latest_message": "",  # Latest message from pipeline processing
-                "history_messages": history_messages,  # 使用共享列表对象
+                "autoscanned": False,  # 是否已自动扫描
+                "busy": False,  # 控制并发执行
+                "job_name": "-",  # 当前任务名称（如索引文件/索引文本等）
+                "job_start": None,  # 任务开始时间
+                "docs": 0,  # 需要索引的文档总数
+                "batchs": 0,  # 处理文档的批次数
+                "cur_batch": 0,  # 当前批次
+                "request_pending": False,  # 是否存在待处理请求
+                "latest_message": "",  # pipeline处理的最新消息
+                "history_messages": history_messages,  # 历史消息（使用共享列表对象）
             }
         )
-        direct_log(f"Process {os.getpid()} Pipeline namespace initialized")
+        direct_log(f"进程 {os.getpid()} 管道命名空间已初始化")
 
 
 async def get_update_flag(namespace: str):
@@ -1131,15 +1133,15 @@ async def set_all_update_flags(namespace: str):
 
 
 async def clear_all_update_flags(namespace: str):
-    """Clear all update flag of namespace indicating all workers need to reload data from files"""
+    """清除命名空间的所有更新标志，表明所有工作节点需要从文件重新加载数据"""
     global _update_flags
     if _update_flags is None:
-        raise ValueError("Try to create namespace before Shared-Data is initialized")
+        raise ValueError("尝试在Shared-Data初始化之前创建命名空间")
 
     async with get_internal_lock():
         if namespace not in _update_flags:
-            raise ValueError(f"Namespace {namespace} not found in update flags")
-        # Update flags for both modes
+            raise ValueError(f"在更新标志中未找到命名空间 {namespace}")
+        # 更新两种模式的标志
         for i in range(len(_update_flags[namespace])):
             _update_flags[namespace][i].value = False
 
@@ -1192,8 +1194,16 @@ async def try_initialize_namespace(namespace: str) -> bool:
     return False
 
 
-async def get_namespace_data(namespace: str) -> Dict[str, Any]:
-    """get the shared data reference for specific namespace"""
+async def get_namespace_data(
+    namespace: str, first_init: bool = False
+) -> Dict[str, Any]:
+    """get the shared data reference for specific namespace
+
+    Args:
+        namespace: The namespace to retrieve
+        allow_create: If True, allows creation of the namespace if it doesn't exist.
+                     Used internally by initialize_pipeline_status().
+    """
     if _shared_dicts is None:
         direct_log(
             f"Error: try to getnanmespace before it is initialized, pid={os.getpid()}",
@@ -1203,6 +1213,13 @@ async def get_namespace_data(namespace: str) -> Dict[str, Any]:
 
     async with get_internal_lock():
         if namespace not in _shared_dicts:
+            # Special handling for pipeline_status namespace
+            if namespace == "pipeline_status" and not first_init:
+                # Check if pipeline_status should have been initialized but wasn't
+                # This helps users understand they need to call initialize_pipeline_status()
+                raise PipelineNotInitializedError(namespace)
+
+            # For other namespaces or when allow_create=True, create them dynamically
             if _is_multiprocess and _manager is not None:
                 _shared_dicts[namespace] = _manager.dict()
             else:

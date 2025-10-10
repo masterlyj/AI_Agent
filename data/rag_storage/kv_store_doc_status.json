@@ -1,0 +1,23 @@
+{
+  "111002_tk.md": {
+    "status": "processed",
+    "chunks_count": 5,
+    "chunks_list": [
+      "chunk-489329d3a4a922679a86ea0f89adbd06",
+      "chunk-c5a3dcec68e87ba8c6040bdda3741204",
+      "chunk-34c0c39857834fbade2eb7fa431b5855",
+      "chunk-55bda2f435d8a6bb608246c00a962b6f",
+      "chunk-df497509d008ae5c9487a82ccec5d65b"
+    ],
+    "content_summary": "# 利安人寿保险股份有限公司附加豁免保险费定期寿险条款\n\n# 阅读指引\n\n本阅读指引有助于您理解条款，对本附加险合同内容的解释以条款为准。\n\n![](https://cdn-mineru.openxlab.org.cn/result/2025-09-28/976439a6-32a4-4d48-9e61-e9ed52eb7229/a326b00c8d634617d532f4e05a5f2cca2f988f65e05513e58f104a1affcff81b.jpg)\n\n# 您拥有的重要权益\n\n签收...",
+    "content_length": 7650,
+    "created_at": "2025-10-10T07:54:03.603380+00:00",
+    "updated_at": "2025-10-10T07:57:49.565021+00:00",
+    "file_path": "D:\\Codes\\my_project\\AI_Agent\\data\\inputs\\111002_tk.md",
+    "track_id": "insert_20251010_155403_5e5fc0a4",
+    "metadata": {
+      "processing_start_time": 1760082843,
+      "processing_end_time": 1760083069
+    }
+  }
+}
