@@ -9,16 +9,9 @@ from .utils import logger
 from .kg.shared_storage import initialize_pipeline_status
 from .llm import get_llm
 from .async_lanchain_rag_adapter import create_lightrag_compatible_complete
+from .embedding_factory import get_embedder, create_lightrag_embedding_adapter
 
-# --- Mock Functions ---
-class MockEmbeddingFunc:
-    def __init__(self, dim: int = 768):
-        self.embedding_dim = dim
-    async def __call__(self, texts: List[str], **kwargs) -> List[List[float]]:
-        logger.info(f"Mock embedding for {len(texts)} texts.")
-        return [[0.1] * self.embedding_dim for _ in texts]
-
-# --- RAGAgent with Real LLM ---
+# --- RAGAgent with Real LLM and Embedding ---
 class RAGAgent:
     def __init__(self):
         self.rag: Optional[LightRAG] = None
@@ -42,19 +35,35 @@ class RAGAgent:
             retry_min_wait=4
         )
         
-        # === 3. 创建 LightRAG 实例（使用真实 LLM）===
-        instance.rag = LightRAG(
-            working_dir=working_dir,
-            embedding_func=MockEmbeddingFunc(768),  # 嵌入仍用 mock
-            llm_model_func=llm_func,  # 👈 关键：注入真实 LLM 函数
-            
+        # === 3. 获取嵌入模型 ===
+        # 配置 Ollama 嵌入模型 (qwen3_embedding:0.6b)
+        embedding_config = {
+            "type": "ollama",
+            "model": "qwen3-embedding:0.6b",
+            "base_url": "http://localhost:11434"
+        }
+        
+        # 创建 LangChain 嵌入模型实例
+        langchain_embedder = get_embedder(embedding_config)
+        
+        # 适配为 LightRAG 兼容的嵌入函数
+        embedding_func = create_lightrag_embedding_adapter(
+            langchain_embedder,
+            embedding_dim=1024
         )
         
-        # === 4. 初始化存储和流水线 ===
+        # === 4. 创建 LightRAG 实例 ===
+        instance.rag = LightRAG(
+            working_dir=working_dir,
+            embedding_func=embedding_func,
+            llm_model_func=llm_func,
+        )
+        
+        # === 5. 初始化存储和流水线 ===
         await instance.rag.initialize_storages()
         await initialize_pipeline_status()
         
-        # === 5. 初始化工作流 ===
+        # === 6. 初始化工作流 ===
         instance.nodes = WorkflowNodes(instance.rag)
         instance.indexing_graph = create_indexing_graph(instance.nodes)
         instance.querying_graph = create_querying_graph(instance.nodes)
@@ -62,6 +71,7 @@ class RAGAgent:
         return instance
 
     async def index_documents(self, file_paths: List[str]):
+        """索引文档"""
         contents, ids, paths = [], [], []
         for fp in file_paths:
             with open(fp, 'r', encoding='utf-8') as f:
@@ -82,22 +92,45 @@ class RAGAgent:
         logger.info(f"📌 索引流程结束: {result['status_message']}")
         return result
 
-    async def query(self, question: str):
-        initial_state = {
+    async def query(self, question: str, mode: str = "hybrid"):
+        """通过 LangGraph 查询流程查询知识图谱
+        
+        Args:
+            question: 查询问题
+            mode: 查询模式 (naive, local, global, hybrid)
+        
+        Returns:
+            包含 context 和 answer 的字典
+        """
+        from .state import QueryState
+        
+        # 构造初始查询状态
+        initial_query_state: QueryState = {
             "working_dir": self.working_dir,
             "query": question,
-            "query_mode": "hybrid",
+            "query_mode": mode,
             "context": {},
             "answer": ""
         }
-        return await self.querying_graph.ainvoke(initial_state)
+        
+        result = await self.querying_graph.ainvoke(initial_query_state)
+        
+        logger.info(f"🔍 查询流程完成 (mode={mode})")
+        return result
+
 
 # --- Main ---
 async def main():
+    """示例用法"""
     agent = await RAGAgent.create()
+    
+    # 索引文档
     await agent.index_documents(["data/inputs/111002_tk.md"])
-    result = await agent.query("这份保险条款的主要内容是什么？")
-    print("\n🤖 答案:", result["answer"])
+    
+    # 查询
+    result = await agent.query("这份保险条款的主要内容是什么?", mode="hybrid")
+    print("\n🤖 答案:", result)
+
 
 if __name__ == "__main__":
     asyncio.run(main())

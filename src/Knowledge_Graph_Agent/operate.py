@@ -324,51 +324,56 @@ async def _handle_single_entity_extraction(
     timestamp: int,
     file_path: str = "unknown_source",
 ):
+    # 检查输入数据是否为4个字段且首字段为'entity'
     if len(record_attributes) != 4 or "entity" not in record_attributes[0]:
         if len(record_attributes) > 1 and "entity" in record_attributes[0]:
             logger.warning(
-                f"{chunk_key}: LLM output format error; found {len(record_attributes)}/4 feilds on ENTITY `{record_attributes[1]}` @ `{record_attributes[2] if len(record_attributes) > 2 else 'N/A'}`"
+                f"{chunk_key}: LLM输出格式错误，实体 `{record_attributes[1]}` @ `{record_attributes[2] if len(record_attributes) > 2 else 'N/A'}` 字段数为 {len(record_attributes)}/4"
             )
             logger.debug(record_attributes)
         return None
 
     try:
+        # 实体名称清洗和归一化
         entity_name = sanitize_and_normalize_extracted_text(
             record_attributes[1], remove_inner_quotes=True
         )
 
-        # Validate entity name after all cleaning steps
+        # 清洗后检查实体名称是否为空
         if not entity_name or not entity_name.strip():
             logger.warning(
-                f"Entity extraction error: entity name became empty after cleaning. Original: '{record_attributes[1]}'"
+                f"实体抽取错误：清洗后实体名为空，原始内容: '{record_attributes[1]}'"
             )
             return None
 
-        # Process entity type with same cleaning pipeline
+        # 实体类型清洗和归一化
         entity_type = sanitize_and_normalize_extracted_text(
             record_attributes[2], remove_inner_quotes=True
         )
 
+        # 检查实体类型是否合法（不能有特殊符号，不能全为空）
         if not entity_type.strip() or any(
             char in entity_type for char in ["'", "(", ")", "<", ">", "|", "/", "\\"]
         ):
             logger.warning(
-                f"Entity extraction error: invalid entity type in: {record_attributes}"
+                f"实体抽取错误：实体类型非法，字段内容: {record_attributes}"
             )
             return None
 
-        # Remove spaces and convert to lowercase
+        # 去除空格并统一为小写
         entity_type = entity_type.replace(" ", "").lower()
 
-        # Process entity description with same cleaning pipeline
+        # 实体描述清洗和归一化
         entity_description = sanitize_and_normalize_extracted_text(record_attributes[3])
 
+        # 检查实体描述不能为空
         if not entity_description.strip():
             logger.warning(
-                f"Entity extraction error: empty description for entity '{entity_name}' of type '{entity_type}'"
+                f"实体抽取错误：实体 '{entity_name}'，类型 '{entity_type}' 的描述为空"
             )
             return None
 
+        # 返回清洗归一化后的实体字典
         return dict(
             entity_name=entity_name,
             entity_type=entity_type,
@@ -380,12 +385,12 @@ async def _handle_single_entity_extraction(
 
     except ValueError as e:
         logger.error(
-            f"Entity extraction failed due to encoding issues in chunk {chunk_key}: {e}"
+            f"实体抽取失败（编码问题），chunk {chunk_key}: {e}"
         )
         return None
     except Exception as e:
         logger.error(
-            f"Entity extraction failed with unexpected error in chunk {chunk_key}: {e}"
+            f"实体抽取失败（未知异常），chunk {chunk_key}: {e}"
         )
         return None
 

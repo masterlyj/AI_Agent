@@ -915,41 +915,41 @@ class TokenizerInterface(Protocol):
 
 class Tokenizer:
     """
-    A wrapper around a tokenizer to provide a consistent interface for encoding and decoding.
+    封装分词器，提供统一的编码（encode）和解码（decode）接口。
     """
 
     def __init__(self, model_name: str, tokenizer: TokenizerInterface):
         """
-        Initializes the Tokenizer with a tokenizer model name and a tokenizer instance.
+        初始化Tokenizer，指定模型名称及实际分词器实例。
 
-        Args:
-            model_name: The associated model name for the tokenizer.
-            tokenizer: An instance of a class implementing the TokenizerInterface.
+        参数:
+            model_name: 分词器关联的模型名称。
+            tokenizer: 实现了TokenizerInterface的分词器对象实例。
         """
         self.model_name: str = model_name
         self.tokenizer: TokenizerInterface = tokenizer
 
     def encode(self, content: str) -> List[int]:
         """
-        Encodes a string into a list of tokens using the underlying tokenizer.
+        使用底层分词器将字符串编码为token列表。
 
-        Args:
-            content: The string to encode.
+        参数:
+            content: 待编码的字符串。
 
-        Returns:
-            A list of integer tokens.
+        返回:
+            token整型列表。
         """
         return self.tokenizer.encode(content)
 
     def decode(self, tokens: List[int]) -> str:
         """
-        Decodes a list of tokens into a string using the underlying tokenizer.
+        使用底层分词器将token列表解码为字符串。
 
-        Args:
-            tokens: A list of integer tokens to decode.
+        参数:
+            tokens: 需要解码的整数token列表。
 
-        Returns:
-            The decoded string.
+        返回:
+            解码后的字符串。
         """
         return self.tokenizer.decode(tokens)
 
@@ -1752,13 +1752,13 @@ def get_content_summary(content: str, max_length: int = 250) -> str:
 def sanitize_and_normalize_extracted_text(
     input_text: str, remove_inner_quotes=False
 ) -> str:
-    """Santitize and normalize extracted text
-    Args:
-        input_text: text string to be processed
-        is_name: whether the input text is a entity or relation name
+    """清洗并标准化提取的文本
+    参数：
+        input_text：待处理的文本字符串
+        is_name：输入文本是否为实体名称或关系名称
 
-    Returns:
-        Santitized and normalized text string
+    返回：
+        经过清洗和标准化的文本字符串
     """
     safe_input_text = sanitize_text_for_encoding(input_text)
     if safe_input_text:
@@ -1770,36 +1770,37 @@ def sanitize_and_normalize_extracted_text(
 
 
 def normalize_extracted_info(name: str, remove_inner_quotes=False) -> str:
-    """Normalize entity/relation names and description with the following rules:
-    - Clean HTML tags (paragraph and line break tags)
-    - Convert Chinese symbols to English symbols
-    - Remove spaces between Chinese characters
-    - Remove spaces between Chinese characters and English letters/numbers
-    - Preserve spaces within English text and numbers
-    - Replace Chinese parentheses with English parentheses
-    - Replace Chinese dash with English dash
-    - Remove English quotation marks from the beginning and end of the text
-    - Remove English quotation marks in and around chinese
-    - Remove Chinese quotation marks
-    - Filter out short numeric-only text (length < 3 and only digits/dots)
-    - remove_inner_quotes = True
-        remove Chinese quotes
-        remove English queotes in and around chinese
-        Convert non-breaking spaces to regular spaces
-        Convert narrow non-breaking spaces after non-digits to regular spaces
-
-    Args:
-        name: Entity name to normalize
-        is_entity: Whether this is an entity name (affects quote handling)
-
-    Returns:
-        Normalized entity name
     """
-    # Clean HTML tags - remove paragraph and line break tags
+    规范化实体/关系名称与描述，主要包括以下规则：
+    - 清理HTML标签（段落和换行）
+    - 中文全角符号转为半角符号
+    - 删除中文之间的空格
+    - 删除中英文/数字之间的空格
+    - 保留英文字母和数字内部的空格
+    - 中文括号替换为英文括号
+    - 中文破折号替换为英文破折号
+    - 移除文本首尾的英文引号
+    - 移除英文引号环绕/嵌入在中文两侧
+    - 移除中文引号
+    - 过滤长度小于3且全为数字/小数点的内容
+    - remove_inner_quotes=True 时：
+        - 移除中文引号
+        - 移除嵌入在中文中的英文引号
+        - 不间断空格转普通空格
+        - 数字后较窄的不间断空格转普通空格
+
+    参数:
+        name: 待规范化文本
+        remove_inner_quotes: 是否移除内部引号及特殊空格
+
+    返回:
+        规范化后的文本字符串
+    """
+    # 移除HTML标签 <p> 和 <br>
     name = re.sub(r"</p\s*>|<p\s*>|<p/>", "", name, flags=re.IGNORECASE)
     name = re.sub(r"</br\s*>|<br\s*>|<br/>", "", name, flags=re.IGNORECASE)
 
-    # Chinese full-width letters to half-width (A-Z, a-z)
+    # 全角大/小写字母转半角
     name = name.translate(
         str.maketrans(
             "ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚ",
@@ -1807,32 +1808,29 @@ def normalize_extracted_info(name: str, remove_inner_quotes=False) -> str:
         )
     )
 
-    # Chinese full-width numbers to half-width
+    # 全角数字转半角
     name = name.translate(str.maketrans("０１２３４５６７８９", "0123456789"))
 
-    # Chinese full-width symbols to half-width
-    name = name.replace("－", "-")  # Chinese minus
-    name = name.replace("＋", "+")  # Chinese plus
-    name = name.replace("／", "/")  # Chinese slash
-    name = name.replace("＊", "*")  # Chinese asterisk
+    # 全角符号转半角符号
+    name = name.replace("－", "-")      # 全角减号
+    name = name.replace("＋", "+")      # 全角加号
+    name = name.replace("／", "/")      # 全角斜线
+    name = name.replace("＊", "*")      # 全角星号
 
-    # Replace Chinese parentheses with English parentheses
+    # 中文括号转英文括号
     name = name.replace("（", "(").replace("）", ")")
 
-    # Replace Chinese dash with English dash (additional patterns)
+    # 中文破折号/全角破折号转英文破折号
     name = name.replace("—", "-").replace("－", "-")
 
-    # Chinese full-width space to regular space (after other replacements)
+    # 全角空格转普通空格
     name = name.replace("　", " ")
 
-    # Use regex to remove spaces between Chinese characters
-    # Regex explanation:
-    # (?<=[\u4e00-\u9fa5]): Positive lookbehind for Chinese character
-    # \s+: One or more whitespace characters
-    # (?=[\u4e00-\u9fa5]): Positive lookahead for Chinese character
+    # 删除中文之间的空格
+    # (?<=[\u4e00-\u9fa5]) 匹配前一个是中文；(?=[\u4e00-\u9fa5]) 匹配后一个是中文
     name = re.sub(r"(?<=[\u4e00-\u9fa5])\s+(?=[\u4e00-\u9fa5])", "", name)
 
-    # Remove spaces between Chinese and English/numbers/symbols
+    # 删除中文和英文/数字/特殊符号之间的空格
     name = re.sub(
         r"(?<=[\u4e00-\u9fa5])\s+(?=[a-zA-Z0-9\(\)\[\]@#$%!&\*\-=+_])", "", name
     )
@@ -1840,155 +1838,153 @@ def normalize_extracted_info(name: str, remove_inner_quotes=False) -> str:
         r"(?<=[a-zA-Z0-9\(\)\[\]@#$%!&\*\-=+_])\s+(?=[\u4e00-\u9fa5])", "", name
     )
 
-    # Remove outer quotes
+    # 移除包裹文本的中英文引号
     if len(name) >= 2:
-        # Handle double quotes
+        # 英文双引号
         if name.startswith('"') and name.endswith('"'):
             inner_content = name[1:-1]
-            if '"' not in inner_content:  # No double quotes inside
+            if '"' not in inner_content:
                 name = inner_content
 
-        # Handle single quotes
+        # 英文单引号
         if name.startswith("'") and name.endswith("'"):
             inner_content = name[1:-1]
-            if "'" not in inner_content:  # No single quotes inside
+            if "'" not in inner_content:
                 name = inner_content
 
-        # Handle Chinese-style double quotes
+        # 中文双引号
         if name.startswith("“") and name.endswith("”"):
             inner_content = name[1:-1]
             if "“" not in inner_content and "”" not in inner_content:
                 name = inner_content
+        # 中文单引号
         if name.startswith("‘") and name.endswith("’"):
             inner_content = name[1:-1]
             if "‘" not in inner_content and "’" not in inner_content:
                 name = inner_content
 
-        # Handle Chinese-style book title mark
+        # 书名号
         if name.startswith("《") and name.endswith("》"):
             inner_content = name[1:-1]
             if "《" not in inner_content and "》" not in inner_content:
                 name = inner_content
 
     if remove_inner_quotes:
-        # Remove Chinese quotes
+        # 移除所有中文引号
         name = name.replace("“", "").replace("”", "").replace("‘", "").replace("’", "")
-        # Remove English queotes in and around chinese
+        # 移除嵌在中文内外的英文引号
         name = re.sub(r"['\"]+(?=[\u4e00-\u9fa5])", "", name)
         name = re.sub(r"(?<=[\u4e00-\u9fa5])['\"]+", "", name)
-        # Convert non-breaking space to regular space
+        # 不间断空格(\u00a0)转普通空格
         name = name.replace("\u00a0", " ")
-        # Convert narrow non-breaking space to regular space when after non-digits
+        # 数字后出现的窄不间断空格(\u202F)转普通空格（如“条款 3.1 内容”）
         name = re.sub(r"(?<=[^\d])\u202F", " ", name)
 
-    # Remove spaces from the beginning and end of the text
+    # 移除首尾空白符
     name = name.strip()
 
-    # Filter out pure numeric content with length < 3
-    if len(name) < 3 and re.match(r"^[0-9]+$", name):
-        return ""
+    # 过滤长度小于3且内容为纯数字的字符串
+    # if len(name) < 3 and re.match(r"^[0-9]+$", name):
+    #     return ""
 
     def should_filter_by_dots(text):
         """
-        Check if the string consists only of dots and digits, with at least one dot
-        Filter cases include: 1.2.3, 12.3, .123, 123., 12.3., .1.23 etc.
+        检查字符串是否仅由数字和点号组成，且至少包含一个点号。
+        用于如: 1.2.3, 12.3, .123, 123., 12.3., .1.23 等情况。
         """
         return all(c.isdigit() or c == "." for c in text) and "." in text
 
-    if len(name) < 6 and should_filter_by_dots(name):
-        # Filter out mixed numeric and dot content with length < 6
-        return ""
-        # Filter out mixed numeric and dot content with length < 6, requiring at least one dot
-        return ""
+    # if len(name) < 6 and should_filter_by_dots(name):
+    #     # 长度小于6且为混合数字和点号的内容，过滤掉
+    #     return ""
 
     return name
 
 
 def sanitize_text_for_encoding(text: str, replacement_char: str = "") -> str:
-    """Sanitize text to ensure safe UTF-8 encoding by removing or replacing problematic characters.
+    """
+    对输入文本进行清理，确保能安全地进行 UTF-8 编码。具体步骤如下：
+      - 移除或替换代理字符（代理区：U+D800 至 U+DFFF），这些是编码错误的主要根源；
+      - 移除或替换其他非法 Unicode 序列（如 U+FFFE / U+FFFF）；
+      - 反转义 HTML 实体符号为正常字符；
+      - 移除大多数控制字符（仅保留常见空白符：\t, \n, \r）；
+      - 移除文本首尾的空白字符；
+      - 若无法完全清理非法字符，则抛出 ValueError 异常而不是返回占位符。
 
-    This function handles:
-    - Surrogate characters (the main cause of encoding errors)
-    - Other invalid Unicode sequences
-    - Control characters that might cause issues
-    - Unescape HTML escapes
-    - Remove control characters
-    - Whitespace trimming
+    参数:
+        text: 输入的待清理文本
+        replacement_char: 用于替换不可接受字符的字符，默认使用空字符串
 
-    Args:
-        text: Input text to sanitize
-        replacement_char: Character to use for replacing invalid sequences
+    返回:
+        清理后的、可以安全进行 UTF-8 编码的文本字符串
 
-    Returns:
-        Sanitized text that can be safely encoded as UTF-8
+    异常:
+        ValueError: 输入文本存在无法修复的编码问题时抛出此异常，便于调用方处理
 
-    Raises:
-        ValueError: When text contains uncleanable encoding issues that cannot be safely processed
+    说明:
+        - 避免返回肉眼难以发现的非法字符相关的文本，保证最终下游处理安全。
+        - 推荐 replacement_char 使用空字符串，若想保留非法字符位置可考虑使用占位符。
     """
     if not text:
         return text
 
     try:
-        # First, strip whitespace
+        # 移除文本两端空白字符
         text = text.strip()
 
-        # Early return if text is empty after basic cleaning
         if not text:
             return text
 
-        # Try to encode/decode to catch any encoding issues early
+        # 尝试直接编码，捕捉潜在的编码问题
         text.encode("utf-8")
 
-        # Remove or replace surrogate characters (U+D800 to U+DFFF)
-        # These are the main cause of the encoding error
+        # 处理代理区字符（U+D800 至 U+DFFF）
         sanitized = ""
         for char in text:
             code_point = ord(char)
-            # Check for surrogate characters
             if 0xD800 <= code_point <= 0xDFFF:
-                # Replace surrogate with replacement character
+                # 代理字符，替换为 replacement_char
                 sanitized += replacement_char
                 continue
-            # Check for other problematic characters
             elif code_point == 0xFFFE or code_point == 0xFFFF:
-                # These are non-characters in Unicode
+                # Unicode 非字符，替换
                 sanitized += replacement_char
                 continue
             else:
                 sanitized += char
 
-        # Additional cleanup: remove null bytes and other control characters that might cause issues
-        # (but preserve common whitespace like \t, \n, \r)
+        # 移除 null 字节和大多数控制字符（保留常用空白符 \t \n \r）
         sanitized = re.sub(
             r"[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]", replacement_char, sanitized
         )
 
-        # Test final encoding to ensure it's safe
+        # 再次尝试编码，确保安全
         sanitized.encode("utf-8")
 
-        # Unescape HTML escapes
+        # HTML 实体反转义，例如 &amp; --> &
         sanitized = html.unescape(sanitized)
 
-        # Remove control characters but preserve common whitespace (\t, \n, \r)
+        # 移除所有控制字符，包括 C1 区间（\x7F-\x9F），但保留常见空白
         sanitized = re.sub(r"[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x9F]", "", sanitized)
 
+        # 最终结果移除首尾空白
         return sanitized.strip()
 
     except UnicodeEncodeError as e:
-        # Critical change: Don't return placeholder, raise exception for caller to handle
-        error_msg = f"Text contains uncleanable UTF-8 encoding issues: {str(e)[:100]}"
-        logger.error(f"Text sanitization failed: {error_msg}")
+        # 捕获不可清理的编码问题
+        error_msg = f"文本包含无法清理的 UTF-8 编码问题: {str(e)[:100]}"
+        logger.error(f"文本清理失败: {error_msg}")
         raise ValueError(error_msg) from e
 
     except Exception as e:
-        logger.error(f"Text sanitization: Unexpected error: {str(e)}")
-        # For other exceptions, if no encoding issues detected, return original text
+        # 其它异常类型，先尝试原文能否直接编码
+        logger.error(f"文本清理出现未知错误: {str(e)}")
         try:
             text.encode("utf-8")
             return text
         except UnicodeEncodeError:
             raise ValueError(
-                f"Text sanitization failed with unexpected error: {str(e)}"
+                f"文本清理时出现异常，且无法安全编码: {str(e)}"
             ) from e
 
 

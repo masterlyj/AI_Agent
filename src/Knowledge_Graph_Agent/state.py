@@ -1,5 +1,3 @@
-# src/Knowledge_Graph_Agent/state.py
-
 from typing import TypedDict, List, Dict, Any, Optional, Literal
 
 class IndexingState(TypedDict):

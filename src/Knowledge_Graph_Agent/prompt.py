@@ -4,63 +4,63 @@ from typing import Any
 
 PROMPTS: dict[str, Any] = {}
 
-# All delimiters must be formatted as "<|UPPER_CASE_STRING|>"
+# 所有分隔符的格式必须为“<|大写字符串|>”
 PROMPTS["DEFAULT_TUPLE_DELIMITER"] = "<|#|>"
 PROMPTS["DEFAULT_COMPLETION_DELIMITER"] = "<|COMPLETE|>"
 
-PROMPTS["entity_extraction_system_prompt"] = """---Role---
-You are a Knowledge Graph Specialist responsible for extracting entities and relationships from the input text.
+PROMPTS["entity_extraction_system_prompt"] = """---角色说明---
+你是一名知识图谱专家，负责从输入文本中抽取实体和关系。
 
----Instructions---
-1.  **Entity Extraction & Output:**
-    *   **Identification:** Identify clearly defined and meaningful entities in the input text.
-    *   **Entity Details:** For each identified entity, extract the following information:
-        *   `entity_name`: The name of the entity. If the entity name is case-insensitive, capitalize the first letter of each significant word (title case). Ensure **consistent naming** across the entire extraction process.
-        *   `entity_type`: Categorize the entity using one of the following types: `{entity_types}`. If none of the provided entity types apply, do not add new entity type and classify it as `Other`.
-        *   `entity_description`: Provide a concise yet comprehensive description of the entity's attributes and activities, based *solely* on the information present in the input text.
-    *   **Output Format - Entities:** Output a total of 4 fields for each entity, delimited by `{tuple_delimiter}`, on a single line. The first field *must* be the literal string `entity`.
-        *   Format: `entity{tuple_delimiter}entity_name{tuple_delimiter}entity_type{tuple_delimiter}entity_description`
+---操作指南---
+1.  **实体抽取与输出：**
+    *   **识别：** 识别输入文本中明确定义且有意义的实体。
+    *   **实体信息：** 针对每个被识别的实体，提取以下信息：
+        *   `entity_name`：实体名称。若实体名称不区分大小写，请将每个重要词汇首字母大写（标题式大小写），并在整个抽取过程中保持**命名一致性**。
+        *   `entity_type`：将实体归类为以下类型之一：{entity_types}。若不属于这些类型中的任何一种，不要添加新类别，请标记为 `Other`。
+        *   `entity_description`：仅根据输入文本，简明、全面地描述实体的属性和活动。
+    *   **实体输出格式：** 每个实体共输出4个字段，使用 `{tuple_delimiter}` 分隔，同一行为一条实体。第一个字段必须是字面字符串 `entity`。
+        *   格式：`entity{tuple_delimiter}entity_name{tuple_delimiter}entity_type{tuple_delimiter}entity_description`
 
-2.  **Relationship Extraction & Output:**
-    *   **Identification:** Identify direct, clearly stated, and meaningful relationships between previously extracted entities.
-    *   **N-ary Relationship Decomposition:** If a single statement describes a relationship involving more than two entities (an N-ary relationship), decompose it into multiple binary (two-entity) relationship pairs for separate description.
-        *   **Example:** For "Alice, Bob, and Carol collaborated on Project X," extract binary relationships such as "Alice collaborated with Project X," "Bob collaborated with Project X," and "Carol collaborated with Project X," or "Alice collaborated with Bob," based on the most reasonable binary interpretations.
-    *   **Relationship Details:** For each binary relationship, extract the following fields:
-        *   `source_entity`: The name of the source entity. Ensure **consistent naming** with entity extraction. Capitalize the first letter of each significant word (title case) if the name is case-insensitive.
-        *   `target_entity`: The name of the target entity. Ensure **consistent naming** with entity extraction. Capitalize the first letter of each significant word (title case) if the name is case-insensitive.
-        *   `relationship_keywords`: One or more high-level keywords summarizing the overarching nature, concepts, or themes of the relationship. Multiple keywords within this field must be separated by a comma `,`. **DO NOT use `{tuple_delimiter}` for separating multiple keywords within this field.**
-        *   `relationship_description`: A concise explanation of the nature of the relationship between the source and target entities, providing a clear rationale for their connection.
-    *   **Output Format - Relationships:** Output a total of 5 fields for each relationship, delimited by `{tuple_delimiter}`, on a single line. The first field *must* be the literal string `relation`.
-        *   Format: `relation{tuple_delimiter}source_entity{tuple_delimiter}target_entity{tuple_delimiter}relationship_keywords{tuple_delimiter}relationship_description`
+2.  **关系抽取与输出：**
+    *   **识别：** 识别已抽取实体之间直接、明确且有意义的关系。
+    *   **N元关系拆分：** 若一句话涉及超过两个实体的关系（即N元关系），请将其拆分为多个二元（两个实体之间的）关系分别描述。
+        *   **举例：** 若文本为“Alice、Bob 与 Carol 共同参与了 Project X”，请抽取如“Alice 与 Project X 合作”、“Bob 与 Project X 合作”、“Carol 与 Project X 合作”，或者“Alice 与 Bob 合作”，根据最合理的二元关系理解输出。
+    *   **关系信息：** 对于每个二元关系，提取以下字段：
+        *   `source_entity`：关系的起始实体，命名需与实体抽取部分**保持一致**。若名称不区分大小写，按标题式大小写输出。
+        *   `target_entity`：关系的目标实体，命名需与实体抽取部分**保持一致**。若名称不区分大小写，按标题式大小写输出。
+        *   `relationship_keywords`：一个或多个用于概括关系本质、主题或概念的关键词。多个关键词请用中文逗号 `,` 分隔。**请勿用 `{tuple_delimiter}` 分隔关键词。**
+        *   `relationship_description`：简明说明该二元关系本质，为实体间的关联提供明确理由。
+    *   **关系输出格式：** 每个关系共输出5个字段，使用 `{tuple_delimiter}` 分隔，同一行为一条关系。第一个字段必须是字面字符串 `relation`。
+        *   格式：`relation{tuple_delimiter}source_entity{tuple_delimiter}target_entity{tuple_delimiter}relationship_keywords{tuple_delimiter}relationship_description`
 
-3.  **Delimiter Usage Protocol:**
-    *   The `{tuple_delimiter}` is a complete, atomic marker and **must not be filled with content**. It serves strictly as a field separator.
-    *   **Incorrect Example:** `entity{tuple_delimiter}Tokyo<|location|>Tokyo is the capital of Japan.`
-    *   **Correct Example:** `entity{tuple_delimiter}Tokyo{tuple_delimiter}location{tuple_delimiter}Tokyo is the capital of Japan.`
+3.  **分隔符使用规范：**
+    *   `{tuple_delimiter}` 是一个完整且不可被填充的分隔标记，仅作为字段分隔符来使用。
+    *   **错误示例：** `entity{tuple_delimiter}Tokyo<|location|>Tokyo is the capital of Japan.`
+    *   **正确示例：** `entity{tuple_delimiter}Tokyo{tuple_delimiter}location{tuple_delimiter}Tokyo is the capital of Japan.`
 
-4.  **Relationship Direction & Duplication:**
-    *   Treat all relationships as **undirected** unless explicitly stated otherwise. Swapping the source and target entities for an undirected relationship does not constitute a new relationship.
-    *   Avoid outputting duplicate relationships.
+4.  **关系方向与去重：**
+    *   所有关系默认为**无向关系**（除非明确指定有向）。交换源实体和目标实体的顺序不会被视为新关系。
+    *   请避免输出重复关系。
 
-5.  **Output Order & Prioritization:**
-    *   Output all extracted entities first, followed by all extracted relationships.
-    *   Within the list of relationships, prioritize and output those relationships that are **most significant** to the core meaning of the input text first.
+5.  **输出顺序与优先级：**
+    *   先输出所有抽取的实体，后输出所有关系。
+    *   在关系列表中，将**与输入文本核心意义最相关**的关系优先输出。
 
-6.  **Context & Objectivity:**
-    *   Ensure all entity names and descriptions are written in the **third person**.
-    *   Explicitly name the subject or object; **avoid using pronouns** such as `this article`, `this paper`, `our company`, `I`, `you`, and `he/she`.
+6.  **客观与上下文要求：**
+    *   所有实体名称及描述须使用**第三人称**书写。
+    *   必须明确指出主体或客体；**避免使用**如“本文”、“本公司”、“我们”、“你”、“他/她”等指代性人称。
 
-7.  **Language & Proper Nouns:**
-    *   The entire output (entity names, keywords, and descriptions) must be written in `{language}`.
-    *   Proper nouns (e.g., personal names, place names, organization names) should be retained in their original language if a proper, widely accepted translation is not available or would cause ambiguity.
+7.  **语言与专有名词：**
+    *   整个输出（实体名称、关键词、描述）必须使用 `{language}`。
+    *   专有名词（如人名、地名、组织名等）如果没有公认翻译或翻译会造成歧义，请保留原文。
 
-8.  **Completion Signal:** Output the literal string `{completion_delimiter}` only after all entities and relationships, following all criteria, have been completely extracted and outputted.
+8.  **输出终止标志：** 所有实体与关系输出完毕且完全满足以上要求后，最后一行仅输出字面字符串 `{completion_delimiter}` 作为终止信号。
 
----Examples---
+---示例---
 {examples}
 
----Real Data to be Processed---
-<Input>
+---待处理真实文本---
+<输入>
 Entity_types: [{entity_types}]
 Text:
 ```
@@ -134,22 +134,22 @@ Extract comprehensive insurance-specific entities and relationships from the inp
 <Output>
 """
 
-PROMPTS["entity_continue_extraction_user_prompt"] = """---Task---
-Based on the last extraction task, identify and extract any **missed or incorrectly formatted** entities and relationships from the input text.
+PROMPTS["entity_continue_extraction_user_prompt"] = """---任务---
+基于上一次抽取任务的结果，从输入文本中识别并补充**遗漏或格式不正确**的实体与关系。
 
----Instructions---
-1.  **Strict Adherence to System Format:** Strictly adhere to all format requirements for entity and relationship lists, including output order, field delimiters, and proper noun handling, as specified in the system instructions.
-2.  **Focus on Corrections/Additions:**
-    *   **Do NOT** re-output entities and relationships that were **correctly and fully** extracted in the last task.
-    *   If an entity or relationship was **missed** in the last task, extract and output it now according to the system format.
-    *   If an entity or relationship was **truncated, had missing fields, or was otherwise incorrectly formatted** in the last task, re-output the *corrected and complete* version in the specified format.
-3.  **Output Format - Entities:** Output a total of 4 fields for each entity, delimited by `{tuple_delimiter}`, on a single line. The first field *must* be the literal string `entity`.
-4.  **Output Format - Relationships:** Output a total of 5 fields for each relationship, delimited by `{tuple_delimiter}`, on a single line. The first field *must* be the literal string `relation`.
-5.  **Output Content Only:** Output *only* the extracted list of entities and relationships. Do not include any introductory or concluding remarks, explanations, or additional text before or after the list.
-6.  **Completion Signal:** Output `{completion_delimiter}` as the final line after all relevant missing or corrected entities and relationships have been extracted and presented.
-7.  **Output Language:** Ensure the output language is {language}. Proper nouns (e.g., personal names, place names, organization names) must be kept in their original language and not translated.
+---具体要求---
+1.  **严格遵循系统格式要求：** 必须严格按照系统说明中对实体与关系列表的输出格式、顺序、字段分隔符、专有名词处理的全部要求输出。
+2.  **专注于补漏与纠错：**
+    *   **不要**重新输出已在上一次任务中**完全正确**抽取的实体或关系。
+    *   若在上一次任务中**遗漏**了某个实体或关系，请现在按系统格式标准抽取并输出。
+    *   若某个实体或关系在上一次任务中**被截断、字段缺失或格式错误**，请本次以标准格式输出**完整、修正版本**。
+3.  **实体输出格式：** 每个实体按共4个字段（使用 `{tuple_delimiter}` 分隔）**单独占一行**输出。第一个字段必须为字符串字面量 `entity`。
+4.  **关系输出格式：** 每个关系按共5个字段（使用 `{tuple_delimiter}` 分隔）**单独占一行**输出。第一个字段必须为字符串字面量 `relation`。
+5.  **仅输出内容清单：** 仅输出补全或修正的实体与关系列表，不输出任何说明、注释、开头或结尾的额外文本。
+6.  **完成标志：** 当所有遗漏或修正条目输出完毕后，最后一行必须只输出 `{completion_delimiter}`，作为结束标记。
+7.  **输出语言：** 输出内容须为{language}。专有名词（如人名、地名、机构名等）请保持原文，不要译为其他语言。
 
-<Output>
+<输出>
 """
 
 PROMPTS["entity_extraction_examples"] = [
@@ -309,43 +309,40 @@ relation{tuple_delimiter}保单年度{tuple_delimiter}合同生效日{tuple_deli
 """,
 ]
 
-PROMPTS["summarize_entity_descriptions"] = """---Role---
-You are a Knowledge Graph Specialist, proficient in data curation and synthesis.
+PROMPTS["summarize_entity_descriptions"] = """---角色---
+你是一名知识图谱专家，擅长数据整理与综合归纳。
 
----Task---
-Your task is to synthesize a list of descriptions of a given entity or relation into a single, comprehensive, and cohesive summary.
+---任务---
+请将给定实体或关系的多个描述合成为一份全面、连贯的总结性说明。
 
----Instructions---
-1. Input Format: The description list is provided in JSON format. Each JSON object (representing a single description) appears on a new line within the `Description List` section.
-2. Output Format: The merged description will be returned as plain text, presented in multiple paragraphs, without any additional formatting or extraneous comments before or after the summary.
-3. Comprehensiveness: The summary must integrate all key information from *every* provided description. Do not omit any important facts or details.
-4. Context: Ensure the summary is written from an objective, third-person perspective; explicitly mention the name of the entity or relation for full clarity and context.
-5. Context & Objectivity:
-  - Write the summary from an objective, third-person perspective.
-  - Explicitly mention the full name of the entity or relation at the beginning of the summary to ensure immediate clarity and context.
-6. Conflict Handling:
-  - In cases of conflicting or inconsistent descriptions, first determine if these conflicts arise from multiple, distinct entities or relationships that share the same name.
-  - If distinct entities/relations are identified, summarize each one *separately* within the overall output.
-  - If conflicts within a single entity/relation (e.g., historical discrepancies) exist, attempt to reconcile them or present both viewpoints with noted uncertainty.
-7. Length Constraint:The summary's total length must not exceed {summary_length} tokens, while still maintaining depth and completeness.
-8. Language: The entire output must be written in {language}. Proper nouns (e.g., personal names, place names, organization names) may in their original language if proper translation is not available.
-  - The entire output must be written in {language}.
-  - Proper nouns (e.g., personal names, place names, organization names) should be retained in their original language if a proper, widely accepted translation is not available or would cause ambiguity.
+---指令---
+1. 输入格式：描述列表以JSON格式提供，每行为一个独立的描述对象，均位于“描述列表”部分内。
+2. 输出格式：合并后的说明应直接输出为多段连续文本，不添加任何额外的格式、注释或说明。
+3. 全面性：总结需整合*每一条*描述中的所有关键信息，不遗漏任何重要事实或细节。
+4. 上下文与客观性：
+   - 总结须采用客观、第三人称的表述方式。
+   - 为确保语境清晰，需在开头明确指出该实体或关系的全名。
+5. 冲突处理：
+   - 若描述间存在冲突或不一致，首先判断是否源自同名但不同实体/关系。
+   - 如确认为不同实体/关系，请在总输出中分别进行说明。
+   - 如为同一对象但存在矛盾（如历史分歧），应尽量协调并整合不同观点，或注明存在不确定性。
+6. 长度限制：总说明不超过{summary_length}个token，但需保证内容深入完整。
+7. 语言规范：整个输出内容必须使用{language}撰写。专有名词（如人名、地名、机构名等）如无通用正式译名或译名易造成歧义，可保持原文。
 
----Input---
-{description_type} Name: {description_name}
+---输入---
+{description_type}名称: {description_name}
 
-Description List:
+描述列表:
 
 ```
 {description_list}
 ```
 
----Output---
+---输出---
 """
 
 PROMPTS["fail_response"] = (
-    "Sorry, I'm not able to provide an answer to that question.[no-context]"
+    "抱歉，我无法为这个问题提供答案。[no-context]"
 )
 
 PROMPTS["rag_response"] = """---Role---
