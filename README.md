@@ -1,3 +1,144 @@
+# 🏦 知识图谱问答助手 (Knowledge Graph Agent)
+
+## ✨ 项目简介
+
+知识图谱问答助手是一个基于 GraphRAG 和 LangGraph 构建的智能 RAG 检索系统，专为处理保险领域的复杂文档而设计。它能够从多类型保险文档中提取实体和关系，构建知识图谱，并结合向量检索、关键词检索和图谱推理，提供精准、时效性强的答案。该助手通过 Gradio 提供直观的用户界面，支持多种查询模式，适用于寿险条款、产品说明书、理赔指南等保险文档。
+
+## 🚀 核心功能
+
+*   **多文档智能索引**: 支持批量上传和索引 `md`, `txt`, `pdf` 等格式的保险文档。
+*   **混合检索**: 融合向量相似度匹配和知识图谱推理，提供更准确、全面的检索结果。
+*   **多种查询模式**:
+    *   **混合检索 (hybrid)**: 结合向量召回和图谱推理，准确率最高。
+    *   **向量检索 (naive)**: 纯语义相似度匹配，速度快。
+    *   **局部图谱 (local)**: 基于实体关系的邻域搜索。
+    *   **全局图谱 (global)**: 全图推理，适合复杂关联查询。
+*   **知识图谱构建**: 从非结构化文本中抽取实体、关系，并构建统一的知识图谱。
+*   **对话记忆**: 维护对话历史，提供上下文感知的交互。
+*   **直观 Gradio 用户界面**: 提供用户友好的 Web 界面，支持文档管理、查询和结果展示。
+*   **LightRAG 框架**: 利用 LightRAG 提供的异步能力和模块化设计，实现高效的 RAG 工作流。
+
+## 🏗️ 架构概览 (LangGraph 工作流)
+
+知识图谱问答助手的工作流通过 LangGraph 精心编排，主要包含两个独立但协同的流程：文档索引工作流和查询工作流。
+
+### 1. 文档索引工作流 (`create_indexing_graph`)
+
+这是一个简化的工作流，主要负责将原始文档导入到 LightRAG 系统中进行处理。
+
+*   **`index_documents` 节点**：
+    *   **职责**: 接收待索引的文档内容和元数据 (文件路径、ID)，触发 LightRAG 内部的完整索引流程。LightRAG 将负责文档切分、Embedding、实体抽取、关系构建，并将数据存储到向量数据库和知识图谱中。
+    *   **输出**: 索引任务的跟踪 ID 和状态消息。
+
+### 2. 查询工作流 (`create_querying_graph`)
+
+此工作流负责处理用户的问题，并生成基于知识图谱和文档内容的回答。
+
+*   **`retrieve_context` 节点**：
+    *   **职责**: 基于用户查询和选择的查询模式 (hybrid, naive, local, global)，调用 LightRAG 的查询接口，从存储中检索最相关的上下文信息（包括文档片段和知识图谱数据）。
+    *   **输出**: 原始上下文 (`raw_context`) 和查询模式 (`query_mode`)。
+*   **`generate_answer` 节点**：
+    *   **职责**: 接收检索到的上下文和用户查询，将其作为 Prompt 传递给 LLM，生成最终的专业回答。
+    *   **输出**: LLM 生成的答案 (`answer`)。
+
+## ⚙️ 快速开始
+
+### 1. 环境准备
+
+确保您的系统已安装 Python 3.11+。
+
+### 2. 克隆项目
+
+```bash
+git clone https://github.com/yourusername/AI_Agent.git # 请替换为您的项目实际地址
+cd AI_Agent
+```
+
+### 3. 安装依赖
+
+本项目推荐使用 `uv` 进行依赖管理，以获得更快的安装和更可靠的依赖解析。
+
+```bash
+# 如果尚未安装 uv，请先安装
+pip install uv
+
+# 创建并激活虚拟环境
+uv venv
+source .venv/bin/activate # macOS/Linux
+# 或 .venv\Scripts\activate # Windows
+
+# 安装项目依赖并同步到 lock 文件
+uv sync
+```
+
+如果您习惯使用 `pip`：
+
+```bash
+python -m venv .venv
+source .venv/bin/activate # 或 .venv\Scripts\activate
+pip install -e .
+```
+
+### 4. 配置 Ollama (Embedding 模型)
+
+本项目默认使用 Ollama 作为 Embedding 服务。
+
+*   **安装 Ollama**：请访问 [ollama.ai](https://ollama.ai/)，按照官方指南安装并启动 Ollama 服务。
+*   **下载 Embedding 模型**：在终端中运行以下命令下载 `qwen3-embedding:0.6b` 模型：
+
+    ```bash
+    ollama run qwen3-embedding:0.6b
+    # 等待模型下载完成。Ollama 会自动在后台运行，并监听 http://localhost:11434
+    ```
+
+    请确保 Ollama 服务在 `http://localhost:11434` 端口（或您配置的任何端口）正常运行。
+
+### 5. 项目配置
+
+#### 5.1 Embedding 模型配置
+
+在 `src/Knowledge_Graph_Agent/agent.py` 文件中，可以配置嵌入模型（默认已配置 Ollama）：
+
+```python
+# src/Knowledge_Graph_Agent/agent.py
+# ...
+embedding_config = {
+    "type": "ollama",
+    "model": "qwen3-embedding:0.6b",
+    "base_url": "http://localhost:11434"
+}
+# ...
+```
+
+#### 5.2 LLM 配置 (可选)
+
+您可以在 `src/Knowledge_Graph_Agent/llm.py` 中配置您希望使用的大型语言模型（目前支持 DeepSeek 和 Google Gemini）。
+
+### 6. 准备文档
+
+将您需要索引的保险文档（如寿险条款、产品说明书、理赔指南等，支持 `.md`）放置在 `data/inputs` 目录下。
+
+### 7. 运行应用
+
+在激活的虚拟环境中，执行以下命令启动 Gradio Web UI：
+
+```bash
+python -m src.Knowledge_Graph_Agent.insurance_rag_gradio
+```
+
+程序启动后，您会在终端看到一个本地 URL (例如 `http://127.0.0.1:7860`)。在浏览器中打开此链接，即可开始与知识图谱问答助手进行交互！
+
+## 💡 示例交互
+
+启动应用后，您可以尝试提出以下问题：
+
+*   "什么情况下保险公司会豁免保险费?"
+*   "犹豫期是多长时间?解除合同有什么后果?"
+*   "全残的定义包括哪些情况?"
+*   "保险责任和责任免除有什么区别?"
+*   "投保人年龄错误会如何处理?"
+
+------------
 # 📚 论文问答助手 (Paper Study Agent)
 
 ## ✨ 项目简介
