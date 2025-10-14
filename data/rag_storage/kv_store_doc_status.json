@@ -19,5 +19,53 @@
       "processing_start_time": 1760254283,
       "processing_end_time": 1760254570
     }
+  },
+  "111003_tk.md": {
+    "status": "processed",
+    "chunks_count": 7,
+    "chunks_list": [
+      "chunk-d85279812f2d24c66a7c6a950cf9c3ff",
+      "chunk-1032d36602e9b5f9d17cb8dc0bb0545b",
+      "chunk-9711ce8b36fae5fb4d0da4cc345a5b81",
+      "chunk-6aeafefd52656224c01b7587c6f96eac",
+      "chunk-57b15c9c2e976a5f17cf53960108a69d",
+      "chunk-f7faf62d3f6a0a3950f6865877caa934",
+      "chunk-7255f45b85ab05215c8d3ced5b004e4a"
+    ],
+    "content_summary": "# 利安人寿保险股份有限公司 传家宝终身寿险条款\n\n# 阅读指引\n\n本阅读指引有助于您理解条款，对本合同内容的解释以条款为准。\n\n![](https://cdn-mineru.openxlab.org.cn/result/2025-10-09/d44385be-2eba-4bf0-90ef-6bfab789c1d8/103ec9afa202271b081e4a06c619acf76dbc0af8d9aab6de9eea4799a123d374.jpg)\n\n# 您拥有的重要权益\n\n签收本合同次日起...",
+    "content_length": 9961,
+    "created_at": "2025-10-13T13:15:32.178222+00:00",
+    "updated_at": "2025-10-13T13:25:50.818228+00:00",
+    "file_path": "C:\\Users\\罗亚骏\\AppData\\Local\\Temp\\gradio\\b954337edb01672487d8ed6c0d57c18664f8209f6709ad4e4f9af3f345f75eca\\111003_tk.md",
+    "track_id": "insert_20251013_211532_7563e3f4",
+    "metadata": {
+      "processing_start_time": 1760361332,
+      "processing_end_time": 1760361950
+    }
+  },
+  "111005_tk.md": {
+    "status": "processed",
+    "chunks_count": 9,
+    "chunks_list": [
+      "chunk-e999db6e32d477ed4dcda8ba66e401ba",
+      "chunk-fc445def0341a1410c983aa0ebb444e1",
+      "chunk-8373d6e7a829016bd3ce5dfab89c082e",
+      "chunk-81f2fe1bbcf18fc40edc7632356edfef",
+      "chunk-2ac70f56b0a63558d2ef30b9a515f228",
+      "chunk-8b3daf65fd9493dd2205736022b25a81",
+      "chunk-c31c9d7c108d7d8ecedfb97271f19f3f",
+      "chunk-cb129cecfb0c0676ff850ffee1332edf",
+      "chunk-2ad4ae27a07f6bbd501e741d75560867"
+    ],
+    "content_summary": "# 利安人寿保险股份有限公司传家福终身寿险条款\n\n阅读指引\n\n本阅读指引有助于您理解条款，对本合同内容的解释以条款为准。\n\n![](https://cdn-mineru.openxlab.org.cn/result/2025-10-09/381a4542-3773-4e8c-83bc-ec838690420d/9829c0668f2f6d16b260b2006d97b9e5917e6d4d6c2321b9f8f576a1b2508bda.jpg)\n\n# 您拥有的重要权益\n\n签收本合同次日起15日...",
+    "content_length": 13784,
+    "created_at": "2025-10-13T13:15:32.178222+00:00",
+    "updated_at": "2025-10-13T13:27:57.381015+00:00",
+    "file_path": "C:\\Users\\罗亚骏\\AppData\\Local\\Temp\\gradio\\561641d91eed8898aac879b468761a28b041111850d5c8ac8804035f85c51521\\111005_tk.md",
+    "track_id": "insert_20251013_211532_7563e3f4",
+    "metadata": {
+      "processing_start_time": 1760361332,
+      "processing_end_time": 1760362077
+    }
   }
 }

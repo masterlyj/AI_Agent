@@ -9,6 +9,7 @@ class IndexingState(TypedDict):
     status_message: str
 
 class QueryState(TypedDict):
+    thread_id: int
     working_dir: str
     query: str
     query_mode: Literal["naive", "local", "global", "hybrid"]

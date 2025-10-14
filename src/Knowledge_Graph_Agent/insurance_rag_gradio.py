@@ -11,7 +11,7 @@ from .utils import logger
 
 # ===== 全局配置 =====
 WORKING_DIR = "data/rag_storage"
-DOC_LIBRARY = "data/inputs"  # 文档库目录
+DOC_LIBRARY = "data/inputs"
 
 # ===== 自定义CSS样式 =====
 custom_css = """
@@ -26,14 +26,12 @@ custom_css = """
     --border-color: #e2e8f0;
 }
 
-/* 整体容器 */
 .gradio-container {
     max-width: 1600px !important;
     margin: 0 auto;
     font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
 }
 
-/* 顶部标题区域 */
 .header-banner {
     background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
     padding: 30px;
@@ -176,15 +174,6 @@ async def initialize_agent():
         logger.error(f"❌ 初始化失败: {e}")
         return f"❌ 初始化失败: {str(e)}"
 
-def run_async(coro):
-    """运行异步协程的辅助函数"""
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-    try:
-        return loop.run_until_complete(coro)
-    finally:
-        loop.close()
-
 # ===== 文档索引功能 =====
 async def index_documents_async(file_paths: List[str], progress=gr.Progress()):
     """异步索引文档"""
@@ -227,10 +216,6 @@ async def index_documents_async(file_paths: List[str], progress=gr.Progress()):
     except Exception as e:
         logger.error(f"索引失败: {e}")
         return f"❌ 索引失败: {str(e)}", {}
-
-def index_documents_sync(file_paths):
-    """同步包装器"""
-    return run_async(index_documents_async(file_paths))
 
 # ===== 查询功能 =====
 async def query_knowledge_async(
@@ -292,10 +277,6 @@ async def query_knowledge_async(
         })
         return chat_history, {}, ""
 
-def query_knowledge_sync(question, mode, show_context, history):
-    """同步包装器"""
-    return run_async(query_knowledge_async(question, mode, show_context, history))
-
 # ===== 辅助函数 =====
 def extract_metrics_from_context(raw_context: str, mode: str) -> Dict:
     """从上下文中提取检索指标"""
@@ -304,18 +285,18 @@ def extract_metrics_from_context(raw_context: str, mode: str) -> Dict:
         "上下文长度": len(raw_context) if raw_context else 0,
     }
     
-    # 尝试统计实体和文档块数量
-    if "Knowledge Graph Data (Entity)" in raw_context:
-        entity_count = raw_context.count('{"entity":')
-        metrics["图谱实体数"] = entity_count
-    
-    if "Document Chunks" in raw_context:
-        chunk_count = raw_context.count('{"reference_id":')
-        metrics["文档片段数"] = chunk_count
-    
-    if "Knowledge Graph Data (Relationship)" in raw_context:
-        rel_count = raw_context.count('{"entity1":')
-        metrics["关系三元组数"] = rel_count
+    if raw_context:
+        if "Knowledge Graph Data (Entity)" in raw_context:
+            entity_count = raw_context.count('{"entity":')
+            metrics["图谱实体数"] = entity_count
+        
+        if "Document Chunks" in raw_context:
+            chunk_count = raw_context.count('{"reference_id":')
+            metrics["文档片段数"] = chunk_count
+        
+        if "Knowledge Graph Data (Relationship)" in raw_context:
+            rel_count = raw_context.count('{"entity1":')
+            metrics["关系三元组数"] = rel_count
     
     return metrics
 
@@ -324,10 +305,7 @@ def format_context_display(raw_context: str) -> str:
     if not raw_context:
         return "无上下文数据"
     
-    # 简化显示,提取关键信息
     display = "### 📋 检索到的上下文\n\n"
-    
-    # 显示前1000字符
     preview = raw_context[:1000]
     display += f"```\n{preview}\n```\n\n"
     
@@ -353,22 +331,19 @@ def clear_chat():
 
 # ===== Gradio界面构建 =====
 with gr.Blocks(
-    title="🏦 保险文档RAG检索系统",
+    title="🦙 保险文档RAG检索系统",
     theme=gr.themes.Soft(primary_hue="blue"),
     css=custom_css
 ) as demo:
     
-    # 标题栏
     gr.HTML("""
     <div class="header-banner">
-        <h1>🏦 保险文档智能检索系统</h1>
+        <h1>🦙 保险文档智能检索系统</h1>
         <p>基于 LightRAG + LangGraph 的混合检索引擎 | 支持向量检索 + 知识图谱推理</p>
     </div>
     """)
     
-    # 主布局
     with gr.Row():
-        # 左侧：文档管理与配置
         with gr.Column(scale=3):
             with gr.Accordion("📁 文档库管理", open=True):
                 gr.Markdown("### 索引新文档")
@@ -380,26 +355,11 @@ with gr.Blocks(
                 )
                 
                 with gr.Row():
-                    index_btn = gr.Button(
-                        "🔄 开始索引",
-                        variant="primary",
-                        scale=2
-                    )
-                    refresh_btn = gr.Button(
-                        "🔍 查看已索引",
-                        scale=1
-                    )
+                    index_btn = gr.Button("📄 开始索引", variant="primary", scale=2)
+                    refresh_btn = gr.Button("🔍 查看已索引", scale=1)
                 
-                index_output = gr.Textbox(
-                    label="索引状态",
-                    lines=2,
-                    interactive=False
-                )
-                
-                index_metrics = gr.JSON(
-                    label="索引统计",
-                    visible=True
-                )
+                index_output = gr.Textbox(label="索引状态", lines=2, interactive=False)
+                index_metrics = gr.JSON(label="索引统计", visible=True)
             
             with gr.Accordion("⚙️ 检索配置", open=True):
                 query_mode = gr.Radio(
@@ -449,11 +409,7 @@ with gr.Blocks(
                     lines=2,
                     scale=8
                 )
-                query_btn = gr.Button(
-                    "🔍 查询",
-                    variant="primary",
-                    scale=1
-                )
+                query_btn = gr.Button("🔍 查询", variant="primary", scale=1)
             
             with gr.Row():
                 clear_btn = gr.Button("🗑️ 清空对话")
@@ -461,15 +417,9 @@ with gr.Blocks(
             
             # 检索指标展示
             with gr.Accordion("📊 检索质量指标", open=False):
-                retrieval_metrics = gr.JSON(
-                    label="实时指标"
-                )
+                retrieval_metrics = gr.JSON(label="实时指标")
             
-            # 上下文展示
-            context_display = gr.Markdown(
-                label="原始上下文",
-                visible=True
-            )
+            context_display = gr.Markdown(label="原始上下文", visible=True)
     
     # 示例问题
     gr.Examples(
@@ -499,14 +449,14 @@ with gr.Blocks(
     
     # 索引事件
     index_btn.click(
-        fn=index_documents_sync,
+        fn=index_documents_async,
         inputs=[file_input],
         outputs=[index_output, index_metrics]
     )
     
     # 查询事件
     query_btn.click(
-        fn=query_knowledge_sync,
+        fn=query_knowledge_async,
         inputs=[query_input, query_mode, show_context, chatbot],
         outputs=[chatbot, retrieval_metrics, context_display]
     ).then(
@@ -515,7 +465,7 @@ with gr.Blocks(
     )
     
     query_input.submit(
-        fn=query_knowledge_sync,
+        fn=query_knowledge_async,
         inputs=[query_input, query_mode, show_context, chatbot],
         outputs=[chatbot, retrieval_metrics, context_display]
     ).then(
@@ -523,7 +473,6 @@ with gr.Blocks(
         outputs=[query_input]
     )
     
-    # 清空对话
     clear_btn.click(
         fn=clear_chat,
         outputs=[chatbot, retrieval_metrics, context_display]
@@ -549,27 +498,32 @@ with gr.Blocks(
     )
 
 # ===== 启动逻辑 =====
-if __name__ == "__main__":
-    # 先初始化Agent
+async def startup():
+    """启动时初始化Agent"""
     print("=" * 60)
     print("🚀 正在启动保险文档RAG检索系统...")
     print("=" * 60)
     
-    init_result = run_async(initialize_agent())
+    init_result = await initialize_agent()
     print(f"初始化结果: {init_result}")
     
     if agent_instance:
-        print("\n✅ Agent初始化成功,正在启动Gradio界面...")
+        print("\n✅ Agent初始化成功")
         print(f"📂 工作目录: {WORKING_DIR}")
         print(f"📚 文档库: {DOC_LIBRARY}")
         print("=" * 60)
-        
-        demo.queue().launch(
-            server_name="127.0.0.1",
-            server_port=7860,
-            share=False,  # 需要公网访问时改为True(需关闭代理)
-            debug=True,
-            show_error=True
-        )
     else:
-        print("❌ Agent初始化失败,无法启动界面")
+        print("❌ Agent初始化失败")
+
+if __name__ == "__main__":
+    # 在 Gradio 启动前初始化 Agent
+    asyncio.run(startup())
+    
+    # 启动 Gradio (使用 queue 启用异步支持)
+    demo.queue().launch(
+        server_name="127.0.0.1",
+        server_port=7860,
+        share=False,
+        debug=True,
+        show_error=True
+    )
