@@ -10,6 +10,7 @@ from .kg.shared_storage import initialize_pipeline_status
 from .llm import get_llm
 from .async_lanchain_rag_adapter import create_lightrag_compatible_complete
 from .embedding_factory import get_embedder, create_lightrag_embedding_adapter
+from .mineru_integration import SmartDocumentIndexer
 
 # --- RAGAgent with Real LLM and Embedding ---
 class RAGAgent:
@@ -18,6 +19,7 @@ class RAGAgent:
         self.nodes: Optional[WorkflowNodes] = None
         self.indexing_graph = None
         self.querying_graph = None
+        self.smart_indexer: Optional[SmartDocumentIndexer] = None
 
     @classmethod
     async def create(cls, working_dir: str = "data/rag_storage"):
@@ -68,16 +70,55 @@ class RAGAgent:
         instance.indexing_graph = create_indexing_graph(instance.nodes)
         instance.querying_graph = create_querying_graph(instance.nodes)
         
+        # === 7. 初始化智能文档索引器 ===
+        # 从环境变量获取MinerU API密钥
+        mineru_api_key = os.environ.get("MINERU_API_KEY", "")
+        instance.smart_indexer = SmartDocumentIndexer(mineru_api_key=mineru_api_key)
+        
         return instance
 
     async def index_documents(self, file_paths: List[str]):
-        """索引文档"""
+        """智能索引文档 - 支持PDF和文本文件"""
+        logger.info(f"📚 开始智能索引 {len(file_paths)} 个文档...")
+        
+        # 使用智能文档索引器处理文件
+        if self.smart_indexer:
+            process_result = await self.smart_indexer.process_files_for_indexing(file_paths)
+            files_to_index = process_result["files_to_index"]
+            
+            if not files_to_index:
+                logger.warning("没有可索引的文件")
+                return {
+                    "track_id": None,
+                    "status_message": "没有可索引的文件",
+                    "processing_summary": self.smart_indexer.get_processing_summary(process_result)
+                }
+            
+            logger.info(f"📄 准备索引 {len(files_to_index)} 个处理后的文件")
+        else:
+            # 如果没有智能索引器，直接使用原始文件
+            files_to_index = file_paths
+        
+        # 读取文件内容进行索引
         contents, ids, paths = [], [], []
-        for fp in file_paths:
-            with open(fp, 'r', encoding='utf-8') as f:
-                contents.append(f.read())
-            ids.append(os.path.basename(fp))
-            paths.append(os.path.abspath(fp))
+        for fp in files_to_index:
+            try:
+                with open(fp, 'r', encoding='utf-8') as f:
+                    contents.append(f.read())
+                ids.append(os.path.basename(fp))
+                paths.append(os.path.abspath(fp))
+                logger.info(f"📖 读取文件: {os.path.basename(fp)}")
+            except Exception as e:
+                logger.error(f"❌ 读取文件失败 {fp}: {e}")
+                continue
+        
+        if not contents:
+            logger.error("没有成功读取任何文件内容")
+            return {
+                "track_id": None,
+                "status_message": "文件读取失败",
+                "processing_summary": "文件读取失败"
+            }
 
         initial_state: IndexingState = {
             "working_dir": self.working_dir,
@@ -89,6 +130,11 @@ class RAGAgent:
         }
 
         result = await self.indexing_graph.ainvoke(initial_state)
+        
+        # 添加处理摘要到结果中
+        if self.smart_indexer and 'processing_summary' not in result:
+            result['processing_summary'] = self.smart_indexer.get_processing_summary(process_result)
+        
         logger.info(f"📌 索引流程结束: {result['status_message']}")
         return result
 

@@ -79,12 +79,19 @@ def create_lightrag_compatible_complete(langchain_llm, *, retry_attempts: int = 
         调用 LangChain LLM；若模型实现了流式返回，则直接返回 async iterable / iterator
         这里假设调用签名类似：llm.invoke(messages=..., stream=True/False, **kwargs)
         """
+        # 过滤掉LightRAG传入的不兼容参数
+        incompatible_params = [
+            'hashing_kv', 'keyword_extraction', 'entity_spec', 'relation_spec',
+            '_priority', 'global_config', 'query_param', 'enable_cot'
+        ]
+        filtered_kwargs = {k: v for k, v in invoke_kwargs.items() if k not in incompatible_params}
+        
         # 多数 LangChain chat models 接受 messages 参数 -> 尝试统一接口
         try:
-            result = await async_call(messages, stream=stream, **invoke_kwargs)
+            result = await async_call(messages, stream=stream, **filtered_kwargs)
         except TypeError:
             # 部分 LangChain 版本/模型使用 (messages) positional
-            result = await async_call(messages, **({"stream": stream} if stream else {}), **invoke_kwargs)
+            result = await async_call(messages, **({"stream": stream} if stream else {}), **filtered_kwargs)
         return result
 
     async def llm_complete(

@@ -176,7 +176,7 @@ async def initialize_agent():
 
 # ===== 文档索引功能 =====
 async def index_documents_async(file_paths: List[str], progress=gr.Progress()):
-    """异步索引文档"""
+    """异步索引文档 - 支持PDF和文本文件智能处理"""
     global index_status
     
     if not agent_instance:
@@ -190,9 +190,16 @@ async def index_documents_async(file_paths: List[str], progress=gr.Progress()):
         if not valid_files:
             return "❌ 未找到有效文件", {}
         
-        progress(0.3, desc=f"正在索引 {len(valid_files)} 个文档...")
+        # 分析文件类型
+        pdf_files = [f for f in valid_files if f.lower().endswith('.pdf')]
+        text_files = [f for f in valid_files if f.lower().endswith(('.md', '.txt'))]
         
-        # 调用索引
+        progress(0.1, desc=f"检测到 {len(pdf_files)} 个PDF文件, {len(text_files)} 个文本文件")
+        
+        # 智能文档处理
+        progress(0.3, desc=f"正在智能处理 {len(valid_files)} 个文档...")
+        
+        # 调用智能索引
         result = await agent_instance.index_documents(valid_files)
         
         progress(0.8, desc="索引完成,更新状态...")
@@ -204,14 +211,24 @@ async def index_documents_async(file_paths: List[str], progress=gr.Progress()):
         
         progress(1.0, desc="完成!")
         
+        # 构建详细的指标信息
+        processing_summary = result.get('processing_summary', '')
+        
         metrics = {
             "索引文档数": len(valid_files),
+            "PDF文件数": len(pdf_files),
+            "文本文件数": len(text_files),
             "Track ID": result.get("track_id", "N/A"),
             "索引时间": index_status["last_indexed"],
             "状态": result.get("status_message", "成功")
         }
         
-        return f"✅ 成功索引 {len(valid_files)} 个文档", metrics
+        # 如果有处理摘要，添加到返回信息中
+        status_msg = f"✅ 成功索引 {len(valid_files)} 个文档"
+        if processing_summary:
+            status_msg += f"\n📊 处理摘要: {processing_summary}"
+        
+        return status_msg, metrics
         
     except Exception as e:
         logger.error(f"索引失败: {e}")
@@ -349,10 +366,11 @@ with gr.Blocks(
                 gr.Markdown("### 索引新文档")
                 
                 file_input = gr.File(
-                    label="上传保险条款文档",
+                    label="上传保险条款文档 (支持PDF/MD/TXT)",
                     file_count="multiple",
                     file_types=[".md", ".txt", ".pdf"]
                 )
+                gr.Markdown("📋 支持PDF文件自动解析、Markdown和文本文件直接索引")
                 
                 with gr.Row():
                     index_btn = gr.Button("📄 开始索引", variant="primary", scale=2)
@@ -370,15 +388,15 @@ with gr.Blocks(
                         ("全局图谱", "global")
                     ],
                     value="hybrid",
-                    label="检索模式",
-                    info="混合模式结合向量相似度和图谱推理"
+                    label="检索模式"
                 )
+                gr.Markdown("💡 混合模式结合向量相似度和图谱推理")
                 
                 show_context = gr.Checkbox(
                     label="显示原始上下文",
-                    value=False,
-                    info="展示检索到的完整上下文数据"
+                    value=False
                 )
+                gr.Markdown("📄 展示检索到的完整上下文数据")
                 
                 gr.Markdown("""
                 **📊 检索模式说明:**
@@ -438,8 +456,8 @@ with gr.Blocks(
     gr.HTML("""
     <div style="text-align: center; margin-top: 30px; padding: 20px; background: #f8fafc; border-radius: 8px;">
         <p style="color: #64748b; font-size: 0.9em;">
-            ⚡ 技术栈: LightRAG + LangGraph + Ollama Embedding (qwen3-embedding:0.6b)<br>
-            📚 支持文档: 寿险条款、产品说明书、理赔指南等保险文档<br>
+            ⚡ 技术栈: LightRAG + LangGraph + Ollama Embedding (qwen3-embedding:0.6b) + MinerU PDF解析<br>
+            📚 支持文档: 寿险条款、产品说明书、理赔指南等保险文档 (PDF自动解析,MD/TXT直接索引)<br>
             🔒 数据存储: 本地向量数据库 + Neo4j知识图谱
         </p>
     </div>
