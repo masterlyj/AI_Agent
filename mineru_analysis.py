@@ -117,22 +117,18 @@ class MineruProcessor:
             if result.get("code") == 0:
                 data = result.get("data", {})
                 top_level_status = data.get("status", "SUCCESS").upper()
-                logger.info(f"  - 批次总体状态: {top_level_status} (已等待 {int(time.time() - start_time)} 秒)")
-                if top_level_status == "SUCCESS":
-                    results_list = data.get("extract_result")
-                    if isinstance(results_list, list):
-                        pending_files = [item.get('file_name') for item in results_list if item.get("state") in ['pendding', 'running', 'converting', 'waiting-file']]
-                        if not pending_files:
-                            logger.info("  - 所有文件的状态均已完成！解析任务成功结束！")
-                            return results_list
-                        else:
-                            done_count = len(results_list) - len(pending_files)
-                            first_pending_state = next((item.get("state") for item in results_list if item.get("state") in ['pendding', 'running', 'converting', 'waiting-file']), "N/A")
-                            logger.info(f"  - 批次处理中: {done_count}/{len(results_list)} 个文件已完成。仍在等待 {len(pending_files)} 个文件... (例如: {pending_files[0]} 状态为 '{first_pending_state}')")
+                results_list = data.get("extract_result")
+                if isinstance(results_list, list):
+                    pending_files = [item.get('file_name') for item in results_list if item.get("state") not in ['done']]
+                    if not pending_files:
+                        logger.info("  - 所有文件的状态均已完成！解析任务成功结束！")
+                        return results_list
                     else:
-                        logger.info(f"  - 批次状态为SUCCESS，但尚未返回文件列表，继续等待...")
-                elif top_level_status == "FAILED":
-                    raise Exception("解析任务失败。")
+                        done_count = len(results_list) - len(pending_files)
+                        first_pending_state = next((item.get("state") for item in results_list if item.get("state") not in ['done']), "N/A")
+                        logger.info(f"  - 批次处理中: {done_count}/{len(results_list)} 个文件已完成。仍在等待 {len(pending_files)} 个文件... (例如: {pending_files[0]} 状态为 '{first_pending_state}')")
+                else:
+                    logger.info(f"  - 批次状态为SUCCESS，但尚未返回文件列表，继续等待...")
             else:
                 logger.info(f"  - 任务仍在处理中... (API code: {result.get('code')}, msg: {result.get('msg')})")
             time.sleep(self.polling_interval)

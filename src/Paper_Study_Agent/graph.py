@@ -30,10 +30,9 @@ long_reorder = LongContextReorder()
 chat_prompt = ChatPromptTemplate.from_messages([
     ("system",
      "你是一个文档聊天机器人。请根据以下信息回答用户问题。\n"
-     "用户问题：{query}\n"
      "对话历史检索：\n{history_retrieved}\n\n"
      "文档检索：\n{context_retrieved}\n\n"
-     "（仅根据检索内容回答，用对话式语气回复。）"
+     "仅根据检索内容回答，用对话式语气回复并给出原文内容（如果原文内容语言与用户问题语言不一致，请将原文内容以及翻译成用于问题语言的内容一起返回）。"
     ),
     ("user", "{query}")
 ])

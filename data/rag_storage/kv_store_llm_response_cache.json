@@ -958,5 +958,153 @@
     "create_time": 1760365847,
     "update_time": 1760365847,
     "_id": "hybrid:query:311f48437bdb310717d011682c1af9cb"
+  },
+  "hybrid:query:a76079336e9e0608a246f39bf604dd1a": {
+    "return": "我的知识库主要涵盖以下几个方面的内容：\n\n*   **保险合同与条款**：包括保险合同的构成、成立与生效、投保年龄、犹豫期、保险金额、保险期间、保险责任、责任免除、保险金申请与给付流程、保单质押贷款、现金价值权益、合同效力恢复与解除、以及其他需要关注的事项，如明确说明与如实告知、年龄和性别确定与错误处理、联系方式变更、未还款项、合同内容变更和争议处理等。此外，还包含对保单年度、合同生效日对应日、保险费约定支付日、交费期满日、周岁和有效身份证件等术语的释义。\n*   **医疗与健康定义**：涉及疾病或症状、既往症、潜在疾病、遗传性疾病（包括生殖细胞、受精卵、遗传物质、染色体和基因）、先天性畸形、变形或染色体异常、猝死、全残（如双目永久完全失明、关节机能丧失、咀嚼吞咽机能丧失等）的定义和认定标准，以及认可医疗机构和鉴定机构的作用。\n*   **交通与出行**：涵盖水陆公共交通工具（如轮船、列车、汽车、网约车）和民航客机的乘坐期间定义，以及与交通相关的免责情形，如酒后驾驶、无合法有效驾驶证驾驶、无有效行驶证（包括未按时进行或通过机动车安全技术检验）等。\n*   **自然灾害与意外事件**：包括8种重大自然灾害（如地震、洪水、海啸、台风、龙卷风、冰雹、泥石流）的定义，以及意外伤害、斗殴、毒品等概念。\n*   **法律法规与监管**：涉及法律法规对犹豫期的规定、中国保险监督管理委员会的备案职责，以及司法机关和公安部门在事故认定中的作用。\n\n这些信息主要来源于保险条款文件，旨在提供关于保险产品、保障范围、理赔流程、相关定义和法律规定的详细说明。\n\n### References\n\n- [1] C:\\Users\\罗亚骏\\AppData\\Local\\Temp\\gradio\\561641d91eed8898aac879b468761a28b041111850d5c8ac8804035f85c51521\\111005_tk.md\n- [2] D:\\Codes\\my_project\\AI_Agent\\data\\inputs\\111002_tk.md\n- [3] C:\\Users\\罗亚骏\\AppData\\Local\\Temp\\gradio\\b954337edb01672487d8ed6c0d57c18664f8209f6709ad4e4f9af3f345f75eca\\111003_tk.md",
+    "cache_type": "query",
+    "chunk_id": null,
+    "original_prompt": "你的知识库是关于什么内容",
+    "queryparam": {
+      "mode": "hybrid",
+      "response_type": "Multiple Paragraphs",
+      "top_k": 40,
+      "chunk_top_k": 20,
+      "max_entity_tokens": 6000,
+      "max_relation_tokens": 8000,
+      "max_total_tokens": 30000,
+      "hl_keywords": "",
+      "ll_keywords": "你的知识库是关于什么内容",
+      "user_prompt": "",
+      "enable_rerank": true
+    },
+    "create_time": 1760693199,
+    "update_time": 1760693199,
+    "_id": "hybrid:query:a76079336e9e0608a246f39bf604dd1a"
+  },
+  "hybrid:keywords:99b3593a9108c7b29bd33d8d8f2e8a79": {
+    "return": "{\"high_level_keywords\": [\"\\u72b9\\u8c6b\\u671f\", \"\\u89e3\\u9664\\u5408\\u540c\", \"\\u9000\\u4fdd\\u653f\\u7b56\"], \"low_level_keywords\": [\"10\\u65e5\", \"15\\u65e5\", \"\\u4fdd\\u9669\\u8d39\\u9000\\u8fd8\", \"\\u73b0\\u91d1\\u4ef7\\u503c\", \"\\u5168\\u989d\\u9000\\u8fd8\"]}",
+    "cache_type": "keywords",
+    "chunk_id": null,
+    "original_prompt": "犹豫期是多长时间?解除合同有什么后果?",
+    "queryparam": {
+      "mode": "hybrid",
+      "response_type": "Multiple Paragraphs",
+      "top_k": 40,
+      "chunk_top_k": 20,
+      "max_entity_tokens": 6000,
+      "max_relation_tokens": 8000,
+      "max_total_tokens": 30000,
+      "user_prompt": "",
+      "enable_rerank": true
+    },
+    "create_time": 1760693245,
+    "update_time": 1760693245,
+    "_id": "hybrid:keywords:99b3593a9108c7b29bd33d8d8f2e8a79"
+  },
+  "hybrid:query:be1835266e51c8186528e66f3dadf74c": {
+    "return": "犹豫期是投保人在签收保险合同后，自签收次日起，可在特定期限内无条件解除合同的时期。根据不同的保险合同，犹豫期可能为 **10日** 或 **15日**。例如，在“传家宝终身寿险条款”和“附加豁免保险费定期寿险条款”中，犹豫期为10日；而在“传家福终身寿险条款”中，犹豫期为15日 [1, 2, 3]。\n\n解除合同的后果取决于解除合同的时间：\n\n*   **在犹豫期内解除合同**：投保人有权无条件解除保险合同，保险公司将全额退还已支付的保险费 [1, 2, 3]。\n*   **在犹豫期后解除合同**：投保人解除合同会遭受一定的损失 [1, 2]。\n\n### References\n\n- [1] C:\\Users\\罗亚骏\\AppData\\Local\\Temp\\gradio\\b954337edb01672487d8ed6c0d57c18664f8209f6709ad4e4f9af3f345f75eca\\111003_tk.md\n- [2] C:\\Users\\罗亚骏\\AppData\\Local\\Temp\\gradio\\561641d91eed8898aac879b468761a28b041111850d5c8ac8804035f85c51521\\111005_tk.md\n- [3] D:\\Codes\\my_project\\AI_Agent\\data\\inputs\\111002_tk.md",
+    "cache_type": "query",
+    "chunk_id": null,
+    "original_prompt": "犹豫期是多长时间?解除合同有什么后果?",
+    "queryparam": {
+      "mode": "hybrid",
+      "response_type": "Multiple Paragraphs",
+      "top_k": 40,
+      "chunk_top_k": 20,
+      "max_entity_tokens": 6000,
+      "max_relation_tokens": 8000,
+      "max_total_tokens": 30000,
+      "hl_keywords": "犹豫期, 解除合同, 退保政策",
+      "ll_keywords": "10日, 15日, 保险费退还, 现金价值, 全额退还",
+      "user_prompt": "",
+      "enable_rerank": true
+    },
+    "create_time": 1760693257,
+    "update_time": 1760693257,
+    "_id": "hybrid:query:be1835266e51c8186528e66f3dadf74c"
+  },
+  "hybrid:keywords:46b02ea9479a4323e1f1381113880726": {
+    "return": "{\"high_level_keywords\": [\"\\u5bff\\u9669\\u5b9a\\u4e49\", \"\\u4fdd\\u9669\\u6982\\u5ff5\", \"\\u4fdd\\u9669\\u4ea7\\u54c1\\u7c7b\\u578b\"], \"low_level_keywords\": [\"\\u5bff\\u9669\", \"\\u8eab\\u6545\\u4fdd\\u9669\\u91d1\", \"\\u4fdd\\u969c\"]}",
+    "cache_type": "keywords",
+    "chunk_id": null,
+    "original_prompt": "你好，什么是寿险",
+    "queryparam": {
+      "mode": "hybrid",
+      "response_type": "Multiple Paragraphs",
+      "top_k": 40,
+      "chunk_top_k": 20,
+      "max_entity_tokens": 6000,
+      "max_relation_tokens": 8000,
+      "max_total_tokens": 30000,
+      "user_prompt": "",
+      "enable_rerank": true
+    },
+    "create_time": 1760759050,
+    "update_time": 1760759050,
+    "_id": "hybrid:keywords:46b02ea9479a4323e1f1381113880726"
+  },
+  "hybrid:query:4eb8bbb3dd6f7cc82463cf2f4b058c82": {
+    "return": "根据您提供的资料，我没有找到关于“寿险”的明确定义。资料中提到了具体的寿险产品，例如“传家宝终身寿险合同”和“传家福终身寿险合同”，以及“附加豁免保险费定期寿险”，但没有对“寿险”这一概念进行普遍性的解释。",
+    "cache_type": "query",
+    "chunk_id": null,
+    "original_prompt": "你好，什么是寿险",
+    "queryparam": {
+      "mode": "hybrid",
+      "response_type": "Multiple Paragraphs",
+      "top_k": 40,
+      "chunk_top_k": 20,
+      "max_entity_tokens": 6000,
+      "max_relation_tokens": 8000,
+      "max_total_tokens": 30000,
+      "hl_keywords": "寿险定义, 保险概念, 保险产品类型",
+      "ll_keywords": "寿险, 身故保险金, 保障",
+      "user_prompt": "",
+      "enable_rerank": true
+    },
+    "create_time": 1760759058,
+    "update_time": 1760759058,
+    "_id": "hybrid:query:4eb8bbb3dd6f7cc82463cf2f4b058c82"
+  },
+  "hybrid:keywords:3d9414a9aebe548ae3f801cc2c5a301d": {
+    "return": "{\"high_level_keywords\": [\"\\u4fdd\\u9669\\u5408\\u540c\", \"\\u4ea7\\u54c1\\u4fe1\\u606f\", \"\\u5bff\\u9669\\u4ea7\\u54c1\"], \"low_level_keywords\": [\"\\u4f20\\u5bb6\\u5b9d\\u7ec8\\u8eab\\u5bff\\u9669\", \"\\u5408\\u540c\"]}",
+    "cache_type": "keywords",
+    "chunk_id": null,
+    "original_prompt": "传家宝终身寿险合同",
+    "queryparam": {
+      "mode": "hybrid",
+      "response_type": "Multiple Paragraphs",
+      "top_k": 40,
+      "chunk_top_k": 20,
+      "max_entity_tokens": 6000,
+      "max_relation_tokens": 8000,
+      "max_total_tokens": 30000,
+      "user_prompt": "",
+      "enable_rerank": true
+    },
+    "create_time": 1760759093,
+    "update_time": 1760759093,
+    "_id": "hybrid:keywords:3d9414a9aebe548ae3f801cc2c5a301d"
+  },
+  "hybrid:query:20d659144b6e4ffafe2d26b6011e2e86": {
+    "return": "“传家宝终身寿险合同”是投保人（“您”）与利安人寿保险股份有限公司（“我们”）之间订立的具体保险合同，也被简称为“传家宝”[1]。\n\n该合同是您与保险公司约定保险权利义务关系的协议，其构成包括以下文件：\n*   本保险条款[1]\n*   保险单[1]\n*   投保单及其他投保文件[1]\n*   合法有效的声明[1]\n*   批注、批单[1]\n*   其他您与我们共同签订的书面协议[1]\n\n此外，经您与保险公司共同认可的电子保险单、电子投保单及其他电子文件，与纸质文件具有同等法律效力[1]。\n\n### References\n\n- [1] C:\\Users\\罗亚骏\\AppData\\Local\\Temp\\gradio\\b954337edb01672487d8ed6c0d57c18664f8209f6709ad4e4f9af3f345f75eca\\111003_tk.md",
+    "cache_type": "query",
+    "chunk_id": null,
+    "original_prompt": "传家宝终身寿险合同",
+    "queryparam": {
+      "mode": "hybrid",
+      "response_type": "Multiple Paragraphs",
+      "top_k": 40,
+      "chunk_top_k": 20,
+      "max_entity_tokens": 6000,
+      "max_relation_tokens": 8000,
+      "max_total_tokens": 30000,
+      "hl_keywords": "保险合同, 产品信息, 寿险产品",
+      "ll_keywords": "传家宝终身寿险, 合同",
+      "user_prompt": "",
+      "enable_rerank": true
+    },
+    "create_time": 1760759099,
+    "update_time": 1760759099,
+    "_id": "hybrid:query:20d659144b6e4ffafe2d26b6011e2e86"
   }
 }
