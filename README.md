@@ -1,10 +1,26 @@
 # 🏦 知识图谱问答助手 (Knowledge Graph Agent)
 ## 🗒️ 更新日志
-
-- **2025.10.13** @masterlyj  
-  优化多轮对话机制，提升上下文理解与交互连贯性。
+- **2025.10.02** @masterlyj
+  建立项目，初始化架构
+- **2025.10.07** @masterlyj
+  添加嵌入模型，统一模型导入接口
+- **2025.10.08** @ziyuchen-cyber
+  适配 deepseek 模型，扩展 llm 导入接口
+- **2025.10.10** @masterlyj
+  比赛 agent 正式搭建，支持前期实体关系抽取
+- **2025.10.11** @xinyi-kinley
+  修改了prompt 提示词，润色实体关系抽取模板
+- **2025.10.12** @masterlyj
+  完成 agent 全流程搭建，前端设计以gradio为基础
+- **2025.10.14** @masterlyj
+  修复bug，解决多轮对话问题，提升上下文理解与交互连贯性。
 - **2025.10.15** @jude  
   修复 LightRAG 与 DeepSeek 兼容性问题，集成 Mineru 到 RAG 工作流，实现网页端 PDF 上传能力。
+- **2025.10.21** @masterlyj
+  删除了无用代码，修复了 mineru 解析无法下载 md 的 "pending" bug
+- **2025.10.22** @sunny1dan
+  上传比赛所需要的所有解析 md 文件
+
 
 ## 🚧 待办事项（TODO）
 
