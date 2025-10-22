@@ -9,6 +9,7 @@ import warnings
 from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
 from functools import partial
+from pathlib import Path
 from typing import (
     Any,
     AsyncIterator,
@@ -100,6 +101,7 @@ from .utils import (
 )
 from .types import KnowledgeGraph
 from dotenv import load_dotenv
+from .product_abolition_matcher import get_abolition_matcher, match_product_abolition_date
 
 # use the .env that is inside the current folder
 # allows to use different .env file for each lightrag instance
@@ -446,6 +448,14 @@ class LightRAG:
         # Initialize ollama_server_infos if not provided
         if self.ollama_server_infos is None:
             self.ollama_server_infos = OllamaServerInfos()
+
+        # Initialize product abolition matcher
+        abolition_schedule_path = Path(self.working_dir).parent / "product_abolition_schedule.json"
+        if abolition_schedule_path.exists():
+            get_abolition_matcher(str(abolition_schedule_path))
+            logger.info(f"产品废止日期匹配器已初始化: {abolition_schedule_path}")
+        else:
+            logger.warning(f"产品废止时间表文件不存在: {abolition_schedule_path}")
 
         # Validate config
         if self.force_llm_summary_on_merge < 3:
@@ -974,12 +984,14 @@ class LightRAG:
             for index, chunk_text in enumerate(text_chunks):
                 chunk_key = compute_mdhash_id(chunk_text, prefix="chunk-")
                 tokens = len(self.tokenizer.encode(chunk_text))
+                abolition_date = match_product_abolition_date(chunk_text)
                 inserting_chunks[chunk_key] = {
                     "content": chunk_text,
                     "full_doc_id": doc_key,
                     "tokens": tokens,
                     "chunk_order_index": index,
                     "file_path": file_path,
+                    "abolition_date": abolition_date,
                 }
 
             doc_ids = set(inserting_chunks.keys())
@@ -1506,6 +1518,9 @@ class LightRAG:
                                 )
                             content = content_data["content"]
 
+                            # 匹配产品废止日期
+                            abolition_date = match_product_abolition_date(content)
+                            
                             # 按原则切分文档为chunks
                             chunks: dict[str, Any] = {
                                 compute_mdhash_id(dp["content"], prefix="chunk-"): {
@@ -1513,6 +1528,7 @@ class LightRAG:
                                     "full_doc_id": doc_id,
                                     "file_path": file_path,  # 为每个chunk加上路径
                                     "llm_cache_list": [],  # 初始化llm缓存
+                                    "abolition_date": abolition_date,  # 添加产品废止日期
                                 }
                                 for dp in self.chunking_func(
                                     self.tokenizer,
@@ -1863,6 +1879,7 @@ class LightRAG:
                     else chunk_data["chunk_order_index"]
                 )
                 chunk_id = compute_mdhash_id(chunk_content, prefix="chunk-")
+                abolition_date = match_product_abolition_date(chunk_content)
 
                 chunk_entry = {
                     "content": chunk_content,
@@ -1874,6 +1891,7 @@ class LightRAG:
                     else source_id,
                     "file_path": file_path,
                     "status": DocStatus.PROCESSED,
+                    "abolition_date": abolition_date,
                 }
                 all_chunks_data[chunk_id] = chunk_entry
                 chunk_to_source_map[source_id] = chunk_id
