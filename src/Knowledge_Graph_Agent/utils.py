@@ -2175,12 +2175,34 @@ async def pick_by_vector_similarity(
         # Calculate cosine similarities
         similarities = []
         valid_vectors = 0
+        
+        # Get chunk metadata for all chunks at once to improve performance
+        chunk_metadata = {}
+        if all_chunk_ids:
+            try:
+                chunks_data = await text_chunks_storage.get_by_ids(all_chunk_ids)
+                chunk_metadata = {chunk['id']: chunk for chunk in chunks_data if chunk}
+            except Exception as e:
+                logger.warning(f"Failed to get chunk metadata: {e}")
+        
+        # Get current date in YYYYMMDD format
+        current_date = datetime.now().strftime('%Y%m%d')
+        
         for chunk_id in all_chunk_ids:
             if chunk_id in chunk_vectors:
                 chunk_embedding = chunk_vectors[chunk_id]
                 try:
                     # Calculate cosine similarity
                     similarity = cosine_similarity(query_embedding, chunk_embedding)
+                    
+                    # Check if chunk has abolition_date and apply penalty if needed
+                    if chunk_id in chunk_metadata and 'abolition_date' in chunk_metadata[chunk_id]:
+                        abolition_date = chunk_metadata[chunk_id]['abolition_date']
+                        if abolition_date and abolition_date < current_date:
+                            # Apply 0.7 penalty for abolished products
+                            similarity *= 0.7
+                            logger.debug(f"Applied abolition penalty to chunk {chunk_id}: similarity adjusted from {similarity/0.7:.4f} to {similarity:.4f}")
+                    
                     similarities.append((chunk_id, similarity))
                     valid_vectors += 1
                 except Exception as e:
