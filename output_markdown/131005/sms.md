@@ -1,0 +1,166 @@
+# 利安人寿保险股份有限公司利安利利传家宝终身寿险 (万能型)
+
+# 产品说明书
+
+谨致
+
+先生/女士
+
+保险顾问：联系电话：日 期：
+
+# 重要声明：
+
+1、本产品为万能型产品，结算利率超过最低保证利率的部分是不确定的，将随实际投资和经营情况发生变动，敬请注意。  
+2、如您的保单账户价值不足以支付保单管理费、风险保险费等费用（如有），可能会导致保险合同效力中止或终止，敬请注意。  
+3、本产品说明书所载资料，包括投保示例部分，仅供投保人理解保险条款时参考，各项内容均以保险条款约定以及实际结算利率为准。
+
+# 利安人寿保险股份有限公司
+
+# 利安利利传家宝终身寿险(万能型）
+
+# 产品说明书
+
+为方便您了解和购买本保险，请您仔细阅读本产品说明书。在本产品说明书中，“您”指投保人，“我们”、“本公司”均指利安人寿保险股份有限公司。
+
+# 一、运作原理
+
+万能型保险是一种具有保险保障功能并设立单独保单账户的人身保险，保单账户设有最低保证利率，并具有交费灵活、账户透明的特点。您购买万能型保险所支付的保险费在扣除一定的初始费用后，进入您的保单账户。保险公司每月根据实际投资收益公布结算利率（不低于条款约定的最低保证利率），定期结算您的保单账户价值。一般而言，除从保险费中扣除初始费用外，在万能型保险运作期间通常每月还要从保单账户中扣除保单管理费、风险保险费，在部分领取或退保时要扣除手续费等。
+
+# 二、产品描述
+
+1．投保年龄：本产品接受的被保险人投保年龄范围为出生满28天至75周岁。
+
+2．保险期间：本产品的保险期间为被保险人终身。
+
+3．保险费及交费方式：本产品的保险费分为歪交保险费和追加保险费。
+
+交保险费：您投保时一次性支付的保险费。
+
+追加保险费：本产品追加保险费分为自主追加的保险费和转入的保险费。
+
+(1）自主追加的保险费  
+在合同保险期间内，投保人可以申请并经我们审核同意后，向我们支付自主追加的保险费。我们有权调整自主追加保险费的规定，投保人申请自主追加保险费须符合申请当时我们的规定。  
+(2)转入的保险费  
+指通过本公司其他保险合同转入的保险费。
+
+# 4.保险金额
+
+本产品的基本保险金额为合同累计已支付的保险费净额，即您已支付的歪交保险费与追加保险费之和扣除您累计申请部分领取的保单账户价值。如您按合同的约定支付泵交保险费和追加保险费的，基本保险金额按您支付的泵交保险费和追加保险费金额等额增加;如您按合同的约定发生部分领取的，基本保险金额按您申请领取的金额等额减少。若基本保额金额在合同履行过程中发生变更的，则以变更后的金额为基本保险金额。
+
+# 三、保单利益
+
+# 1.保险责任
+
+在合同保险期间内，且在合同有效的前提下，我们按以下约定承担保险责任：
+
+# 身故保险金
+
+若被保险人身故的，我们按以下两者中的金额较大者给付身故保险金：
+
+$\textcircled{1}$ 被保险人身故时合同的保单账户价值;
+
+$\textcircled{2}$ 被保险人身故时合同的基本保险金额乘以下表对应比例。
+
+<table><tr><td rowspan=1 colspan=1>被保险人身故时间</td><td rowspan=1 colspan=1>对应比例</td></tr><tr><td rowspan=1 colspan=1>被保险人于年满18周岁后的首个合同生效日对应日前身故</td><td rowspan=1 colspan=1>100%</td></tr><tr><td rowspan=1 colspan=1>被保险人于年满18周岁后的首个合同生效日对应日（含当日）起（若投保时被保险人年满18周岁的，于合同生效日（含当日）后）至年满41周岁后的首个合同生效日对应日前身故</td><td rowspan=1 colspan=1>160%</td></tr><tr><td rowspan=1 colspan=1>被保险人于年满41周岁后的首个合同生效日对应日（含当日）起（若投保时被保险人年满41周岁的，于合同生效日（含当日）后）至年满61周岁后的首个合同生效日对应日前身故</td><td rowspan=1 colspan=1>140%</td></tr><tr><td rowspan=1 colspan=1>被保险人于年满61周岁后的首个合同生效日对应日（含当日）后（若投保时被保险人年满61周岁的，于合同生效日（含当日）后）身故</td><td rowspan=1 colspan=1>120%</td></tr></table>
+
+身故保险金给付后，保单账户价值为零，合同终止。
+
+# 2.责任免除
+
+因下列情形之一导致被保险人身故的，我们不承担给付保险金的责任：
+
+(1)投保人对被保险人的故意杀害、故意伤害；(2)被保险人故意自伤、故意犯罪或者抗拒依法采取的刑事强制措施；(3)被保险人自合同成立或合同效力恢复之日起2年内自杀,但被保险人自杀时为无民事行为能力人的除外；(4)被保险人斗殴、吸食或注射毒品；(5)被保险人酒后驾驶，无合法有效驾驶证驾驶，或驾驶无合法有效行驶证的机动车；(6)战争、军事冲突、暴乱或武装叛乱；(7)核爆炸、核辐射或核污染。
+
+发生上述第(1)项情形导致被保险人身故的，合同终止，您已交足二年以上保险费的,我们向被保险人的继承人退还合同的现金价值;
+
+发生上述其他情形导致被保险人身故的，合同终止，我们向您退还合同的现金价值。
+
+# 3.其他免责条款及重点提示
+
+请您重点关注条款中的:3.2保险事故通知、7.1效力中止、9.1明确说明与如实告知、9.3年龄和性别确定与错误处理，详见条款正文中背景突出显示的内容。
+
+# 4.部分领取
+
+在合同有效期内，您在犹豫期后可以申请部分领取保单账户价值，但您每次申请领取的金额及领取后的保单账户价值余额不得低于我们规定的最低金额，我们在扣除部分领取手续费后向您退还部分领取金额。
+
+# 5.保单质押贷款
+
+在合同有效期内，您可以申请并经我们审核同意后办理保单质押贷款。每次贷款期限最长不超过6个月，贷款金额不得超过保险单的现金价值扣除各项欠款后余额的 $8 0 \%$ ，贷款利率按您与我们签订的贷款协议中约定的利率执行。若贷款本金及利息加上其他各项欠款达到保险单的现金价值，自次日零时起合同效力终止。
+
+# 四、犹豫期及退保
+
+# 1．犹豫期
+
+自您签收合同之日起，有15日的犹豫期。在此期间，请您认真审视合同，如果您认为合同与您的需求不相符，您可以在此期间提出解除合同，我们将退还您所支付的保险费。解除合同时，您需要填写申请书，并提供您的保险合同及有效身份证件。自我们收到您解除合同的书面申请时起，合同即被解除，对于合同解除前发生的保险事故，我们不承担保险责任。
+
+# 2.退保
+
+您在犹豫期后要求解除合同的，本公司自收到解除合同申请书之日起30日内向您退还保险单的现金价值。现金价值指合同保险单所具有的价值，通常体现为解除合同时，根据精算原理计算的，由本公司退还的那部分金额。本产品的现金价值等于保单账户价值减去退保手续费后的金额。您犹豫期后解除合同会遭受一定损失。
+
+# 五、主要投资策略
+
+本公司立足于长期稳健的经营，投资策略遵循“安全性一一收益性一一流动性”相统一和资产与负债匹配，风险与收益兼顾的原则。以长期投资、价值投资为主的投资理念进行大类资产的配置，以信用等级较高、期限较长的资产类别为配置重点，以低风险资产配置比例高、高风险资产配置比例低为特点，形成相对稳定的战略资产配置结构，努力保持结算利率水平的稳定性和连续性。
+
+# 六、保单账户及结算
+
+# 1．保单账户
+
+我们于合同生效日为您建立保单账户。初始的保单账户价值为您支付的歪交保险费扣除按约定收取的初始费用后的金额。
+
+在合同有效期内，保单账户价值因下列情形而增加:
+
+(1)按约定支付追加保险费的，保单账户价值按各次追加保险费扣除相应初始费用后的金额等额增加;(2)按约定结算账户利息后，保单账户价值按结算利息等额增加;(3)按约定发放保单持续奖金后，保单账户价值按保单持续奖金等额增加。在合同有效期内，保单账户价值因下列情形而减少：(1)按约定收取保单管理费后，保单账户价值等额减少;(2)按约定收取风险保险费后，保单账户价值等额减少;(3)按约定发生部分领取后，保单账户价值按申请领取的金额等额减少。在合同有效期内，保单账户价值因下列情形降为零，合同终止：(1)发生保险事故的;(2)退还现金价值的。在合同有效期内,我们每年会向您寄送保单状态报告，告知您保单账户价值的具体情况。
+
+# 2．账户利息
+
+账户利息在每月结算日（指每月第1日）零时或合同终止时根据实际经过天数和日结算利率按单利结算。
+
+在合同终止时结算的，实际经过天数为当月实际经过的天数，日结算利率为最低保证利率对应的日利率。合同的最低保证利率为年利率 $1 . 5 \%$ 。
+
+在每月结算日结算的，实际经过天数为上个月实际经过的天数，我们在结算日起6个工作日内公布上个月的日结算利率（对应的年利率不低于最低保证利率，最低保证利率之上的部分是不保证的）。
+
+# 3．费用扣除
+
+(1)初始费用：在您每次支付保险费时，我们按照保险费的一定比例收取初始费用。对于趸交保险费和您自主追加的保险费，初始费用收取比例为 $2 \%$ ；对于您转入的保险费，初始费用收取比例为 $1 \%$ 。
+
+(2)保单管理费：指为维护合同而收取的费用，若我们收取保单管理费，则在每月结算日或合同终止时从保单账户中扣除。本产品不收取保单管理费。
+
+(3)风险保险费：指根据合同承担的保险责任应收的保障成本。风险保险费在每月结算日或合同终止时扣除。我们根据合同每日的风险保额计算当日的风险保险费。在每月结算日扣除的，我们按上个月实际经过天数加总得出上个月的风险保险费；在合同终止时扣除的，我们按合同当月的实际经过天数加总得出该月的风险保险费。
+
+每日的风险保险费率是年风险保险费率的1/365。年风险保险费根据被保险人的年龄、性别及风险保额确定。每千元风险保额的年风险保险费详见产品条款附件。
+
+(4)部分领取手续费：指部分领取保单账户价值时我们按申请部分领取金额的一定比例收取的费用，具体收取比例如下：
+
+<table><tr><td rowspan=1 colspan=1>保单年度</td><td rowspan=1 colspan=1>第一年</td><td rowspan=1 colspan=1>第二年</td><td rowspan=1 colspan=1>第三年</td><td rowspan=1 colspan=1>第四年</td><td rowspan=1 colspan=1>第五年</td><td rowspan=1 colspan=1>第六年及以后</td></tr><tr><td rowspan=1 colspan=1>部分领取手续费比例</td><td rowspan=1 colspan=1>3%</td><td rowspan=1 colspan=1>1%</td><td rowspan=1 colspan=1>1%</td><td rowspan=1 colspan=1>1%</td><td rowspan=1 colspan=1>1%</td><td rowspan=1 colspan=1>0%</td></tr></table>
+
+(5)退保手续费：指合同解除时按保单账户价值的一定比例收取的费用，具体收取比例如下：
+
+<table><tr><td rowspan=1 colspan=1>保单年度</td><td rowspan=1 colspan=1>第一年</td><td rowspan=1 colspan=1>第二年</td><td rowspan=1 colspan=1>第三年</td><td rowspan=1 colspan=1>第四年</td><td rowspan=1 colspan=1>第五年</td><td rowspan=1 colspan=1>第六年及以后</td></tr><tr><td rowspan=1 colspan=1>退保手续费比例</td><td rowspan=1 colspan=1>3%</td><td rowspan=1 colspan=1>1%</td><td rowspan=1 colspan=1>1%</td><td rowspan=1 colspan=1>1%</td><td rowspan=1 colspan=1>1%</td><td rowspan=1 colspan=1>0%</td></tr></table>
+
+# 4．保单持续奖金
+
+若合同在第5个合同生效日对应日仍有效，我们于第5个合同生效日对应日零时，按合同第5个合同生效日对应日之前的五个保单年度内您累计已支付的保险费的 $1 \%$ 发放一次“保单持续奖金”，并计入保单账户价值。自第6个合同生效日对应日起，若合同在每个合同生效日对应日持续有效，按照您在该合同生效日对应日的前一个保单年度内您累计已支付的保险费的1%发放一次“保单持续奖金”，并计入保单账户价值。
+
+持续奖金不以现金形式发放，仅用于增加保单账户价值。
+
+# 八、投保示例
+
+示例：安女士今年35岁，她选择购买了利安利利传家宝终身寿险（万能型），投保时交纳足交保险费100元，无追加保险费，且未发生部分领取。其各保单年度的各项保单利益演示如下：
+
+<table><tr><td rowspan=2 colspan=1>保单年度</td><td rowspan=2 colspan=1>年龄</td><td rowspan=2 colspan=1>交保险费</td><td rowspan=2 colspan=1>自主追加的保险费</td><td rowspan=2 colspan=1>转入的保险费</td><td rowspan=2 colspan=1>累计保险费</td><td rowspan=2 colspan=1>初始费用</td><td rowspan=2 colspan=1>进入保单账户的价值</td><td rowspan=2 colspan=1>保单管理费</td><td rowspan=2 colspan=1>保单持续奖金</td><td rowspan=1 colspan=4>最低保证利率1.5%</td><td rowspan=1 colspan=4>假设结算利率3.0%</td></tr><tr><td rowspan=1 colspan=1>风险保险费</td><td rowspan=1 colspan=1>保单账户价值</td><td rowspan=1 colspan=1>身故保险金</td><td rowspan=1 colspan=1>现金价值</td><td rowspan=1 colspan=1>风险保险费</td><td rowspan=1 colspan=1>保单账户价值</td><td rowspan=1 colspan=1>身故保险金</td><td rowspan=1 colspan=1>现金价值</td></tr><tr><td rowspan=1 colspan=1>1</td><td rowspan=1 colspan=1>36</td><td rowspan=1 colspan=1>1000</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>1000</td><td rowspan=1 colspan=1>20</td><td rowspan=1 colspan=1>980</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0.28</td><td rowspan=1 colspan=1>994.46</td><td rowspan=1 colspan=1>1600.00</td><td rowspan=1 colspan=1>964.63</td><td rowspan=1 colspan=1>0.28</td><td rowspan=1 colspan=1>1009.15</td><td rowspan=1 colspan=1>1600.00</td><td rowspan=1 colspan=1>978.88</td></tr><tr><td rowspan=1 colspan=1>2</td><td rowspan=1 colspan=1>37</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>1000</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0.30</td><td rowspan=1 colspan=1>1009.14</td><td rowspan=1 colspan=1>1600.00</td><td rowspan=1 colspan=1>999.05</td><td rowspan=1 colspan=1>0.29</td><td rowspan=1 colspan=1>1039.18</td><td rowspan=1 colspan=1>1600.00</td><td rowspan=1 colspan=1>1028.79</td></tr><tr><td rowspan=1 colspan=1>3</td><td rowspan=1 colspan=1>38</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>1000</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0.31</td><td rowspan=1 colspan=1>1023.91</td><td rowspan=1 colspan=1>1600.00</td><td rowspan=1 colspan=1>1013.67</td><td rowspan=1 colspan=1>0.30</td><td rowspan=1 colspan=1>1070.11</td><td rowspan=1 colspan=1>1600.00</td><td rowspan=1 colspan=1>1059.41</td></tr><tr><td rowspan=1 colspan=1>4</td><td rowspan=1 colspan=1>39</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>1000</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0.33</td><td rowspan=1 colspan=1>1038.91</td><td rowspan=1 colspan=1>1600.00</td><td rowspan=1 colspan=1>1028.52</td><td rowspan=1 colspan=1>0.31</td><td rowspan=1 colspan=1>1101.92</td><td rowspan=1 colspan=1>1600.00</td><td rowspan=1 colspan=1>1090.90</td></tr><tr><td rowspan=1 colspan=1>5</td><td rowspan=1 colspan=1>40</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>1000</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>10</td><td rowspan=1 colspan=1>0.35</td><td rowspan=1 colspan=1>1064.13</td><td rowspan=1 colspan=1>1600.00</td><td rowspan=1 colspan=1>1053.49</td><td rowspan=1 colspan=1>0.31</td><td rowspan=1 colspan=1>1144.63</td><td rowspan=1 colspan=1>1600.00</td><td rowspan=1 colspan=1>1133.18</td></tr><tr><td rowspan=1 colspan=1>6</td><td rowspan=1 colspan=1>41</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>1000</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0.37</td><td rowspan=1 colspan=1>1079.73</td><td rowspan=1 colspan=1>1600.00</td><td rowspan=1 colspan=1>1079.73</td><td rowspan=1 colspan=1>0.32</td><td rowspan=1 colspan=1>1178.64</td><td rowspan=1 colspan=1>1600.00</td><td rowspan=1 colspan=1>1178.64</td></tr><tr><td rowspan=1 colspan=1>7</td><td rowspan=1 colspan=1>42</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>1000</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0.24</td><td rowspan=1 colspan=1>1095.69</td><td rowspan=1 colspan=1>1400.00</td><td rowspan=1 colspan=1>1095.69</td><td rowspan=1 colspan=1>0.17</td><td rowspan=1 colspan=1>1213.88</td><td rowspan=1 colspan=1>1400.00</td><td rowspan=1 colspan=1>1213.88</td></tr><tr><td rowspan=1 colspan=1>8</td><td rowspan=1 colspan=1>43</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>1000</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0.26</td><td rowspan=1 colspan=1>1111. 89</td><td rowspan=1 colspan=1>1400.00</td><td rowspan=1 colspan=1>1111. 89</td><td rowspan=1 colspan=1>0.16</td><td rowspan=1 colspan=1>1250.18</td><td rowspan=1 colspan=1>1400.00</td><td rowspan=1 colspan=1>1250.18</td></tr><tr><td rowspan=1 colspan=1>9</td><td rowspan=1 colspan=1>44</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>1000</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0.27</td><td rowspan=1 colspan=1>1128.33</td><td rowspan=1 colspan=1>1400.00</td><td rowspan=1 colspan=1>1128.33</td><td rowspan=1 colspan=1>0.14</td><td rowspan=1 colspan=1>1287.56</td><td rowspan=1 colspan=1>1400.00</td><td rowspan=1 colspan=1>1287.56</td></tr><tr><td rowspan=1 colspan=1>10</td><td rowspan=1 colspan=1>45</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>1000</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0.28</td><td rowspan=1 colspan=1>1145.01</td><td rowspan=1 colspan=1>1400.00</td><td rowspan=1 colspan=1>1145.01</td><td rowspan=1 colspan=1>0.12</td><td rowspan=1 colspan=1>1326.06</td><td rowspan=1 colspan=1>1400.00</td><td rowspan=1 colspan=1>1326.06</td></tr><tr><td rowspan=1 colspan=1>20</td><td rowspan=1 colspan=1>55</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>1000</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0.25</td><td rowspan=1 colspan=1>1325. 97</td><td rowspan=1 colspan=1>1400.00</td><td rowspan=1 colspan=1>1325.97</td><td rowspan=1 colspan=1>0.00</td><td rowspan=1 colspan=1>1781.96</td><td rowspan=1 colspan=1>1781.96</td><td rowspan=1 colspan=1>1781.96</td></tr><tr><td rowspan=1 colspan=1>30</td><td rowspan=1 colspan=1>65</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>1000</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0.00</td><td rowspan=1 colspan=1>1538.40</td><td rowspan=1 colspan=1>1538.40</td><td rowspan=1 colspan=1>1538.40</td><td rowspan=1 colspan=1>0.00</td><td rowspan=1 colspan=1>2394.83</td><td rowspan=1 colspan=1>2394.83</td><td rowspan=1 colspan=1>2394.83</td></tr><tr><td rowspan=1 colspan=1>40</td><td rowspan=1 colspan=1>75</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>1000</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0.00</td><td rowspan=1 colspan=1>1785.34</td><td rowspan=1 colspan=1>1785.34</td><td rowspan=1 colspan=1>1785.34</td><td rowspan=1 colspan=1>0.00</td><td rowspan=1 colspan=1>3218.43</td><td rowspan=1 colspan=1>3218.43</td><td rowspan=1 colspan=1>3218.43</td></tr><tr><td rowspan=1 colspan=1>50</td><td rowspan=1 colspan=1>85</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>1000</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0.00</td><td rowspan=1 colspan=1>2071.95</td><td rowspan=1 colspan=1>2071.95</td><td rowspan=1 colspan=1>2071.95</td><td rowspan=1 colspan=1>0.00</td><td rowspan=1 colspan=1>4325.39</td><td rowspan=1 colspan=1>4325.39</td><td rowspan=1 colspan=1>4325.39</td></tr><tr><td rowspan=1 colspan=1>60</td><td rowspan=1 colspan=1>95</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>1000</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0.00</td><td rowspan=1 colspan=1>2404.56</td><td rowspan=1 colspan=1>2404.56</td><td rowspan=1 colspan=1>2404.56</td><td rowspan=1 colspan=1>0.00</td><td rowspan=1 colspan=1>5813.04</td><td rowspan=1 colspan=1>5813.04</td><td rowspan=1 colspan=1>5813.04</td></tr><tr><td rowspan=1 colspan=1>70</td><td rowspan=1 colspan=1>105</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>1000</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0.00</td><td rowspan=1 colspan=1>2790.59</td><td rowspan=1 colspan=1>2790.59</td><td rowspan=1 colspan=1>2790.59</td><td rowspan=1 colspan=1>0.00</td><td rowspan=1 colspan=1>7812.29</td><td rowspan=1 colspan=1>7812.29</td><td rowspan=1 colspan=1>7812.29</td></tr><tr><td rowspan=1 colspan=1>71</td><td rowspan=1 colspan=1>106</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>1000</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>0.00</td><td rowspan=1 colspan=1>2832.44</td><td rowspan=1 colspan=1>2832.44</td><td rowspan=1 colspan=1>2832.44</td><td rowspan=1 colspan=1>0.00</td><td rowspan=1 colspan=1>8046.66</td><td rowspan=1 colspan=1>8046.66</td><td rowspan=1 colspan=1>8046.66</td></tr></table>
+
+# 本公司声明：
+
+1、演示结算利率分别按最低保证利率和假设结算利率2种情况进行预测，仅作为参考之用，不作为未来结算利率的保证。其中最低保证利率为年利率 $1 . 5 \%$ ，假设结算利率为年利率 $3 . \ 0 \%$   
+2、歪交保险费、自主追加的保险费、转入的保险费、累计保险费、初始费用、进入保单账户的价值、保单管理费、风险保险费为保单年度初的值；年龄、保单持续奖金、保单账户价值、身故保险金、现金价值为保单年度末的值;  
+3、退保手续费比例前5个保单年度分别为 $3 \%$ 、 $1 \%$ 、 $1 \%$ 、 $1 \%$ 、 $1 \%$ ，自第6个保单年度起为 $0 \%$ ，4、金额相关数字的单位为人民币元。
+
+# 特别提示：
+
+利益演示基于公司的精算及其他假设，不代表公司的历史经营业绩，也不代表对公司未来经营业绩的预期，最低保证利率之上的投资收益是不确定的，实际保单账户利益可能低于利益演示水平。
+
+投保人声明：本人已认真阅读并理解本产品说明书。
+
+# 投保人(签名）
+
+年 月 日

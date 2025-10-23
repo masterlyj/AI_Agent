@@ -1,4 +1,6 @@
 from typing import TypedDict, List, Dict, Any, Optional, Literal
+#新增Document导入
+from langchain_core.documents import Document
 
 class IndexingState(TypedDict):
     working_dir: str
@@ -13,5 +15,10 @@ class QueryState(TypedDict):
     working_dir: str
     query: str
     query_mode: Literal["naive", "local", "global", "hybrid"]
+    reranker: Optional[Any]  # RerankerModel 实例或 None
+    #检索到的文档列表 (粗排结果)
+    retrieved_docs: Optional[List[Document]]
+    #精排后的最终文档列表
+    final_docs: Optional[List[Document]]
     context: Dict[str, Any]
     answer: str

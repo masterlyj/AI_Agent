@@ -23,5 +23,9 @@ class Paper_Study_State(TypedDict):
     vectorstore: FAISS
     convstore: FAISS
 
+    # RERANKER 相关状态
+    docs_for_rerank: Optional[List[Document]]
+    reranker: Optional[Any] 
+
     context_retrieved: str
     history_retrieved: str
