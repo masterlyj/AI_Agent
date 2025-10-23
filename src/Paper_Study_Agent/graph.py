@@ -15,6 +15,8 @@ from langgraph.types import Command
 
 from .state import Paper_Study_State
 from .llm import get_llm
+from .reranker import RerankerModel 
+
 
 # --- 初始化 ---
 logger = logging.getLogger(__name__)
@@ -129,13 +131,72 @@ def retrieve(state: Paper_Study_State) -> Command:
     history_str = docs2str(reordered_history) if docs_history else "无相关对话历史"
 
     return Command(
-        goto="generate_answer",
+        goto="rerank",
         update={
-            "context_retrieved": context_str,
+            "docs_for_rerank": docs_context,
             "history_retrieved": history_str
         }
     )
+# --- 新增 ---
+def rerank(state: Paper_Study_State) -> Command:
+    """
+    对传统检索返回的文档进行精排。
+    """
+    print("🚀 开始精排...")
+    reranker = state.get("reranker")
+    
+    # 如果没有配置 reranker，则直接使用粗排结果
+    if not reranker:
+        print("⚠️ 未配置 Reranker，跳过精排步骤。")
+        docs_to_rerank = state.get("docs_for_rerank", [])
+        reordered_context = long_reorder.transform_documents(state["docs_for_rerank"])
+        context_str = docs2str(reordered_context)
+        return Command(
+            goto="generate_answer",
+            update={"context_retrieved": context_str}
+        )
+        
+    query = state["query"]
+    docs_to_rerank = state["docs_for_rerank"]
+    
+    if not docs_to_rerank:
+        print("没有文档需要精排。")
+        return Command(
+            goto="generate_answer",
+            update={"context_retrieved": "无相关文档"}
+        )
 
+    # 提取文档内容进行精排
+    passages = [doc.page_content for doc in docs_to_rerank]
+    
+    # 调用 rerank 方法
+    results = reranker.rerank(query, passages)
+    rerank_ids = results.get('rerank_ids', [])
+    rerank_scores = results.get('rerank_scores', [])
+    # 按照 rerank 的顺序重新组织原始 Document 对象
+    reranked_docs = [docs_to_rerank[i] for i in rerank_ids]
+
+    # 打印精排结果
+    print("\n--- Reranker 打分结果 (从高到低) ---")
+    # 使用 zip 将文档和分数安全地配对在一起，这样更稳健
+    for doc, score in zip(reranked_docs, rerank_scores):
+        # 截取文档内容的前100个字符作为预览，并替换换行符
+        content_snippet = doc.page_content.replace("\n", " ") + "..."
+        
+        print(f"  分数: {score:.4f} | 内容: '{content_snippet}'")
+    print("---------------------------------------\n")
+    
+    # 选择 Top-K (例如 3 个) 作为最终上下文
+    top_k = 3
+    final_docs = reranked_docs[:top_k]
+    print(f"✅ 精排完成，选取 Top {top_k} 文档。")
+    
+    context_str = docs2str(final_docs)
+    
+    return Command(
+        goto="generate_answer",
+        update={"context_retrieved": context_str}
+    )
 def generate_answer(state: Paper_Study_State) -> Command:
     chain = chat_prompt | llm | StrOutputParser()
     answer = chain.invoke({

@@ -17,7 +17,17 @@ EMBEDDING_CONFIG = {
 #     "show_progress": True
 # }
 
-bot = PaperChatBot(arxiv_ids=ARXIV_IDS, embedding_config=EMBEDDING_CONFIG)
+# ----------- 新增：Reranker 配置 -----------
+RERANK_CONFIG = {
+    "model": "maidalun1020/bce-reranker-base_v1",
+    "device": None # 自动选择 'cuda' 或 'cpu'
+}
+# ---------------------------------------------
+
+
+bot = PaperChatBot(arxiv_ids=ARXIV_IDS, 
+                   embedding_config=EMBEDDING_CONFIG,
+                   rerank_config=RERANK_CONFIG) # 传入 Reranker 配置    
 
 # 启动 Gradio
 demo = gr.ChatInterface(

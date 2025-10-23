@@ -1,6 +1,8 @@
 import asyncio
 import os
 from typing import List, Optional
+#导入 Reranker 模块
+from .reranker import RerankerModel
 from .light_graph_rag import LightRAG
 from .nodes import WorkflowNodes
 from .graph import create_indexing_graph, create_querying_graph
@@ -20,9 +22,10 @@ class RAGAgent:
         self.indexing_graph = None
         self.querying_graph = None
         self.smart_indexer: Optional[SmartDocumentIndexer] = None
+        self.reranker: Optional[RerankerModel] = None
 
     @classmethod
-    async def create(cls, working_dir: str = "data/rag_storage"):
+    async def create(cls, working_dir: str = "data/rag_storage", rerank_config: dict = None):
         instance = cls()
         instance.working_dir = working_dir
         os.makedirs(working_dir, exist_ok=True)
@@ -53,6 +56,18 @@ class RAGAgent:
             langchain_embedder,
             embedding_dim=1024
         )
+        #初始化 Reranker 模型
+        if rerank_config and rerank_config.get("enabled", False):
+            logger.info("🔧 初始化 Reranker 模型...")
+            try:
+                instance.reranker = RerankerModel(
+                    model_name_or_path=rerank_config.get("model"),
+                    device=rerank_config.get("device")
+                )
+                logger.info("✅ Reranker 模型加载完成。")
+            except Exception as e:
+                logger.error(f"❌ 加载 Reranker 模型失败: {e}")
+                instance.reranker = None
         
         # === 4. 创建 LightRAG 实例 ===
         instance.rag = LightRAG(
@@ -138,7 +153,7 @@ class RAGAgent:
         logger.info(f"📌 索引流程结束: {result['status_message']}")
         return result
 
-    async def query(self, question: str, mode: str = "hybrid"):
+    async def query(self, question: str, mode: str = "hybrid", enable_rerank: bool = True):
         """通过 LangGraph 查询流程查询知识图谱
         
         Args:
@@ -155,6 +170,7 @@ class RAGAgent:
             "working_dir": self.working_dir,
             "query": question,
             "query_mode": mode,
+            "reranker": self.reranker if enable_rerank else None,
             "context": {},
             "answer": ""
         }

@@ -5,13 +5,24 @@ from .graph import load_and_chunk_papers, embed_and_index, retrieve, generate_an
 from .state import Paper_Study_State
 from .embedding_factory import get_embedder
 from .llm import get_llm
+from .graph import retrieve, rerank, generate_answer # 导入新节点
+from .reranker import RerankerModel # 导入 RerankerModel 和配置
+
 
 class PaperChatBot:
-    def __init__(self, arxiv_ids: List[str], embedding_config: dict):
+    def __init__(self, arxiv_ids: List[str], embedding_config: dict, rerank_config: dict = None):
         self.arxiv_ids = arxiv_ids
         self.embedder = get_embedder(embedding_config)
         self.llm = get_llm()
-        
+        # ----------- 新增: 初始化 Reranker 模型 -----------
+        self.reranker = None
+        if rerank_config:
+            print("🚀 正在加载 Reranker 模型...")
+            self.reranker = RerankerModel(
+                model_name_or_path=rerank_config.get("model", 'maidalun1020/bce-reranker-base_v1'),
+                device=rerank_config.get("device", None)
+            )
+        # -----------------------------------------------------
         print("🚀 正在初始化论文向量库，请稍候...")
         
         # --- 初始化流程：手动执行节点以构建向量库 ---
@@ -44,11 +55,13 @@ class PaperChatBot:
         # --- 主聊天图定义 ---
         workflow = StateGraph(Paper_Study_State)
         workflow.add_node("retrieve", retrieve)
+        workflow.add_node("rerank", rerank) # 新增 rerank 节点
         workflow.add_node("generate_answer", generate_answer)
         workflow.add_node("update_convstore", update_convstore)
 
         workflow.set_entry_point("retrieve")
-        workflow.add_edge("retrieve", "generate_answer")
+        workflow.add_edge("retrieve", "rerank")
+        workflow.add_edge("rerank", "generate_answer")
         workflow.add_edge("generate_answer", "update_convstore")
         workflow.add_edge("update_convstore", END)
 
@@ -77,6 +90,7 @@ class PaperChatBot:
             "history_retrieved": "",
             "answer": "",
             "messages": [],
+            "reranker": self.reranker,  # 传递 Reranker 模型实例
         }
 
         result = self.graph.invoke(current_state)

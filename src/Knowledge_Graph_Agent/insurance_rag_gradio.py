@@ -13,6 +13,14 @@ from .utils import logger
 WORKING_DIR = "data/rag_storage"
 DOC_LIBRARY = "data/inputs"
 
+#新增reranker配置
+RERANK_CONFIG = {
+    "enabled": True,
+    "model": "maidalun1020/bce-reranker-base_v1",
+    "device": None,
+    "top_k": 3
+}
+
 # ===== 自定义CSS样式 =====
 custom_css = """
 /* 主题色：保险专业蓝 */
@@ -167,7 +175,16 @@ async def initialize_agent():
     global agent_instance
     try:
         logger.info("🔧 正在初始化RAG Agent...")
-        agent_instance = await RAGAgent.create(working_dir=WORKING_DIR)
+        agent_instance = await RAGAgent.create(
+            working_dir=WORKING_DIR,
+            rerank_config=RERANK_CONFIG  #传入reranker配置
+        )
+        # 🔧 修复点2: 验证 reranker 是否成功初始化
+        if hasattr(agent_instance, 'reranker') and agent_instance.reranker:
+            logger.info(f"✅ Reranker 已加载: {RERANK_CONFIG['model']}")
+        else:
+            logger.warning("⚠️ Reranker 未能加载，将跳过精排步骤")
+
         logger.info("✅ RAG Agent初始化完成")
         return "✅ 系统已就绪"
     except Exception as e:
@@ -239,6 +256,7 @@ async def query_knowledge_async(
     question: str,
     query_mode: str,
     show_context: bool,
+    enable_rerank: bool,
     chat_history: List
 ):
     """异步查询知识库"""
@@ -249,18 +267,23 @@ async def query_knowledge_async(
         return chat_history, {}, ""
     
     try:
-        logger.info(f"🔍 查询: {question} (mode={query_mode})")
+        logger.info(f"🔍 查询: {question} (mode={query_mode}, rerank={'启用' if enable_rerank else '禁用'})")
         
         # 执行查询
         result = await agent_instance.query(
             question=question,
-            mode=query_mode
+            mode=query_mode,
+            enable_rerank=enable_rerank
         )
         
         # 解析结果
         answer = result.get("answer", "无答案")
         context_data = result.get("context", {})
         raw_context = context_data.get("raw_context", "")
+
+        # 🔧 修复点4: 添加精排状态到回答中
+        rerank_status = "✅ 已精排" if enable_rerank and hasattr(agent_instance, 'reranker') and agent_instance.reranker else "⚠️ 未精排"
+        response_msg = f"**🤖 回答** ({query_mode} 模式 | {rerank_status})\n\n{answer}"
         
         # 构建回答消息
         response_msg = f"**🤖 回答** ({query_mode} 模式)\n\n{answer}"
@@ -391,6 +414,14 @@ with gr.Blocks(
                     label="检索模式"
                 )
                 gr.Markdown("💡 混合模式结合向量相似度和图谱推理")
+
+                # --- 新增: 在UI中添加一个开关来控制 Reranker ---
+                enable_rerank_checkbox = gr.Checkbox(
+                    label="✅ 启用精排 (Rerank)",
+                    value=True,  # 默认开启
+                    info="对向量检索结果进行二次排序, 提高精度 (仅对混合/向量模式有效)"
+                )
+                # -----------------------------------------------
                 
                 show_context = gr.Checkbox(
                     label="显示原始上下文",
@@ -442,13 +473,14 @@ with gr.Blocks(
     # 示例问题
     gr.Examples(
         examples=[
-            ["什么情况下保险公司会豁免保险费?", "hybrid", False],
-            ["犹豫期是多长时间?解除合同有什么后果?", "hybrid", True],
-            ["全残的定义包括哪些情况?", "local", False],
-            ["保险责任和责任免除有什么区别?", "global", False],
-            ["投保人年龄错误会如何处理?", "naive", False],
+            # [问题, 模式, 显示上下文, 是否精排]
+            ["什么情况下保险公司会豁免保险费?", "hybrid", False, True],
+            ["犹豫期是多长时间?解除合同有什么后果?", "hybrid", True, True],
+            ["全残的定义包括哪些情况?", "local", False, True], # Rerank 对图谱模式无效，但仍需占位
+            ["保险责任和责任免除有什么区别?", "global", False, True],
+            ["投保人年龄错误会如何处理?", "naive", False, True],
         ],
-        inputs=[query_input, query_mode, show_context],
+        inputs=[query_input, query_mode, show_context, enable_rerank_checkbox],
         label="💡 示例问题 (点击快速测试)"
     )
     
@@ -475,7 +507,7 @@ with gr.Blocks(
     # 查询事件
     query_btn.click(
         fn=query_knowledge_async,
-        inputs=[query_input, query_mode, show_context, chatbot],
+        inputs=[query_input, query_mode, show_context, enable_rerank_checkbox, chatbot],
         outputs=[chatbot, retrieval_metrics, context_display]
     ).then(
         fn=lambda: "",
@@ -484,7 +516,7 @@ with gr.Blocks(
     
     query_input.submit(
         fn=query_knowledge_async,
-        inputs=[query_input, query_mode, show_context, chatbot],
+        inputs=[query_input, query_mode, show_context, enable_rerank_checkbox, chatbot],
         outputs=[chatbot, retrieval_metrics, context_display]
     ).then(
         fn=lambda: "",
