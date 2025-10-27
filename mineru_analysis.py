@@ -11,10 +11,13 @@ import logging
 # 配置 logger
 logger = logging.getLogger("mineru")
 logger.setLevel(logging.INFO)
-ch = logging.StreamHandler()
-formatter = logging.Formatter("%(asctime)s %(levelname)s - %(message)s")
-ch.setFormatter(formatter)
-if not logger.hasHandlers():
+logger.propagate = False  # 防止日志消息传播到根logger，避免重复输出
+
+# 只有在没有处理器时才添加，避免重复
+if not logger.handlers:
+    ch = logging.StreamHandler()
+    formatter = logging.Formatter("%(asctime)s %(levelname)s - %(message)s")
+    ch.setFormatter(formatter)
     logger.addHandler(ch)
 
 class MineruProcessor:

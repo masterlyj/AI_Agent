@@ -30,7 +30,7 @@ from .constants import (
 
 # 初始化logger的基本配置
 logger = logging.getLogger("Knowledge_Graph_RAG")
-logger.propagate = True  # 防止日志消息发送到根logger
+logger.propagate = False  # 防止日志消息发送到根logger
 logger.setLevel(logging.INFO)
 
 # 如果没有handler，则添加控制台处理器
@@ -251,16 +251,17 @@ def setup_logger(
     log_file_path: str | None = None,
     enable_file_logging: bool = True,
 ):
-    """Set up a logger with console and optionally file handlers
+    """
+    配置日志记录器，支持控制台和可选的文件输出。
 
     Args:
-        logger_name: Name of the logger to set up
-        level: Log level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
-        add_filter: Whether to add LightragPathFilter to the logger
-        log_file_path: Path to the log file. If None and file logging is enabled, defaults to lightrag.log in LOG_DIR or cwd
-        enable_file_logging: Whether to enable logging to a file (defaults to True)
+        logger_name: 日志记录器的名称
+        level: 日志级别（DEBUG、INFO、WARNING、ERROR、CRITICAL）
+        add_filter: 是否添加 LightragPathFilter 过滤器
+        log_file_path: 日志文件路径。如果为 None 且启用文件日志，则默认在 LOG_DIR 或当前目录下创建 lightrag.log
+        enable_file_logging: 是否启用文件日志（默认启用）
     """
-    # Configure formatters
+    # 配置日志格式
     detailed_formatter = logging.Formatter(
         "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
     )
@@ -268,33 +269,33 @@ def setup_logger(
 
     logger_instance = logging.getLogger(logger_name)
     logger_instance.setLevel(level)
-    logger_instance.handlers = []  # Clear existing handlers
+    logger_instance.handlers = []  # 清除已有处理器
     logger_instance.propagate = False
 
-    # Add console handler
+    # 添加控制台处理器
     console_handler = logging.StreamHandler()
     console_handler.setFormatter(simple_formatter)
     console_handler.setLevel(level)
     logger_instance.addHandler(console_handler)
 
-    # Add file handler by default unless explicitly disabled
+    # 默认启用文件处理器，除非显式禁用
     if enable_file_logging:
-        # Get log file path
+        # 获取日志文件路径
         if log_file_path is None:
             log_dir = os.getenv("LOG_DIR", os.getcwd())
             log_file_path = os.path.abspath(os.path.join(log_dir, DEFAULT_LOG_FILENAME))
 
-        # Ensure log directory exists
+        # 确保日志目录存在
         os.makedirs(os.path.dirname(log_file_path), exist_ok=True)
 
-        # Get log file max size and backup count from environment variables
+        # 从环境变量读取日志文件大小上限和备份数量
         log_max_bytes = get_env_value("LOG_MAX_BYTES", DEFAULT_LOG_MAX_BYTES, int)
         log_backup_count = get_env_value(
             "LOG_BACKUP_COUNT", DEFAULT_LOG_BACKUP_COUNT, int
         )
 
         try:
-            # Add file handler
+            # 添加文件处理器
             file_handler = logging.handlers.RotatingFileHandler(
                 filename=log_file_path,
                 maxBytes=log_max_bytes,
@@ -305,10 +306,10 @@ def setup_logger(
             file_handler.setLevel(level)
             logger_instance.addHandler(file_handler)
         except PermissionError as e:
-            logger.warning(f"Could not create log file at {log_file_path}: {str(e)}")
-            logger.warning("Continuing with console logging only")
+            logger.warning(f"无法在 {log_file_path} 创建日志文件：{str(e)}")
+            logger.warning("仅使用控制台日志继续运行")
 
-    # Add path filter if requested
+    # 如果需要，添加路径过滤器
     if add_filter:
         path_filter = LightragPathFilter()
         logger_instance.addFilter(path_filter)
@@ -2176,16 +2177,16 @@ async def pick_by_vector_similarity(
         similarities = []
         valid_vectors = 0
         
-        # Get chunk metadata for all chunks at once to improve performance
+        # 一次性获取所有块的块元数据以提高性能
         chunk_metadata = {}
         if all_chunk_ids:
             try:
                 chunks_data = await text_chunks_storage.get_by_ids(all_chunk_ids)
                 chunk_metadata = {chunk['id']: chunk for chunk in chunks_data if chunk}
             except Exception as e:
-                logger.warning(f"Failed to get chunk metadata: {e}")
+                logger.warning(f"获取块元数据失败：{e}")
         
-        # Get current date in YYYYMMDD format
+        # 获取当前日期，格式为YYYYMMDD
         current_date = datetime.now().strftime('%Y%m%d')
         
         for chunk_id in all_chunk_ids:

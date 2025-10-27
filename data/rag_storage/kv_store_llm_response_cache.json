@@ -1100,5 +1100,185 @@
     "create_time": 1761187448,
     "update_time": 1761187448,
     "_id": "local:keywords:a83670691ce2581f982ef2e52fa3cc6e"
+  },
+  "global:keywords:d7efca47bdb6b26da58c295610982bca": {
+    "return": "{\"high_level_keywords\": [\"\\u4fdd\\u9669\\u8d23\\u4efb\", \"\\u8d23\\u4efb\\u514d\\u9664\", \"\\u6982\\u5ff5\\u8fa8\\u6790\", \"\\u6761\\u6b3e\\u89e3\\u91ca\"], \"low_level_keywords\": [\"\\u4fdd\\u9669\\u8d23\\u4efb\", \"\\u8d23\\u4efb\\u514d\\u9664\"]}",
+    "cache_type": "keywords",
+    "chunk_id": null,
+    "original_prompt": "保险责任和责任免除有什么区别?",
+    "queryparam": {
+      "mode": "global",
+      "response_type": "Multiple Paragraphs",
+      "top_k": 40,
+      "chunk_top_k": 20,
+      "max_entity_tokens": 6000,
+      "max_relation_tokens": 8000,
+      "max_total_tokens": 30000,
+      "user_prompt": "",
+      "enable_rerank": true
+    },
+    "create_time": 1761486488,
+    "update_time": 1761486488,
+    "_id": "global:keywords:d7efca47bdb6b26da58c295610982bca"
+  },
+  "hybrid:keywords:45fccbf38a8720907cd1465e74564ea4": {
+    "return": "{\"high_level_keywords\": [\"\\u4fdd\\u9669\\u4ea7\\u54c1\\u67e5\\u8be2\", \"\\u4ea7\\u54c1\\u5217\\u8868\", \"\\u4ea7\\u54c1\\u79cd\\u7c7b\"], \"low_level_keywords\": []}",
+    "cache_type": "keywords",
+    "chunk_id": null,
+    "original_prompt": "一共有哪些保险产品",
+    "queryparam": {
+      "mode": "hybrid",
+      "response_type": "Multiple Paragraphs",
+      "top_k": 40,
+      "chunk_top_k": 20,
+      "max_entity_tokens": 6000,
+      "max_relation_tokens": 8000,
+      "max_total_tokens": 30000,
+      "user_prompt": "",
+      "enable_rerank": true
+    },
+    "create_time": 1761486726,
+    "update_time": 1761486726,
+    "_id": "hybrid:keywords:45fccbf38a8720907cd1465e74564ea4"
+  },
+  "hybrid:keywords:70080c1fbad896a6dea8e6d88581110d": {
+    "return": "{\"high_level_keywords\": [\"\\u4fdd\\u9669\\u65b9\\u6848\\u54a8\\u8be2\", \"\\u4fdd\\u8d39\\u8ba1\\u7b97\", \"\\u4fdd\\u9669\\u91d1\\u989d\\u8ba1\\u7b97\", \"\\u9644\\u52a0\\u9669\\u54a8\\u8be2\", \"\\u513f\\u7ae5\\u4fdd\\u9669\", \"\\u6295\\u4fdd\\u6761\\u4ef6\"], \"low_level_keywords\": [\"35 \\u5c81\", \"\\u5973\\u6027\", \"\\u51fa\\u751f\\u6ee1 30 \\u5929\", \"\\u4f20\\u5bb6\\u798f\\u7ec8\\u8eab\\u5bff\\u9669\", \"5 \\u5e74\\u4ea4\", \"1 \\u4e07\\u5143\", \"\\u4fdd\\u8d39\", \"\\u57fa\\u672c\\u4fdd\\u9669\\u91d1\\u989d\", \"\\u6295\\u4fdd\\u4eba\", \"\\u9644\\u52a0\\u8c41\\u514d\\u4fdd\\u9669\\u8d39\\u5b9a\\u671f\\u5bff\\u9669\", \"\\u9644\\u52a0\\u9669\\u4fdd\\u8d39\"]}",
+    "cache_type": "keywords",
+    "chunk_id": null,
+    "original_prompt": "“我 35 岁女性，想给出生满 30 天的宝宝买传家福终身寿险，选 5 年交，每年计划交 1 万元保费，麻烦帮我算下宝宝的基本保险金额大概是多少？另外我作为投保人，还想附加豁免保险费定期寿险，我的附加险保费大概要交多少？”",
+    "queryparam": {
+      "mode": "hybrid",
+      "response_type": "Multiple Paragraphs",
+      "top_k": 40,
+      "chunk_top_k": 20,
+      "max_entity_tokens": 6000,
+      "max_relation_tokens": 8000,
+      "max_total_tokens": 30000,
+      "user_prompt": "",
+      "enable_rerank": true
+    },
+    "create_time": 1761486829,
+    "update_time": 1761486829,
+    "_id": "hybrid:keywords:70080c1fbad896a6dea8e6d88581110d"
+  },
+  "hybrid:keywords:0813a63ed1b527526def34652deb8970": {
+    "return": "{\"high_level_keywords\": [\"\\u8c41\\u514d\\u4fdd\\u9669\\u8d39\", \"\\u610f\\u5916\\u8eab\\u6545\\u4fdd\\u9669\\u91d1\", \"\\u4fdd\\u9669\\u91d1\\u7533\\u8bf7\", \"\\u8d23\\u4efb\\u514d\\u9664\", \"\\u7279\\u5b9a\\u610f\\u5916\\u8eab\\u6545\", \"\\u4fdd\\u5355\\u6743\\u76ca\"], \"low_level_keywords\": [\"\\u4f20\\u5bb6\\u798f\\u7ec8\\u8eab\\u5bff\\u9669\", \"\\u9644\\u52a0\\u8c41\\u514d\\u4fdd\\u9669\\u8d39\", \"\\u6295\\u4fdd\\u4eba\\u8eab\\u6545\", \"\\u884c\\u9a76\\u8bc1\\u8fc7\\u671f\", \"\\u8f66\\u7978\", \"\\u7f51\\u7ea6\\u8f66\", \"\\u88ab\\u4fdd\\u9669\\u4eba\", \"\\u4e3b\\u9669\\u4fdd\\u8d39\", \"\\u989d\\u5916\\u8d54\\u4ed8\", \"\\u7279\\u5b9a\\u4ea4\\u901a\\u5de5\\u5177\\u610f\\u5916\\u8eab\\u6545\\u4fdd\\u9669\\u91d1\", \"\\u4e0d\\u7b26\\u5408\\u7406\\u8d54\\u6761\\u4ef6\", \"2\\u500d\\u57fa\\u672c\\u4fdd\\u989d\"]}",
+    "cache_type": "keywords",
+    "chunk_id": null,
+    "original_prompt": "“我老公是投保人，给我买了传家福，附加了豁免保险。前阵子他开朋友的车出门，没注意行驶证过期了，出车祸去世了，这种情况能豁免我主险剩下的保费吗？另外我作为被保险人，如果之后不幸坐网约车出意外身故，传家福能额外赔吗？”",
+    "queryparam": {
+      "mode": "hybrid",
+      "response_type": "Multiple Paragraphs",
+      "top_k": 40,
+      "chunk_top_k": 20,
+      "max_entity_tokens": 6000,
+      "max_relation_tokens": 8000,
+      "max_total_tokens": 30000,
+      "user_prompt": "",
+      "enable_rerank": true
+    },
+    "create_time": 1761487063,
+    "update_time": 1761487063,
+    "_id": "hybrid:keywords:0813a63ed1b527526def34652deb8970"
+  },
+  "hybrid:keywords:6d2bc0752a285976261ad74c483451c0": {
+    "return": "{\"high_level_keywords\": [\"\\u7f51\\u7ea6\\u8f66\\u5b9a\\u4e49\", \"\\u8f66\\u8f86\\u5206\\u7c7b\", \"\\u4fdd\\u9669\\u8d23\\u4efb\\u8303\\u56f4\", \"\\u8d44\\u8d28\\u8981\\u6c42\"], \"low_level_keywords\": [\"\\u7f51\\u7ea6\\u8f66\", \"tk.pdf-111005-9.8\", \"\\u5b9a\\u4e49\", \"\\u5408\\u6cd5\\u8d44\\u8d28\", \"7 \\u5ea7\\u53ca\\u4ee5\\u4e0b\"]}",
+    "cache_type": "keywords",
+    "chunk_id": null,
+    "original_prompt": "网约车是否符合 tk.pdf-111005-9.8 定义（有合法资质、7 座及以下等）",
+    "queryparam": {
+      "mode": "hybrid",
+      "response_type": "Multiple Paragraphs",
+      "top_k": 40,
+      "chunk_top_k": 20,
+      "max_entity_tokens": 6000,
+      "max_relation_tokens": 8000,
+      "max_total_tokens": 30000,
+      "user_prompt": "",
+      "enable_rerank": true
+    },
+    "create_time": 1761489701,
+    "update_time": 1761489701,
+    "_id": "hybrid:keywords:6d2bc0752a285976261ad74c483451c0"
+  },
+  "hybrid:keywords:74b3b9dc628e1dbaf5cef76f45516bd2": {
+    "return": "{\"high_level_keywords\": [\"\\u5b9a\\u4e49\", \"\\u91ca\\u4e49\", \"\\u4ea4\\u901a\\u5de5\\u5177\\u5b9a\\u4e49\", \"\\u4fdd\\u9669\\u672f\\u8bed\"], \"low_level_keywords\": [\"\\u6c34\\u9646\\u516c\\u5171\\u4ea4\\u901a\\u5de5\\u5177\", \"\\u516c\\u5171\\u4ea4\\u901a\", \"\\u4ea4\\u901a\\u5de5\\u5177\"]}",
+    "cache_type": "keywords",
+    "chunk_id": null,
+    "original_prompt": "水陆公共交通工具的定义",
+    "queryparam": {
+      "mode": "hybrid",
+      "response_type": "Multiple Paragraphs",
+      "top_k": 40,
+      "chunk_top_k": 20,
+      "max_entity_tokens": 6000,
+      "max_relation_tokens": 8000,
+      "max_total_tokens": 30000,
+      "user_prompt": "",
+      "enable_rerank": true
+    },
+    "create_time": 1761489815,
+    "update_time": 1761489815,
+    "_id": "hybrid:keywords:74b3b9dc628e1dbaf5cef76f45516bd2"
+  },
+  "hybrid:keywords:07ecd000b0ee9b424286fb69c854f72b": {
+    "return": "{\"high_level_keywords\": [\"\\u4fdd\\u9669\\u8d23\\u4efb\", \"\\u610f\\u5916\\u4fdd\\u9669\", \"\\u4ea4\\u901a\\u65b9\\u5f0f\\u5206\\u7c7b\", \"\\u8d54\\u507f\\u8303\\u56f4\"], \"low_level_keywords\": [\"\\u7f51\\u7ea6\\u8f66\", \"\\u6c34\\u9646\\u516c\\u5171\\u4ea4\\u901a\", \"\\u516c\\u5171\\u4ea4\\u901a\\u610f\\u5916\", \"\\u610f\\u5916\\u8eab\\u6545\\u4fdd\\u9669\\u91d1\"]}",
+    "cache_type": "keywords",
+    "chunk_id": null,
+    "original_prompt": "网约车是否属于水陆公共交通呢?",
+    "queryparam": {
+      "mode": "hybrid",
+      "response_type": "Multiple Paragraphs",
+      "top_k": 40,
+      "chunk_top_k": 20,
+      "max_entity_tokens": 6000,
+      "max_relation_tokens": 8000,
+      "max_total_tokens": 30000,
+      "user_prompt": "",
+      "enable_rerank": true
+    },
+    "create_time": 1761491730,
+    "update_time": 1761491730,
+    "_id": "hybrid:keywords:07ecd000b0ee9b424286fb69c854f72b"
+  },
+  "hybrid:keywords:b915329bd35900c3c1599f6ca6d11a3b": {
+    "return": "{\"high_level_keywords\": [\"\\u6295\\u4fdd\\u4eba\", \"\\u8c41\\u514d\\u4fdd\\u9669\\u8d39\", \"\\u4fdd\\u9669\\u8d23\\u4efb\", \"\\u610f\\u5916\\u8eab\\u6545\\u4fdd\\u9669\\u91d1\", \"\\u8d54\\u507f\\u89c4\\u5219\", \"\\u8d23\\u4efb\\u514d\\u9664\"], \"low_level_keywords\": [\"\\u4f20\\u5bb6\\u798f\", \"\\u8c41\\u514d\\u4fdd\\u9669\", \"\\u884c\\u9a76\\u8bc1\\u8fc7\\u671f\", \"\\u8f66\\u7978\", \"\\u8eab\\u6545\", \"\\u7f51\\u7ea6\\u8f66\", \"\\u610f\\u5916\\u8eab\\u6545\", \"\\u989d\\u5916\\u8d54\\u507f\"]}",
+    "cache_type": "keywords",
+    "chunk_id": null,
+    "original_prompt": "我老公是投保人，给我买了传家福，附加了豁免保险。前阵子他开朋友的车出门，没注意行驶证过期了，出车祸去世了，这种情况能豁免我主险剩下的保费吗？另外我作为被保险人，如果之后不幸坐网约车出意外身故，传家福能额外赔吗？",
+    "queryparam": {
+      "mode": "hybrid",
+      "response_type": "Multiple Paragraphs",
+      "top_k": 40,
+      "chunk_top_k": 20,
+      "max_entity_tokens": 6000,
+      "max_relation_tokens": 8000,
+      "max_total_tokens": 30000,
+      "user_prompt": "",
+      "enable_rerank": true
+    },
+    "create_time": 1761491806,
+    "update_time": 1761491806,
+    "_id": "hybrid:keywords:b915329bd35900c3c1599f6ca6d11a3b"
+  },
+  "mix:keywords:71d2cd900c9b3d1d464e134126866291": {
+    "return": "{\"high_level_keywords\": [\"\\u8c41\\u514d\\u4fdd\\u9669\\u8d39\", \"\\u6295\\u4fdd\\u4eba\", \"\\u88ab\\u4fdd\\u9669\\u4eba\", \"\\u610f\\u5916\\u8eab\\u6545\\u4fdd\\u9669\\u91d1\", \"\\u4fdd\\u9669\\u8d23\\u4efb\", \"\\u8d54\\u507f\\u89c4\\u5219\", \"\\u4fdd\\u8d39\\u8c41\\u514d\\u6761\\u4ef6\"], \"low_level_keywords\": [\"\\u4f20\\u5bb6\\u798f\", \"\\u884c\\u9a76\\u8bc1\\u8fc7\\u671f\", \"\\u8f66\\u7978\\u53bb\\u4e16\", \"\\u7f51\\u7ea6\\u8f66\\u610f\\u5916\", \"\\u4e3b\\u9669\\u4fdd\\u8d39\", \"\\u989d\\u5916\\u8d54\\u507f\", \"\\u8d23\\u4efb\\u514d\\u9664\"]}",
+    "cache_type": "keywords",
+    "chunk_id": null,
+    "original_prompt": "我老公是投保人，给我买了传家福，附加了豁免保险。前阵子他开朋友的车出门，没注意行驶证过期了，出车祸去世了，这种情况能豁免我主险剩下的保费吗？另外我作为被保险人，如果之后不幸坐网约车出意外身故，传家福能额外赔吗？",
+    "queryparam": {
+      "mode": "mix",
+      "response_type": "Multiple Paragraphs",
+      "top_k": 40,
+      "chunk_top_k": 40,
+      "max_entity_tokens": 6000,
+      "max_relation_tokens": 8000,
+      "max_total_tokens": 30000,
+      "user_prompt": "",
+      "enable_rerank": true
+    },
+    "create_time": 1761531289,
+    "update_time": 1761531289,
+    "_id": "mix:keywords:71d2cd900c9b3d1d464e134126866291"
   }
 }

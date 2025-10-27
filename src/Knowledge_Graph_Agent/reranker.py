@@ -4,7 +4,8 @@ from tqdm import tqdm
 from typing import List, Union, Tuple
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 from BCEmbedding.utils import logger_wrapper
-
+import os
+from pathlib import Path
 logger = logger_wrapper('BCEmbedding.models.RerankerModel')
 
 class RerankerModel:
@@ -13,12 +14,38 @@ class RerankerModel:
             model_name_or_path: str = 'maidalun1020/bce-reranker-base_v1',
             use_fp16: bool = False,
             device: str = None,
+            top_k: int = 20,
             **kwargs
     ):
-        self.tokenizer = AutoTokenizer.from_pretrained(model_name_or_path, **kwargs)
-        self.model = AutoModelForSequenceClassification.from_pretrained(model_name_or_path, **kwargs)
-        logger.info(f"Loading from `{model_name_or_path}`.")
-
+        # 检查是否是本地路径
+        is_local_path = os.path.exists(model_name_or_path) and os.path.isdir(model_name_or_path)
+        
+        if is_local_path:
+            logger.info(f"正在从本地路径加载模型: {model_name_or_path}")
+            # 确保路径存在
+            model_path = Path(model_name_or_path)
+            if not model_path.exists():
+                raise ValueError(f"本地模型路径不存在: {model_name_or_path}")
+        else:
+            logger.info(f"正在从Hugging Face Hub加载模型: {model_name_or_path}")
+        
+        # 加载tokenizer和模型
+        try:
+            self.tokenizer = AutoTokenizer.from_pretrained(
+                model_name_or_path, 
+                local_files_only=is_local_path,
+                **kwargs
+            )
+            self.model = AutoModelForSequenceClassification.from_pretrained(
+                model_name_or_path,
+                local_files_only=is_local_path,
+                **kwargs
+            )
+            logger.info(f"✅ 成功加载模型: {model_name_or_path}")
+        except Exception as e:
+            logger.error(f"❌ 加载模型失败: {e}")
+            raise
+        
         num_gpus = torch.cuda.device_count()
         if device is None:
             self.device = "cuda" if num_gpus > 0 else "cpu"
@@ -47,6 +74,7 @@ class RerankerModel:
 
         self.max_length = kwargs.get('max_length', 512)
         self.overlap_tokens = kwargs.get('overlap_tokens', 80)
+        self.rerank_top_k = top_k
 
     def compute_score(
             self,
