@@ -34,6 +34,7 @@ dependencies = [
 all = [
     { name = "arxiv" },
     { name = "beautifulsoup4" },
+    { name = "faiss-cpu" },
     { name = "pymupdf" },
 ]
 loaders = [
@@ -47,8 +48,8 @@ vectorstore = [
 
 [package.metadata]
 requires-dist = [
-    { name = "ai-agent", extras = ["embeddings"], marker = "extra == 'all'" },
     { name = "ai-agent", extras = ["loaders"], marker = "extra == 'all'" },
+    { name = "ai-agent", extras = ["vectorstore"], marker = "extra == 'all'" },
     { name = "arxiv", marker = "extra == 'loaders'", specifier = ">=2.2.0" },
     { name = "bcembedding", specifier = ">=0.1.3" },
     { name = "beautifulsoup4", marker = "extra == 'loaders'", specifier = ">=4.14.2" },

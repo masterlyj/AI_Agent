@@ -1280,5 +1280,45 @@
     "create_time": 1761531289,
     "update_time": 1761531289,
     "_id": "mix:keywords:71d2cd900c9b3d1d464e134126866291"
+  },
+  "mix:keywords:414d227b89da97c49280c300b2e2fc47": {
+    "return": "{\"high_level_keywords\": [\"\\u72b9\\u8c6b\\u671f\", \"\\u89e3\\u9664\\u5408\\u540c\", \"\\u9000\\u4fdd\\u653f\\u7b56\"], \"low_level_keywords\": [\"10\\u65e5\", \"15\\u65e5\", \"\\u4fdd\\u9669\\u8d39\\u9000\\u8fd8\", \"\\u73b0\\u91d1\\u4ef7\\u503c\", \"\\u5168\\u989d\\u9000\\u8fd8\"]}",
+    "cache_type": "keywords",
+    "chunk_id": null,
+    "original_prompt": "犹豫期是多长时间?解除合同有什么后果?",
+    "queryparam": {
+      "mode": "mix",
+      "response_type": "Multiple Paragraphs",
+      "top_k": 40,
+      "chunk_top_k": 40,
+      "max_entity_tokens": 6000,
+      "max_relation_tokens": 8000,
+      "max_total_tokens": 30000,
+      "user_prompt": "",
+      "enable_rerank": true
+    },
+    "create_time": 1761550844,
+    "update_time": 1761550844,
+    "_id": "mix:keywords:414d227b89da97c49280c300b2e2fc47"
+  },
+  "mix:keywords:77f07c15957ddf338f6da4125d0121e8": {
+    "return": "{\"high_level_keywords\": [\"\\u8c41\\u514d\\u4fdd\\u9669\\u8d39\", \"\\u610f\\u5916\\u8eab\\u6545\\u4fdd\\u9669\\u91d1\", \"\\u8d23\\u4efb\\u514d\\u9664\", \"\\u7406\\u8d54\\u6761\\u4ef6\", \"\\u516c\\u5171\\u4ea4\\u901a\\u610f\\u5916\", \"\\u6295\\u4fdd\\u4eba\\u8eab\\u6545\", \"\\u88ab\\u4fdd\\u9669\\u4eba\\u8eab\\u6545\"], \"low_level_keywords\": [\"\\u4f20\\u5bb6\\u798f\\u7ec8\\u8eab\\u5bff\\u9669\", \"\\u9644\\u52a0\\u8c41\\u514d\\u4fdd\\u9669\\u8d39\\u5b9a\\u671f\\u5bff\\u9669\", \"\\u6295\\u4fdd\\u4eba\", \"\\u88ab\\u4fdd\\u9669\\u4eba\", \"\\u8eab\\u6545\", \"\\u884c\\u9a76\\u8bc1\\u8fc7\\u671f\", \"\\u8fdd\\u6cd5\\u884c\\u4e3a\", \"\\u6ef4\\u6ef4\", \"\\u516c\\u5171\\u4ea4\\u901a\\u5de5\\u5177\\u610f\\u5916\", \"\\u989d\\u5916\\u8d54\\u4ed8\", \"\\u4e3b\\u9669\", \"\\u9644\\u52a0\\u9669\"]}",
+    "cache_type": "keywords",
+    "chunk_id": null,
+    "original_prompt": "我老公是投保人，给我买了传家福，附加了豁免保险。前阵子他开朋友的车出门，没注意行驶证过期了，出车祸去世了，这种情况能豁免我主险剩下的保费吗？另外我作为被保险人，如果之后不幸坐滴滴出意外身故，传家福能额外赔吗？",
+    "queryparam": {
+      "mode": "mix",
+      "response_type": "Multiple Paragraphs",
+      "top_k": 40,
+      "chunk_top_k": 40,
+      "max_entity_tokens": 6000,
+      "max_relation_tokens": 8000,
+      "max_total_tokens": 30000,
+      "user_prompt": "",
+      "enable_rerank": true
+    },
+    "create_time": 1761551112,
+    "update_time": 1761551112,
+    "_id": "mix:keywords:77f07c15957ddf338f6da4125d0121e8"
   }
 }

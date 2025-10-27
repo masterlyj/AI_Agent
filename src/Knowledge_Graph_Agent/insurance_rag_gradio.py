@@ -2,6 +2,7 @@ import gradio as gr
 import asyncio
 import json
 import os
+import base64
 from datetime import datetime
 from typing import Dict, Any, List
 from pathlib import Path
@@ -47,7 +48,6 @@ custom_css = """
     margin: 0 auto;
     font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
 }
-
 .header-banner {
     background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
     padding: 30px;
@@ -56,13 +56,11 @@ custom_css = """
     margin-bottom: 20px;
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
-
 .header-banner h1 {
     margin: 0;
     font-size: 28px;
     font-weight: 600;
 }
-
 .header-banner p {
     margin: 10px 0 0 0;
     opacity: 0.9;
@@ -235,370 +233,201 @@ async def index_documents_async(file_paths: List[str], progress=gr.Progress()):
         return f"❌ 索引失败: {str(e)}", {}
 
 # ===== 生成知识图谱网络可视化HTML =====
-def create_knowledge_graph_html(entities: List[Dict], relationships: List[Dict]) -> str:
-    """创建基于 vis.js 的知识图谱网络可视化"""
-    if not entities and not relationships:
-        return "<div style='text-align:center; color:#666; padding:40px; background:#f8fafc; border-radius:8px; border:2px dashed #cbd5e1;'><h3>📋 暂无知识图谱数据</h3><p>请先执行查询以获取知识图谱数据</p></div>"
-    
-    # 调试输出数据格式
-    print(f"DEBUG - 实体数据示例: {entities[0] if entities else 'None'}")
-    print(f"DEBUG - 关系数据示例: {relationships[0] if relationships else 'None'}")
-    
-    # 将数据转换为 JSON，确保中文字符正确显示
-    data_json = json.dumps({
-        "entities": entities,
-        "relationships": relationships
-    }, ensure_ascii=False)
-    
-    # 使用多个CDN源以提高加载成功率
-    html = f"""
-<!DOCTYPE html>
+import base64, json
+
+def create_knowledge_graph_html(entities, relationships, iframe_height=800):
+    """
+    ✅ 可直接在 Gradio 中使用的知识图谱可视化组件。
+    - 根据实体类型自动分配颜色（泛化支持）
+    - 节点点击显示详细信息
+    - WARN 信息单独展示，不干扰图谱主视图
+    """
+    page_html = f"""<!doctype html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- 尝试多个CDN源加载vis.js -->
-    <script>
-        // 尝试加载vis.js，如果失败则尝试备用源
-        function loadVisJS() {{
-            console.log('开始加载vis.js...');
-            const script = document.createElement('script');
-            script.src = 'https://unpkg.com/vis-network@9.1.2/dist/vis-network.min.js';
-            script.onload = function() {{
-                console.log('vis.js loaded successfully from unpkg');
-                initNetwork();
-            }};
-            script.onerror = function() {{
-                console.log('Failed to load vis.js from unpkg, trying jsdelivr...');
-                const fallbackScript = document.createElement('script');
-                fallbackScript.src = 'https://cdn.jsdelivr.net/npm/vis-network@9.1.2/dist/vis-network.min.js';
-                fallbackScript.onload = function() {{
-                    console.log('vis.js loaded successfully from jsdelivr');
-                    initNetwork();
-                }};
-                fallbackScript.onerror = function() {{
-                    console.error('Failed to load vis.js from all sources');
-                    document.getElementById('network').innerHTML = '<div style="padding:20px;text-align:center;color:red;">无法加载可视化库，请检查网络连接</div>';
-                }};
-                document.head.appendChild(fallbackScript);
-            }};
-            document.head.appendChild(script);
-        }}
-        
-        // 初始化网络图
-        function initNetwork() {{
-            try {{
-                console.log('开始初始化网络图...');
-                const data = {data_json};
-                
-                // 检查数据格式并适配
-                console.log('Entities count:', data.entities.length);
-                console.log('Relationships count:', data.relationships.length);
-                
-                if (data.entities.length === 0 && data.relationships.length === 0) {{
-                    document.getElementById('network').innerHTML = '<div style="padding:20px;text-align:center;color:#666;">暂无知识图谱数据</div>';
-                    return;
-                }}
-                
-                // 准备节点数据 - 适配不同的数据格式
-                const entityNameToId = {{}};
-                const nodesArray = [];
-                
-                for (let i = 0; i < data.entities.length; i++) {{
-                    const entity = data.entities[i];
-                    // 适配不同的实体字段名
-                    const name = entity.entity_name || entity.name || entity.id || `Entity_${{i}}`;
-                    const type = entity.entity_type || entity.type || '未知类型';
-                    let description = entity.description || entity.desc || '无描述';
-                    
-                    // 处理描述中的特殊字符
-                    description = description.replace(/<SEP>/g, ' ').substring(0, 200);
-                    
-                    entityNameToId[name] = i;
-                    
-                    // 根据实体类型设置不同颜色
-                    let nodeColor = '#3b82f6'; // 默认蓝色
-                    if (type.includes('保险') || type.includes('Insurance')) {{
-                        nodeColor = '#10b981'; // 绿色
-                    }} else if (type.includes('疾病') || type.includes('Disease')) {{
-                        nodeColor = '#ef4444'; // 红色
-                    }} else if (type.includes('时间') || type.includes('Time')) {{
-                        nodeColor = '#f59e0b'; // 橙色
-                    }}
-                    
-                    nodesArray.push({{
-                        id: i,
-                        label: name,
-                        title: `<b>${{name}}</b><br>类型: ${{type}}<br>描述: ${{description}}`,
-                        type: type,
-                        description: description,
-                        color: {{
-                            background: nodeColor,
-                            border: '#1e293b',
-                            highlight: {{ background: nodeColor, border: '#1e293b' }}
-                        }},
-                        font: {{ color: '#ffffff', size: 14, bold: true }},
-                        shape: 'dot',
-                        size: 20 + Math.min(description.length / 20, 15) // 根据描述长度调整节点大小
-                    }});
-                }}
-                
-                console.log('Created', nodesArray.length, 'nodes');
-                
-                // 准备边数据 - 适配不同的关系字段名
-                const edgesArray = [];
-                
-                for (let i = 0; i < data.relationships.length; i++) {{
-                    const rel = data.relationships[i];
-                    // 适配不同的关系字段名
-                    const src = rel.src_id || rel.source || rel.from;
-                    const tgt = rel.tgt_id || rel.target || rel.to;
-                    const weight = rel.weight || rel.score || 1.0;
-                    let description = rel.description || rel.desc || rel.relation || '无描述';
-                    
-                    // 处理描述中的特殊字符
-                    description = description.replace(/<SEP>/g, ' ').substring(0, 200);
-                    
-                    const fromId = entityNameToId[src];
-                    const toId = entityNameToId[tgt];
-                    
-                    if (fromId === undefined || toId === undefined) {{
-                        console.warn(`无法找到关系中的实体: ${{src}} -> ${{tgt}}`);
-                        continue;
-                    }}
-                    
-                    edgesArray.push({{
-                        id: i,
-                        from: fromId,
-                        to: toId,
-                        label: `${{typeof weight === 'number' ? weight.toFixed(2) : weight}}`,
-                        title: description,
-                        arrows: 'to',
-                        color: {{ color: '#10b981', highlight: '#059669' }},
-                        width: Math.max(1, Math.min(weight * 3, 5)), // 根据权重调整边宽度
-                        font: {{ size: 11, align: 'middle' }},
-                        smooth: {{ type: 'cubicBezier', roundness: 0.3 }}
-                    }});
-                }}
-                
-                console.log('Created', edgesArray.length, 'edges');
-                
-                // 创建数据集
-                const nodes = new vis.DataSet(nodesArray);
-                const edges = new vis.DataSet(edgesArray);
-                
-                // 配置选项
-                const options = {{
-                    nodes: {{ 
-                        borderWidth: 2, 
-                        shadow: true,
-                        font: {{
-                            color: '#ffffff',
-                            size: 14,
-                            face: 'Microsoft YaHei'
-                        }}
-                    }},
-                    edges: {{ 
-                        shadow: true,
-                        font: {{
-                            color: '#1e293b',
-                            size: 11,
-                            face: 'Microsoft YaHei'
-                        }}
-                    }},
-                    physics: {{
-                        enabled: true,
-                        stabilization: {{ iterations: 200 }},
-                        barnesHut: {{
-                            gravitationalConstant: -8000,
-                            springConstant: 0.04,
-                            springLength: 150
-                        }}
-                    }},
-                    interaction: {{ 
-                        hover: true, 
-                        tooltipDelay: 100,
-                        navigationButtons: true,
-                        keyboard: true
-                    }}
-                }};
-                
-                // 创建网络
-                console.log('Creating vis.Network...');
-                const container = document.getElementById('network');
-                const network = new vis.Network(container, {{ nodes, edges }}, options);
-                console.log('Network created successfully');
-                
-                // 点击节点显示详情
-                network.on('click', function(params) {{
-                    const infoPanel = document.getElementById('node-info');
-                    if (params.nodes.length > 0) {{
-                        const node = nodes.get(params.nodes[0]);
-                        document.getElementById('info-title').textContent = `🏷️ ${{node.label}}`;
-                        document.getElementById('info-content').innerHTML = `
-                            <div><b>类型:</b> ${{node.type}}</div>
-                            <div style="margin-top:8px;"><b>描述:</b> ${{node.description}}</div>
-                        `;
-                        infoPanel.classList.add('show');
-                    }} else {{
-                        infoPanel.classList.remove('show');
-                    }}
-                }});
-                
-                // 稳定后停止物理模拟
-                network.once('stabilizationIterationsDone', function() {{
-                    network.setOptions({{ physics: false }});
-                    console.log('Network stabilized');
-                }});
-                
-                // 添加缩放控制
-                network.fit();
-                
-            }} catch (error) {{
-                console.error('Error initializing network:', error);
-                document.getElementById('network').innerHTML = `<div style="padding:20px;text-align:center;color:red;">初始化知识图谱时出错: ${{error.message}}</div>`;
-            }}
-        }}
-        
-        // 页面加载完成后加载vis.js
-        window.onload = loadVisJS;
-    </script>
-    <style>
-        #network {{
-            width: 100%;
-            height: 600px;
-            border: 2px solid #3b82f6;
-            border-radius: 12px;
-            background: #f8fafc;
-            position: relative;
-        }}
-        
-        .legend {{
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: white;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            z-index: 1000;
-            font-family: 'Microsoft YaHei', sans-serif;
-        }}
-        
-        .legend-title {{
-            font-weight: bold;
-            margin-bottom: 10px;
-            color: #1e293b;
-        }}
-        
-        .legend-item {{
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin: 8px 0;
-            font-size: 13px;
-        }}
-        
-        .node-info {{
-            position: absolute;
-            bottom: 20px;
-            left: 20px;
-            right: 20px;
-            background: white;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            display: none;
-            font-family: 'Microsoft YaHei', sans-serif;
-            max-height: 200px;
-            overflow-y: auto;
-        }}
-        
-        .node-info.show {{
-            display: block;
-        }}
-        
-        .info-title {{
-            color: #1e40af;
-            font-weight: bold;
-            margin-bottom: 8px;
-        }}
-        
-        .info-content {{
-            color: #475569;
-            font-size: 14px;
-            line-height: 1.6;
-        }}
-        
-        .loading {{
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 600px;
-            flex-direction: column;
-        }}
-        
-        .spinner {{
-            border: 4px solid #f3f4f6;
-            border-top: 4px solid #3b82f6;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin-bottom: 10px;
-        }}
-        
-        @keyframes spin {{
-            0% {{ transform: rotate(0deg); }}
-            100% {{ transform: rotate(360deg); }}
-        }}
-    </style>
+  <meta charset="utf-8">
+  <title>Knowledge Graph Visualization</title>
+  <style>
+    html, body {{
+      height: 100%; margin: 0; padding: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background-color: #fafafa;
+      display: flex; flex-direction: row;
+    }}
+    #network {{
+      flex: 1;
+      height: 100vh;
+      border-right: 1px solid #ddd;
+    }}
+    #sidebar {{
+      width: 300px;
+      background: #fff;
+      border-left: 1px solid #ddd;
+      padding: 12px;
+      box-sizing: border-box;
+      overflow-y: auto;
+    }}
+    #sidebar h3 {{
+      margin-top: 0;
+      color: #333;
+    }}
+    .info-item {{
+      font-size: 13px;
+      margin-bottom: 8px;
+      word-break: break-all;
+    }}
+    #log {{
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 120px;
+      background: rgba(30,30,30,0.9);
+      color: #eee;
+      font-size: 12px;
+      font-family: monospace;
+      overflow-y: auto;
+      padding: 8px;
+      box-sizing: border-box;
+    }}
+  </style>
+  <script src="https://unpkg.com/vis-network@9.1.2/dist/vis-network.min.js"></script>
 </head>
-<body style="margin:0; position:relative;">
-    <div id="network">
-        <div class="loading">
-            <div class="spinner"></div>
-            <p>正在加载知识图谱...</p>
-        </div>
-    </div>
-    
-    <div class="legend">
-        <div class="legend-title">📋 图例</div>
-        <div class="legend-item">
-            <div style="width:20px;height:20px;border-radius:50%;background:#3b82f6;"></div>
-            <span>默认实体</span>
-        </div>
-        <div class="legend-item">
-            <div style="width:20px;height:20px;border-radius:50%;background:#10b981;"></div>
-            <span>保险相关</span>
-        </div>
-        <div class="legend-item">
-            <div style="width:20px;height:20px;border-radius:50%;background:#ef4444;"></div>
-            <span>疾病相关</span>
-        </div>
-        <div class="legend-item">
-            <div style="width:20px;height:20px;border-radius:50%;background:#f59e0b;"></div>
-            <span>时间相关</span>
-        </div>
-        <div class="legend-item">
-            <div style="width:40px;height:3px;background:#10b981;"></div>
-            <span>关系连线</span>
-        </div>
-        <div style="margin-top:10px;font-size:12px;color:#64748b;">
-            💡 点击节点查看详情<br>
-            🖱️ 拖拽可移动节点<br>
-            🔍 滚轮可缩放
-        </div>
-    </div>
-    
-    <div id="node-info" class="node-info">
-        <div id="info-title" class="info-title"></div>
-        <div id="info-content" class="info-content"></div>
-    </div>
+<body>
+  <div id="network"></div>
+  <div id="sidebar">
+    <h3>实体详情</h3>
+    <div id="entityDetails">点击节点查看详细信息</div>
+  </div>
+  <pre id="log"></pre>
+
+  <script>
+  (function() {{
+    const dataFromPy = {json.dumps({'entities': entities, 'relationships': relationships}, ensure_ascii=False)};
+    const log = msg => {{
+      const el = document.getElementById('log');
+      el.textContent += '\\n' + msg;
+      el.scrollTop = el.scrollHeight;
+      console.log(msg);
+    }};
+
+    const nodes = [];
+    const name2id = {{}};
+    const typeColorMap = {{}};
+
+    // 动态生成颜色（根据类型数量自动分配）
+    const palette = [
+      "#e57373","#64b5f6","#81c784","#fff176","#ba68c8",
+      "#4db6ac","#ffb74d","#9575cd","#7986cb","#f06292"
+    ];
+    const getColor = (type) => {{
+      if (!typeColorMap[type]) {{
+        const keys = Object.keys(typeColorMap);
+        typeColorMap[type] = palette[keys.length % palette.length];
+      }}
+      return typeColorMap[type];
+    }};
+
+    // 创建节点
+    (dataFromPy.entities || []).forEach((ent, i) => {{
+      const id = i + 1;
+      const name = (ent.entity_name || ent.name || ("Entity_"+i)).trim();
+      const type = (ent.entity_type || "Unknown").trim();
+      const desc = (ent.description || "无描述").toString();
+      const color = getColor(type);
+      name2id[name] = id;
+
+      nodes.push({{
+        id,
+        label: name,
+        title: type,
+        color: {{ background: color, border: "#555" }},
+        data: {{
+          name,
+          type,
+          description: desc,
+          source_id: ent.source_id || "",
+          file_path: ent.file_path || "",
+          created_at: ent.created_at || ""
+        }}
+      }});
+    }});
+
+    // 创建边
+    const edges = [];
+    (dataFromPy.relationships || []).forEach((rel) => {{
+      const src = (rel.src_id || rel.source || "").trim();
+      const tgt = (rel.tgt_id || rel.target || "").trim();
+      const from = name2id[src];
+      const to = name2id[tgt];
+      if (!from || !to) {{
+        log("⚠️ WARN: 关系未匹配实体: " + JSON.stringify({{src, tgt}}));
+        return;
+      }}
+      edges.push({{
+        from,
+        to,
+        label: (rel.keywords || "").toString().slice(0, 30),
+        arrows: "to",
+        color: {{ color: "#999" }},
+        font: {{ align: "middle", size: 10 }}
+      }});
+    }});
+
+    // 初始化图
+    const container = document.getElementById("network");
+    const data = {{
+      nodes: new vis.DataSet(nodes),
+      edges: new vis.DataSet(edges)
+    }};
+    const options = {{
+      nodes: {{
+        shape: "dot",
+        size: 18,
+        font: {{ size: 14, color: "#222" }},
+        borderWidth: 1
+      }},
+      edges: {{
+        smooth: true,
+        color: {{ color: "#aaa" }},
+        arrows: {{ to: {{ enabled: true }} }}
+      }},
+      physics: {{
+        stabilization: true,
+        barnesHut: {{ gravitationalConstant: -8000 }}
+      }},
+      interaction: {{ hover: true }}
+    }};
+    const network = new vis.Network(container, data, options);
+    log("✅ 初始化完成: 节点数 " + nodes.length + "，边数 " + edges.length);
+
+    // 点击节点显示详细信息
+    const sidebar = document.getElementById("entityDetails");
+    network.on("click", function(params) {{
+      if (params.nodes.length === 0) return;
+      const nodeId = params.nodes[0];
+      const node = data.nodes.get(nodeId);
+      if (node && node.data) {{
+        const info = node.data;
+        sidebar.innerHTML = `
+          <div class='info-item'><b>名称：</b>${{info.name}}</div>
+          <div class='info-item'><b>类型：</b>${{info.type}}</div>
+          <div class='info-item'><b>描述：</b>${{info.description}}</div>
+          <div class='info-item'><b>来源 chunk：</b>${{info.source_id}}</div>
+          <div class='info-item'><b>文档路径：</b>${{info.file_path}}</div>
+          <div class='info-item'><b>创建时间：</b>${{info.created_at}}</div>
+        `;
+      }}
+    }});
+  }})();
+  </script>
 </body>
-</html>
-    """
-    return html
+</html>"""
+
+    b64 = base64.b64encode(page_html.encode("utf-8")).decode("ascii")
+    iframe_html = f'<iframe src="data:text/html;base64,{b64}" style="width:100%;height:{iframe_height}px;border:none;"></iframe>'
+    return iframe_html
+
 
 def create_documents_html(documents: List[Dict]) -> str:
     """创建文档详情可视化HTML"""
@@ -662,6 +491,20 @@ def create_documents_html(documents: List[Dict]) -> str:
     """
     return html
 
+def generate_graph_callback(*args, **kwargs):
+    # 这里放你的实体/关系构造逻辑，示例用你之前给的 debug 数据
+    entities = [
+        {'entity_name': '全额退还保险费', 'entity_type': 'benefittype'},
+        {'entity_name': '未还款项', 'entity_type': 'concept'},
+        {'entity_name': '现金价值', 'entity_type': 'concept'}
+    ]
+    relationships = [
+        {'src_id': '未还款项', 'tgt_id': '现金价值', 'keywords': '扣除', 'weight': 2.0}
+    ]
+    iframe_html = create_knowledge_graph_html(entities, relationships, iframe_height=600)
+    # 注意：直接返回字符串或使用 update 都可以，但不要再对 iframe_html 做 json.dumps/html.escape
+    return gr.HTML.update(value=iframe_html)
+
 # ===== 查询函数,添加可视化输出 =====
 async def query_knowledge_async(
     question: str,
@@ -672,11 +515,32 @@ async def query_knowledge_async(
 ):
     """异步查询知识库"""
     if not agent_instance:
-        return chat_history, {}, "", "", ""
+        yield chat_history, {}, "", "", ""
+        return
     if not question.strip():
-        return chat_history, {}, "", "", ""
+        yield chat_history, {}, "", "", ""
+        return
     try:
         logger.info(f"🔍 查询: {question} (mode={query_mode}, rerank={'启用' if enable_rerank else '禁用'})")
+        
+        # 添加加载状态
+        loading_html = """
+        <div style="display: flex; justify-content: center; align-items: center; height: 400px; flex-direction: column;">
+            <div class="loading-spinner" style="width: 50px; height: 50px; border: 5px solid #f3f3f3; border-top: 5px solid #3b82f6; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+            <p style="margin-top: 20px; color: #666;">正在查询知识库，请稍候...</p>
+            <style>
+                @keyframes spin {
+                    0% { transform: rotate(0deg); }
+                    100% { transform: rotate(360deg); }
+                }
+            </style>
+        </div>
+        """
+        
+        # 返回加载状态，然后执行查询
+        yield chat_history, {}, "", loading_html, ""
+        
+        # 执行查询
         result = await agent_instance.query(
             question=question,
             mode=query_mode,
@@ -711,7 +575,9 @@ async def query_knowledge_async(
         formatted_context = ""
         if show_context:
             formatted_context = format_context_display(raw_context)
-        return chat_history, metrics, formatted_context, kg_html, docs_html
+        
+        # 返回最终结果
+        yield chat_history, metrics, formatted_context, kg_html, docs_html
     except Exception as e:
         logger.error(f"查询失败: {e}")
         error_msg = f"❌ 查询出错: {str(e)}"
@@ -719,7 +585,8 @@ async def query_knowledge_async(
             "role": "assistant",
             "content": error_msg
         })
-        return chat_history, {}, "", "", ""
+        yield chat_history, {}, "", "", ""
+        return
 
 def extract_metrics_from_context(raw_context: str, mode: str) -> Dict:
     """从上下文中提取检索指标，支持多种数据格式"""
@@ -1117,7 +984,13 @@ with gr.Blocks(
     ).then(
         fn=lambda: "",
         outputs=[query_input]
+    ).then(
+        fn=lambda: "",
+        outputs=[query_input]
     )
+    btn = gr.Button("生成KG")
+    kg_out  = gr.HTML()
+    btn.click(fn=generate_graph_callback, inputs=[], outputs=[kg_out])
     query_input.submit(
         fn=query_knowledge_async,
         inputs=[query_input, query_mode, show_context, enable_rerank_checkbox, chatbot],
