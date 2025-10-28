@@ -57,15 +57,15 @@ class NetworkXStorage(BaseGraphStorage):
         self.storage_updated = None
         self._graph = None
 
-        # Load initial graph
+        # 加载初始图
         preloaded_graph = NetworkXStorage.load_nx_graph(self._graphml_xml_file)
         if preloaded_graph is not None:
             logger.info(
-                f"[{self.workspace}] Loaded graph from {self._graphml_xml_file} with {preloaded_graph.number_of_nodes()} nodes, {preloaded_graph.number_of_edges()} edges"
+                f"[{self.workspace}] 已从 {self._graphml_xml_file} 加载图，包含 {preloaded_graph.number_of_nodes()} 个节点、{preloaded_graph.number_of_edges()} 条边"
             )
         else:
             logger.info(
-                f"[{self.workspace}] Created new empty graph file: {self._graphml_xml_file}"
+                f"[{self.workspace}] 已创建新的空图文件：{self._graphml_xml_file}"
             )
         self._graph = preloaded_graph or nx.Graph()
 

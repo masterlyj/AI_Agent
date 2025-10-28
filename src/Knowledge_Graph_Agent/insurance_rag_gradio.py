@@ -2,6 +2,7 @@ import gradio as gr
 import asyncio
 import json
 import os
+import base64
 from datetime import datetime
 from typing import Dict, Any, List
 from pathlib import Path
@@ -14,11 +15,19 @@ WORKING_DIR = "data/rag_storage"
 DOC_LIBRARY = "data/inputs"
 
 #新增reranker配置
+# RERANK_CONFIG = {
+#     "enabled": True,
+#     "model": "maidalun1020/bce-reranker-base_v1",  # 支持 HuggingFace 模型名或本地路径
+#     "device": None,  # 仅 HuggingFace 使用
+#     "top_k": 3
+# }
+
+# 本地模型加载示例（可选配置）
 RERANK_CONFIG = {
     "enabled": True,
-    "model": "maidalun1020/bce-reranker-base_v1",
-    "device": None,
-    "top_k": 3
+    "model": "D:/Codes/modelscope/bce-reranker-base_v1",  # 本地模型路径
+    "device": None,  # 指定GPU设备
+    "top_k": 20
 }
 
 # ===== 自定义CSS样式 =====
@@ -39,7 +48,6 @@ custom_css = """
     margin: 0 auto;
     font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
 }
-
 .header-banner {
     background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
     padding: 30px;
@@ -48,13 +56,11 @@ custom_css = """
     margin-bottom: 20px;
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
-
 .header-banner h1 {
     margin: 0;
     font-size: 28px;
     font-weight: 600;
 }
-
 .header-banner p {
     margin: 10px 0 0 0;
     opacity: 0.9;
@@ -177,60 +183,39 @@ async def initialize_agent():
         logger.info("🔧 正在初始化RAG Agent...")
         agent_instance = await RAGAgent.create(
             working_dir=WORKING_DIR,
-            rerank_config=RERANK_CONFIG  #传入reranker配置
+            rerank_config=RERANK_CONFIG
         )
-        # 🔧 修复点2: 验证 reranker 是否成功初始化
         if hasattr(agent_instance, 'reranker') and agent_instance.reranker:
             logger.info(f"✅ Reranker 已加载: {RERANK_CONFIG['model']}")
         else:
             logger.warning("⚠️ Reranker 未能加载，将跳过精排步骤")
-
         logger.info("✅ RAG Agent初始化完成")
         return "✅ 系统已就绪"
     except Exception as e:
         logger.error(f"❌ 初始化失败: {e}")
         return f"❌ 初始化失败: {str(e)}"
 
-# ===== 文档索引功能 =====
 async def index_documents_async(file_paths: List[str], progress=gr.Progress()):
     """异步索引文档 - 支持PDF和文本文件智能处理"""
     global index_status
-    
     if not agent_instance:
         return "❌ Agent未初始化,请先启动系统", {}
-    
     progress(0, desc="准备索引文档...")
-    
     try:
-        # 验证文件
         valid_files = [f for f in file_paths if os.path.exists(f)]
         if not valid_files:
             return "❌ 未找到有效文件", {}
-        
-        # 分析文件类型
         pdf_files = [f for f in valid_files if f.lower().endswith('.pdf')]
         text_files = [f for f in valid_files if f.lower().endswith(('.md', '.txt'))]
-        
         progress(0.1, desc=f"检测到 {len(pdf_files)} 个PDF文件, {len(text_files)} 个文本文件")
-        
-        # 智能文档处理
         progress(0.3, desc=f"正在智能处理 {len(valid_files)} 个文档...")
-        
-        # 调用智能索引
         result = await agent_instance.index_documents(valid_files)
-        
         progress(0.8, desc="索引完成,更新状态...")
-        
-        # 更新状态
         index_status["ready"] = True
         index_status["documents"] = [os.path.basename(f) for f in valid_files]
         index_status["last_indexed"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        
         progress(1.0, desc="完成!")
-        
-        # 构建详细的指标信息
         processing_summary = result.get('processing_summary', '')
-        
         metrics = {
             "索引文档数": len(valid_files),
             "PDF文件数": len(pdf_files),
@@ -239,19 +224,288 @@ async def index_documents_async(file_paths: List[str], progress=gr.Progress()):
             "索引时间": index_status["last_indexed"],
             "状态": result.get("status_message", "成功")
         }
-        
-        # 如果有处理摘要，添加到返回信息中
         status_msg = f"✅ 成功索引 {len(valid_files)} 个文档"
         if processing_summary:
             status_msg += f"\n📊 处理摘要: {processing_summary}"
-        
         return status_msg, metrics
-        
     except Exception as e:
         logger.error(f"索引失败: {e}")
         return f"❌ 索引失败: {str(e)}", {}
 
-# ===== 查询功能 =====
+# ===== 生成知识图谱网络可视化HTML =====
+import base64, json
+
+def create_knowledge_graph_html(entities, relationships, iframe_height=800):
+    """
+    ✅ 可直接在 Gradio 中使用的知识图谱可视化组件。
+    - 根据实体类型自动分配颜色（泛化支持）
+    - 节点点击显示详细信息
+    - WARN 信息单独展示，不干扰图谱主视图
+    """
+    page_html = f"""<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Knowledge Graph Visualization</title>
+  <style>
+    html, body {{
+      height: 100%; margin: 0; padding: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background-color: #fafafa;
+      display: flex; flex-direction: row;
+    }}
+    #network {{
+      flex: 1;
+      height: 100vh;
+      border-right: 1px solid #ddd;
+    }}
+    #sidebar {{
+      width: 300px;
+      background: #fff;
+      border-left: 1px solid #ddd;
+      padding: 12px;
+      box-sizing: border-box;
+      overflow-y: auto;
+    }}
+    #sidebar h3 {{
+      margin-top: 0;
+      color: #333;
+    }}
+    .info-item {{
+      font-size: 13px;
+      margin-bottom: 8px;
+      word-break: break-all;
+    }}
+    #log {{
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 120px;
+      background: rgba(30,30,30,0.9);
+      color: #eee;
+      font-size: 12px;
+      font-family: monospace;
+      overflow-y: auto;
+      padding: 8px;
+      box-sizing: border-box;
+    }}
+  </style>
+  <script src="https://unpkg.com/vis-network@9.1.2/dist/vis-network.min.js"></script>
+</head>
+<body>
+  <div id="network"></div>
+  <div id="sidebar">
+    <h3>实体详情</h3>
+    <div id="entityDetails">点击节点查看详细信息</div>
+  </div>
+  <pre id="log"></pre>
+
+  <script>
+  (function() {{
+    const dataFromPy = {json.dumps({'entities': entities, 'relationships': relationships}, ensure_ascii=False)};
+    const log = msg => {{
+      const el = document.getElementById('log');
+      el.textContent += '\\n' + msg;
+      el.scrollTop = el.scrollHeight;
+      console.log(msg);
+    }};
+
+    const nodes = [];
+    const name2id = {{}};
+    const typeColorMap = {{}};
+
+    // 动态生成颜色（根据类型数量自动分配）
+    const palette = [
+      "#e57373","#64b5f6","#81c784","#fff176","#ba68c8",
+      "#4db6ac","#ffb74d","#9575cd","#7986cb","#f06292"
+    ];
+    const getColor = (type) => {{
+      if (!typeColorMap[type]) {{
+        const keys = Object.keys(typeColorMap);
+        typeColorMap[type] = palette[keys.length % palette.length];
+      }}
+      return typeColorMap[type];
+    }};
+
+    // 创建节点
+    (dataFromPy.entities || []).forEach((ent, i) => {{
+      const id = i + 1;
+      const name = (ent.entity_name || ent.name || ("Entity_"+i)).trim();
+      const type = (ent.entity_type || "Unknown").trim();
+      const desc = (ent.description || "无描述").toString();
+      const color = getColor(type);
+      name2id[name] = id;
+
+      nodes.push({{
+        id,
+        label: name,
+        title: type,
+        color: {{ background: color, border: "#555" }},
+        data: {{
+          name,
+          type,
+          description: desc,
+          source_id: ent.source_id || "",
+          file_path: ent.file_path || "",
+          created_at: ent.created_at || ""
+        }}
+      }});
+    }});
+
+    // 创建边
+    const edges = [];
+    (dataFromPy.relationships || []).forEach((rel) => {{
+      const src = (rel.src_id || rel.source || "").trim();
+      const tgt = (rel.tgt_id || rel.target || "").trim();
+      const from = name2id[src];
+      const to = name2id[tgt];
+      if (!from || !to) {{
+        log("⚠️ WARN: 关系未匹配实体: " + JSON.stringify({{src, tgt}}));
+        return;
+      }}
+      edges.push({{
+        from,
+        to,
+        label: (rel.keywords || "").toString().slice(0, 30),
+        arrows: "to",
+        color: {{ color: "#999" }},
+        font: {{ align: "middle", size: 10 }}
+      }});
+    }});
+
+    // 初始化图
+    const container = document.getElementById("network");
+    const data = {{
+      nodes: new vis.DataSet(nodes),
+      edges: new vis.DataSet(edges)
+    }};
+    const options = {{
+      nodes: {{
+        shape: "dot",
+        size: 18,
+        font: {{ size: 14, color: "#222" }},
+        borderWidth: 1
+      }},
+      edges: {{
+        smooth: true,
+        color: {{ color: "#aaa" }},
+        arrows: {{ to: {{ enabled: true }} }}
+      }},
+      physics: {{
+        stabilization: true,
+        barnesHut: {{ gravitationalConstant: -8000 }}
+      }},
+      interaction: {{ hover: true }}
+    }};
+    const network = new vis.Network(container, data, options);
+    log("✅ 初始化完成: 节点数 " + nodes.length + "，边数 " + edges.length);
+
+    // 点击节点显示详细信息
+    const sidebar = document.getElementById("entityDetails");
+    network.on("click", function(params) {{
+      if (params.nodes.length === 0) return;
+      const nodeId = params.nodes[0];
+      const node = data.nodes.get(nodeId);
+      if (node && node.data) {{
+        const info = node.data;
+        sidebar.innerHTML = `
+          <div class='info-item'><b>名称：</b>${{info.name}}</div>
+          <div class='info-item'><b>类型：</b>${{info.type}}</div>
+          <div class='info-item'><b>描述：</b>${{info.description}}</div>
+          <div class='info-item'><b>来源 chunk：</b>${{info.source_id}}</div>
+          <div class='info-item'><b>文档路径：</b>${{info.file_path}}</div>
+          <div class='info-item'><b>创建时间：</b>${{info.created_at}}</div>
+        `;
+      }}
+    }});
+  }})();
+  </script>
+</body>
+</html>"""
+
+    b64 = base64.b64encode(page_html.encode("utf-8")).decode("ascii")
+    iframe_html = f'<iframe src="data:text/html;base64,{b64}" style="width:100%;height:{iframe_height}px;border:none;"></iframe>'
+    return iframe_html
+
+
+def create_documents_html(documents: List[Dict]) -> str:
+    """创建文档详情可视化HTML"""
+    if not documents:
+        return "<p style='text-align:center; color:#666; padding:40px;'>暂无文档数据</p>"
+    
+    docs_html = []
+    for idx, doc in enumerate(documents, 1):
+        content = doc.get('content', '')
+        metadata = doc.get('metadata', {})
+        
+        file_path = metadata.get('file_path', '未知来源')
+        chunk_id = metadata.get('chunk_id', '未知')
+        rerank_score = metadata.get('rerank_score', 0)
+        reference_id = metadata.get('reference_id', 'N/A')
+        
+        score_percent = (rerank_score * 100) if isinstance(rerank_score, float) else 0
+        
+        docs_html.append(f"""
+        <div style='background:#f8fafc; border:2px solid #10b981; border-radius:10px; 
+                    padding:20px; margin-bottom:15px; box-shadow:0 2px 8px rgba(0,0,0,0.1);'>
+            <div style='display:flex; align-items:center; gap:12px; margin-bottom:12px;'>
+                <div style='background:#10b981; color:white; width:35px; height:35px; 
+                            border-radius:50%; display:flex; align-items:center; 
+                            justify-content:center; font-weight:bold;'>{idx}</div>
+                <div style='flex:1;'>
+                    <div style='font-weight:bold; color:#065f46; font-size:15px;'>
+                        📁 {file_path}
+                    </div>
+                    <div style='margin-top:6px; display:flex; gap:10px; flex-wrap:wrap;'>
+                        <span style='background:#dbeafe; color:#1e40af; padding:4px 10px; 
+                                     border-radius:6px; font-size:12px;'>🔖 {chunk_id}</span>
+                        <span style='background:#fef3c7; color:#d97706; padding:4px 10px; 
+                                     border-radius:6px; font-size:12px; font-weight:600;'>
+                            📈 相关度: {score_percent:.2f}%
+                        </span>
+                        <span style='background:#f3e8ff; color:#7c3aed; padding:4px 10px; 
+                                     border-radius:6px; font-size:12px;'>
+                            🆔 {reference_id}
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div style='background:white; padding:15px; border-radius:8px; 
+                        border:1px solid #e5e7eb; margin-top:12px;'>
+                <div style='color:#1f2937; line-height:1.8; white-space:pre-wrap; font-size:14px;'>
+                    {content}
+                </div>
+            </div>
+        </div>
+        """)
+    
+    html = f"""
+    <div style='padding:20px; max-height:650px; overflow-y:auto; font-family:"Microsoft YaHei", sans-serif;'>
+        <h3 style='color:#047857; margin-bottom:20px; display:flex; align-items:center;'>
+            <span style='font-size:24px; margin-right:10px;'>📄</span>
+            精排文档详情 - {len(documents)} 个文档片段
+        </h3>
+        {''.join(docs_html)}
+    </div>
+    """
+    return html
+
+def generate_graph_callback(*args, **kwargs):
+    # 这里放你的实体/关系构造逻辑，示例用你之前给的 debug 数据
+    entities = [
+        {'entity_name': '全额退还保险费', 'entity_type': 'benefittype'},
+        {'entity_name': '未还款项', 'entity_type': 'concept'},
+        {'entity_name': '现金价值', 'entity_type': 'concept'}
+    ]
+    relationships = [
+        {'src_id': '未还款项', 'tgt_id': '现金价值', 'keywords': '扣除', 'weight': 2.0}
+    ]
+    iframe_html = create_knowledge_graph_html(entities, relationships, iframe_height=600)
+    # 注意：直接返回字符串或使用 update 都可以，但不要再对 iframe_html 做 json.dumps/html.escape
+    return gr.HTML.update(value=iframe_html)
+
+# ===== 查询函数,添加可视化输出 =====
 async def query_knowledge_async(
     question: str,
     query_mode: str,
@@ -261,13 +515,30 @@ async def query_knowledge_async(
 ):
     """异步查询知识库"""
     if not agent_instance:
-        return chat_history, {}, ""
-    
+        yield chat_history, {}, "", "", ""
+        return
     if not question.strip():
-        return chat_history, {}, ""
-    
+        yield chat_history, {}, "", "", ""
+        return
     try:
         logger.info(f"🔍 查询: {question} (mode={query_mode}, rerank={'启用' if enable_rerank else '禁用'})")
+        
+        # 添加加载状态
+        loading_html = """
+        <div style="display: flex; justify-content: center; align-items: center; height: 400px; flex-direction: column;">
+            <div class="loading-spinner" style="width: 50px; height: 50px; border: 5px solid #f3f3f3; border-top: 5px solid #3b82f6; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+            <p style="margin-top: 20px; color: #666;">正在查询知识库，请稍候...</p>
+            <style>
+                @keyframes spin {
+                    0% { transform: rotate(0deg); }
+                    100% { transform: rotate(360deg); }
+                }
+            </style>
+        </div>
+        """
+        
+        # 返回加载状态，然后执行查询
+        yield chat_history, {}, "", loading_html, ""
         
         # 执行查询
         result = await agent_instance.query(
@@ -275,20 +546,16 @@ async def query_knowledge_async(
             mode=query_mode,
             enable_rerank=enable_rerank
         )
-        
-        # 解析结果
         answer = result.get("answer", "无答案")
         context_data = result.get("context", {})
         raw_context = context_data.get("raw_context", "")
-
-        # 🔧 修复点4: 添加精排状态到回答中
+        entities = context_data.get("entities", [])
+        relationships = context_data.get("relationships", [])
+        documents = context_data.get("documents", [])
+        kg_html = create_knowledge_graph_html(entities, relationships)
+        docs_html = create_documents_html(documents)
         rerank_status = "✅ 已精排" if enable_rerank and hasattr(agent_instance, 'reranker') and agent_instance.reranker else "⚠️ 未精排"
         response_msg = f"**🤖 回答** ({query_mode} 模式 | {rerank_status})\n\n{answer}"
-        
-        # 构建回答消息
-        response_msg = f"**🤖 回答** ({query_mode} 模式)\n\n{answer}"
-        
-        # 更新聊天历史
         chat_history.append({
             "role": "user",
             "content": question
@@ -297,17 +564,20 @@ async def query_knowledge_async(
             "role": "assistant",
             "content": response_msg
         })
-        
-        # 提取检索指标
-        metrics = extract_metrics_from_context(raw_context, query_mode)
-        
-        # 格式化上下文用于显示
+        metrics = {
+            "查询模式": query_mode,
+            "实体数量": len(entities),
+            "关系数量": len(relationships),
+            "文档片段": len(documents),
+            "精排状态": rerank_status,
+            "上下文长度": len(raw_context)
+        }
         formatted_context = ""
         if show_context:
             formatted_context = format_context_display(raw_context)
         
-        return chat_history, metrics, formatted_context
-        
+        # 返回最终结果
+        yield chat_history, metrics, formatted_context, kg_html, docs_html
     except Exception as e:
         logger.error(f"查询失败: {e}")
         error_msg = f"❌ 查询出错: {str(e)}"
@@ -315,59 +585,272 @@ async def query_knowledge_async(
             "role": "assistant",
             "content": error_msg
         })
-        return chat_history, {}, ""
+        yield chat_history, {}, "", "", ""
+        return
 
-# ===== 辅助函数 =====
 def extract_metrics_from_context(raw_context: str, mode: str) -> Dict:
-    """从上下文中提取检索指标"""
+    """从上下文中提取检索指标，支持多种数据格式"""
     metrics = {
         "查询模式": mode,
         "上下文长度": len(raw_context) if raw_context else 0,
     }
     
-    if raw_context:
-        if "Knowledge Graph Data (Entity)" in raw_context:
-            entity_count = raw_context.count('{"entity":')
-            metrics["图谱实体数"] = entity_count
-        
-        if "Document Chunks" in raw_context:
-            chunk_count = raw_context.count('{"reference_id":')
-            metrics["文档片段数"] = chunk_count
-        
-        if "Knowledge Graph Data (Relationship)" in raw_context:
-            rel_count = raw_context.count('{"entity1":')
-            metrics["关系三元组数"] = rel_count
+    # 调试输出
+    print(f"DEBUG - 开始提取指标，模式: {mode}, 上下文长度: {metrics['上下文长度']}")
+    
+    if not raw_context:
+        print("DEBUG - 上下文为空，返回基础指标")
+        return metrics
+    
+    # 尝试解析JSON格式的上下文
+    try:
+        # 检查是否为JSON格式
+        if raw_context.strip().startswith('{') or raw_context.strip().startswith('['):
+            import json
+            parsed_data = json.loads(raw_context)
+            
+            # 如果是字典格式，直接提取实体和关系
+            if isinstance(parsed_data, dict):
+                entities = parsed_data.get("entities", [])
+                relationships = parsed_data.get("relationships", [])
+                documents = parsed_data.get("documents", [])
+                
+                metrics["图谱实体数"] = len(entities) if isinstance(entities, list) else 0
+                metrics["关系三元组数"] = len(relationships) if isinstance(relationships, list) else 0
+                metrics["文档片段数"] = len(documents) if isinstance(documents, list) else 0
+                
+                print(f"DEBUG - JSON格式解析成功: 实体{metrics['图谱实体数']}个, 关系{metrics['关系三元组数']}个, 文档{metrics['文档片段数']}个")
+                return metrics
+            
+            # 如果是列表格式，假设是文档列表
+            elif isinstance(parsed_data, list):
+                metrics["文档片段数"] = len(parsed_data)
+                print(f"DEBUG - 检测到文档列表格式: {metrics['文档片段数']}个文档")
+                return metrics
+    except json.JSONDecodeError:
+        print("DEBUG - JSON解析失败，使用文本计数方式")
+    except Exception as e:
+        print(f"DEBUG - 解析过程中出现错误: {e}")
+    
+    # 传统文本计数方式（向后兼容）
+    entity_count = raw_context.count('{"entity":') + raw_context.count('"entity_name"')
+    chunk_count = raw_context.count('{"reference_id":') + raw_context.count('"content"')
+    rel_count = raw_context.count('{"entity1":') + raw_context.count('"src_id"') + raw_context.count('"source"')
+    
+    metrics["图谱实体数"] = entity_count
+    metrics["文档片段数"] = chunk_count
+    metrics["关系三元组数"] = rel_count
+    
+    print(f"DEBUG - 文本计数完成: 实体{entity_count}个, 文档{chunk_count}个, 关系{rel_count}个")
     
     return metrics
 
 def format_context_display(raw_context: str) -> str:
     """格式化上下文用于显示"""
     if not raw_context:
-        return "无上下文数据"
+        return "<div style='text-align:center; color:#999; padding:40px;'>📭 暂无上下文数据</div>"
     
-    display = "### 📋 检索到的上下文\n\n"
-    preview = raw_context[:1000]
-    display += f"```\n{preview}\n```\n\n"
+    # 尝试解析JSON格式的上下文
+    try:
+        import json
+        if raw_context.strip().startswith('{') or raw_context.strip().startswith('['):
+            context_data = json.loads(raw_context)
+            
+            # 如果是字典格式，提取实体和关系
+            if isinstance(context_data, dict):
+                entities = context_data.get("entities", [])
+                relationships = context_data.get("relationships", [])
+                return _create_context_html(entities, relationships)
+            # 如果是列表格式，假设是文档列表
+            elif isinstance(context_data, list):
+                return _create_documents_html(context_data)
+    except (json.JSONDecodeError, Exception):
+        pass
     
-    if len(raw_context) > 1000:
-        display += f"*... 还有 {len(raw_context) - 1000} 个字符未显示*"
+    # 如果不是JSON格式，使用原始显示方式
+    return f"""
+    <div style="font-family: 'Microsoft YaHei', sans-serif; padding: 16px; background: #f8fafc; border-radius: 8px;">
+        <div style="display: flex; align-items: center; margin-bottom: 20px;">
+            <h3 style="margin: 0; color: #1e293b; font-size: 20px;">📄 原始上下文</h3>
+            <div style="margin-left: auto; background: #3b82f6; color: white; padding: 6px 12px; border-radius: 20px; font-size: 14px; font-weight: bold;">
+                {len(raw_context)} 字符
+            </div>
+        </div>
+        <details style="margin-top: 16px;">
+            <summary style="cursor: pointer; color: #3b82f6; font-weight: bold; padding: 8px; background: white; border-radius: 6px; border: 1px solid #e2e8f0;">点击展开/折叠原始上下文</summary>
+            <pre style="margin-top: 12px; padding: 16px; background: white; border-radius: 6px; border: 1px solid #e2e8f0; overflow-x: auto; font-size: 14px; line-height: 1.6;">{raw_context}</pre>
+        </details>
+    </div>
+    """
+
+def _create_context_html(entities: List[Dict], relationships: List[Dict]) -> str:
+    """创建实体和关系的HTML显示"""
+    html = """
+    <div style="font-family: 'Microsoft YaHei', sans-serif; padding: 16px; background: #f8fafc; border-radius: 8px;">
+        <div style="display: flex; align-items: center; margin-bottom: 20px;">
+            <h2 style="margin: 0; color: #1e293b; font-size: 24px;">📊 检索上下文</h2>
+            <div style="margin-left: auto; display: flex; gap: 16px;">
+                <div style="background: #3b82f6; color: white; padding: 6px 12px; border-radius: 20px; font-size: 14px; font-weight: bold;">
+                    实体: {entity_count}
+                </div>
+                <div style="background: #10b981; color: white; padding: 6px 12px; border-radius: 20px; font-size: 14px; font-weight: bold;">
+                    关系: {relationship_count}
+                </div>
+            </div>
+        </div>
+    """.format(entity_count=len(entities), relationship_count=len(relationships))
     
-    return display
+    if entities:
+        html += """
+        <div style="margin-bottom: 24px;">
+            <h3 style="color: #1e40af; margin-bottom: 12px; display: flex; align-items: center;">
+                <span style="margin-right: 8px;">🔍</span> 实体信息
+            </h3>
+            <div style="display: grid; gap: 12px;">
+        """
+        
+        for i, entity in enumerate(entities[:10]):
+            name = entity.get('entity_name', entity.get('name', '未知实体'))
+            entity_type = entity.get('entity_type', entity.get('type', '未知类型'))
+            description = entity.get('description', entity.get('desc', '无描述'))
+            
+            type_color = '#3b82f6'
+            if '保险' in entity_type or 'Insurance' in entity_type:
+                type_color = '#10b981'
+            elif '疾病' in entity_type or 'Disease' in entity_type:
+                type_color = '#ef4444'
+            elif '时间' in entity_type or 'Time' in entity_type:
+                type_color = '#f59e0b'
+            
+            html += f"""
+                <div style="background: white; padding: 12px; border-radius: 8px; border-left: 4px solid {type_color}; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                        <div style="font-weight: bold; color: #1e293b; font-size: 16px;">{name}</div>
+                        <div style="background: {type_color}; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px;">{entity_type}</div>
+                    </div>
+                    <div style="color: #64748b; font-size: 14px; line-height: 1.5;">{description}</div>
+                </div>
+            """
+        
+        if len(entities) > 10:
+            html += f"""
+                <div style="text-align: center; color: #64748b; font-size: 14px; padding: 8px;">
+                    ... 还有 {len(entities) - 10} 个实体未显示
+                </div>
+            """
+        
+        html += """
+            </div>
+        </div>
+        """
+    
+    if relationships:
+        html += """
+        <div>
+            <h3 style="color: #059669; margin-bottom: 12px; display: flex; align-items: center;">
+                <span style="margin-right: 8px;">🔗</span> 关系信息
+            </h3>
+            <div style="display: grid; gap: 12px;">
+        """
+        
+        for i, rel in enumerate(relationships[:10]):
+            src = rel.get('src_id', rel.get('source', rel.get('from', '未知源')))
+            tgt = rel.get('tgt_id', rel.get('target', rel.get('to', '未知目标')))
+            weight = rel.get('weight', rel.get('score', 0))
+            description = rel.get('description', rel.get('desc', rel.get('relation', '无描述')))
+            
+            weight_color = '#10b981' if weight > 0.8 else '#f59e0b' if weight > 0.5 else '#ef4444'
+            
+            html += f"""
+                <div style="background: white; padding: 12px; border-radius: 8px; border-left: 4px solid #10b981; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <div style="font-weight: bold; color: #1e293b; font-size: 16px;">{src}</div>
+                            <div style="color: #10b981; font-size: 18px;">→</div>
+                            <div style="font-weight: bold; color: #1e293b; font-size: 16px;">{tgt}</div>
+                        </div>
+                        <div style="background: {weight_color}; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold;">{weight:.2f}</div>
+                    </div>
+                    <div style="color: #64748b; font-size: 14px; line-height: 1.5;">{description}</div>
+                </div>
+            """
+        
+        if len(relationships) > 10:
+            html += f"""
+                <div style="text-align: center; color: #64748b; font-size: 14px; padding: 8px;">
+                    ... 还有 {len(relationships) - 10} 个关系未显示
+                </div>
+            """
+        
+        html += """
+            </div>
+        </div>
+        """
+    
+    if not entities and not relationships:
+        html += """
+        <div style="text-align: center; padding: 40px; color: #64748b; background: white; border-radius: 8px; border: 2px dashed #cbd5e1;">
+            <div style="font-size: 48px; margin-bottom: 16px;">📭</div>
+            <div style="font-size: 18px; font-weight: bold; margin-bottom: 8px;">暂无上下文数据</div>
+            <div>请先执行查询以获取实体和关系信息</div>
+        </div>
+        """
+    
+    html += "</div>"
+    return html
+
+def _create_documents_html(documents: List[Dict]) -> str:
+    """创建文档列表的HTML显示"""
+    html = """
+    <div style="font-family: 'Microsoft YaHei', sans-serif; padding: 16px; background: #f8fafc; border-radius: 8px;">
+        <div style="display: flex; align-items: center; margin-bottom: 20px;">
+            <h2 style="margin: 0; color: #1e293b; font-size: 24px;">📄 检索文档</h2>
+            <div style="margin-left: auto; background: #3b82f6; color: white; padding: 6px 12px; border-radius: 20px; font-size: 14px; font-weight: bold;">
+                {doc_count} 个文档
+            </div>
+        </div>
+        <div style="display: grid; gap: 12px;">
+    """.format(doc_count=len(documents))
+    
+    for i, doc in enumerate(documents[:10]):
+        content = doc.get('content', doc.get('text', '无内容'))
+        metadata = doc.get('metadata', {})
+        file_path = metadata.get('file_path', '未知来源')
+        
+        html += f"""
+        <div style="background: white; padding: 12px; border-radius: 8px; border-left: 4px solid #10b981; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <div style="font-weight: bold; color: #1e293b; font-size: 16px;">📁 {file_path}</div>
+                <div style="background: #10b981; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px;">#{i+1}</div>
+            </div>
+            <div style="color: #64748b; font-size: 14px; line-height: 1.5; max-height: 100px; overflow-y: auto;">{content[:200]}{'...' if len(content) > 200 else ''}</div>
+        </div>
+        """
+    
+    if len(documents) > 10:
+        html += f"""
+        <div style="text-align: center; color: #64748b; font-size: 14px; padding: 8px;">
+            ... 还有 {len(documents) - 10} 个文档未显示
+        </div>
+        """
+    
+    html += """
+        </div>
+    </div>
+    """
+    return html
 
 def get_available_documents():
     """获取可用文档列表"""
     if not os.path.exists(DOC_LIBRARY):
         return []
-    
     files = []
     for ext in ['*.md', '*.txt', '*.pdf']:
         files.extend(Path(DOC_LIBRARY).glob(ext))
-    
     return [str(f) for f in files]
 
 def clear_chat():
-    """清空聊天"""
-    return [], {}, ""
+    return [], {}, "", "<p style='text-align:center; color:#999;'>已清空</p>", "<p style='text-align:center; color:#999;'>已清空</p>"
 
 # ===== Gradio界面构建 =====
 with gr.Blocks(
@@ -375,82 +858,69 @@ with gr.Blocks(
     theme=gr.themes.Soft(primary_hue="blue"),
     css=custom_css
 ) as demo:
-    
     gr.HTML("""
     <div class="header-banner">
         <h1>🦙 保险文档智能检索系统</h1>
         <p>基于 LightRAG + LangGraph 的混合检索引擎 | 支持向量检索 + 知识图谱推理</p>
     </div>
     """)
-    
     with gr.Row():
         with gr.Column(scale=3):
             with gr.Accordion("📁 文档库管理", open=True):
                 gr.Markdown("### 索引新文档")
-                
                 file_input = gr.File(
                     label="上传保险条款文档 (支持PDF/MD/TXT)",
                     file_count="multiple",
                     file_types=[".md", ".txt", ".pdf"]
                 )
                 gr.Markdown("📋 支持PDF文件自动解析、Markdown和文本文件直接索引")
-                
                 with gr.Row():
                     index_btn = gr.Button("📄 开始索引", variant="primary", scale=2)
                     refresh_btn = gr.Button("🔍 查看已索引", scale=1)
-                
                 index_output = gr.Textbox(label="索引状态", lines=2, interactive=False)
                 index_metrics = gr.JSON(label="索引统计", visible=True)
-            
             with gr.Accordion("⚙️ 检索配置", open=True):
                 query_mode = gr.Radio(
                     choices=[
-                        ("混合检索 (推荐)", "hybrid"),
-                        ("向量检索", "naive"),
-                        ("局部图谱", "local"),
-                        ("全局图谱", "global")
+                        ("综合检索(推荐)", "mix"),
+                        ("传统向量检索", "naive"),
+                        ("实体聚焦检索", "local"),
+                        ("关系聚焦检索", "global"),
+                        ("混合检索", "hybrid")
                     ],
-                    value="hybrid",
+                    value="mix",
                     label="检索模式"
                 )
-                gr.Markdown("💡 混合模式结合向量相似度和图谱推理")
-
-                # --- 新增: 在UI中添加一个开关来控制 Reranker ---
+                gr.Markdown("💡 Mix模式融合知识图谱和向量检索，提供最全面的检索结果")
                 enable_rerank_checkbox = gr.Checkbox(
                     label="✅ 启用精排 (Rerank)",
-                    value=True,  # 默认开启
+                    value=True,
                     info="对向量检索结果进行二次排序, 提高精度 (仅对混合/向量模式有效)"
                 )
-                # -----------------------------------------------
-                
                 show_context = gr.Checkbox(
                     label="显示原始上下文",
                     value=False
                 )
                 gr.Markdown("📄 展示检索到的完整上下文数据")
-                
                 gr.Markdown("""
                 **📊 检索模式说明:**
-                - **混合检索**: 融合向量召回和图谱推理,准确率最高
-                - **向量检索**: 纯语义相似度匹配,速度快
-                - **局部图谱**: 基于实体关系的邻域搜索
-                - **全局图谱**: 全图推理,适合复杂关联查询
+                - **综合检索**: 融合知识图谱和向量检索，提供最全面的检索结果
+                - **传统向量检索**: 纯语义相似度匹配，速度快
+                - **实体聚焦检索**: 基于实体关系的邻域搜索
+                - **关系聚焦检索**: 全图推理，适合复杂关联查询
+                - **混合检索**: 结合local和global两种策略
                 """)
-        
-        # 右侧：查询交互区
         with gr.Column(scale=7):
             gr.Markdown("### 💬 智能问答")
-            
             chatbot = gr.Chatbot(
                 label="对话历史",
-                height=450,
+                height=400,
                 type="messages",
                 avatar_images=(
                     "https://api.dicebear.com/7.x/initials/svg?seed=User",
                     "https://api.dicebear.com/7.x/bottts/svg?seed=AI"
                 )
             )
-            
             with gr.Row():
                 query_input = gr.Textbox(
                     label="输入问题",
@@ -459,32 +929,39 @@ with gr.Blocks(
                     scale=8
                 )
                 query_btn = gr.Button("🔍 查询", variant="primary", scale=1)
-            
             with gr.Row():
                 clear_btn = gr.Button("🗑️ 清空对话")
                 export_btn = gr.Button("💾 导出结果")
-            
-            # 检索指标展示
             with gr.Accordion("📊 检索质量指标", open=False):
                 retrieval_metrics = gr.JSON(label="实时指标")
-            
-            context_display = gr.Markdown(label="原始上下文", visible=True)
-    
-    # 示例问题
+            # ===== 新增: 可视化标签页 =====
+            with gr.Tabs():
+                with gr.Tab("🕸️ 知识图谱"):
+                    kg_visualization = gr.HTML(
+                        label="知识图谱可视化",
+                        value="<p style='text-align:center; color:#999;'>执行查询后将显示知识图谱</p>"
+                    )
+                with gr.Tab("📄 文档详情"):
+                    docs_visualization = gr.HTML(
+                        label="精排文档详情",
+                        value="<p style='text-align:center; color:#999;'>执行查询后将显示文档详情</p>"
+                    )
+                with gr.Tab("📝 原始上下文"):
+                    context_display = gr.Markdown(
+                        label="原始上下文",
+                        value="执行查询后将显示原始上下文"
+                    )
     gr.Examples(
         examples=[
-            # [问题, 模式, 显示上下文, 是否精排]
             ["什么情况下保险公司会豁免保险费?", "hybrid", False, True],
             ["犹豫期是多长时间?解除合同有什么后果?", "hybrid", True, True],
-            ["全残的定义包括哪些情况?", "local", False, True], # Rerank 对图谱模式无效，但仍需占位
+            ["全残的定义包括哪些情况?", "local", False, True],
             ["保险责任和责任免除有什么区别?", "global", False, True],
             ["投保人年龄错误会如何处理?", "naive", False, True],
         ],
         inputs=[query_input, query_mode, show_context, enable_rerank_checkbox],
         label="💡 示例问题 (点击快速测试)"
     )
-    
-    # 底部信息栏
     gr.HTML("""
     <div style="text-align: center; margin-top: 30px; padding: 20px; background: #f8fafc; border-radius: 8px;">
         <p style="color: #64748b; font-size: 0.9em;">
@@ -494,53 +971,46 @@ with gr.Blocks(
         </p>
     </div>
     """)
-    
     # ===== 事件绑定 =====
-    
-    # 索引事件
     index_btn.click(
         fn=index_documents_async,
         inputs=[file_input],
         outputs=[index_output, index_metrics]
     )
-    
-    # 查询事件
     query_btn.click(
         fn=query_knowledge_async,
         inputs=[query_input, query_mode, show_context, enable_rerank_checkbox, chatbot],
-        outputs=[chatbot, retrieval_metrics, context_display]
+        outputs=[chatbot, retrieval_metrics, context_display, kg_visualization, docs_visualization]
+    ).then(
+        fn=lambda: "",
+        outputs=[query_input]
     ).then(
         fn=lambda: "",
         outputs=[query_input]
     )
-    
+    btn = gr.Button("生成KG")
+    kg_out  = gr.HTML()
+    btn.click(fn=generate_graph_callback, inputs=[], outputs=[kg_out])
     query_input.submit(
         fn=query_knowledge_async,
         inputs=[query_input, query_mode, show_context, enable_rerank_checkbox, chatbot],
-        outputs=[chatbot, retrieval_metrics, context_display]
+        outputs=[chatbot, retrieval_metrics, context_display, kg_visualization, docs_visualization]
     ).then(
         fn=lambda: "",
         outputs=[query_input]
     )
-    
     clear_btn.click(
         fn=clear_chat,
-        outputs=[chatbot, retrieval_metrics, context_display]
+        outputs=[chatbot, retrieval_metrics, context_display, kg_visualization, docs_visualization]
     )
-    
-    # 导出对话
     def export_conversation(history):
         if not history:
             return "⚠️ 无对话记录"
-        
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         filename = f"conversation_export_{timestamp}.json"
-        
         with open(filename, 'w', encoding='utf-8') as f:
             json.dump(history, f, ensure_ascii=False, indent=2)
-        
         return f"✅ 已导出至: {filename}"
-    
     export_btn.click(
         fn=export_conversation,
         inputs=[chatbot],
@@ -549,14 +1019,11 @@ with gr.Blocks(
 
 # ===== 启动逻辑 =====
 async def startup():
-    """启动时初始化Agent"""
     print("=" * 60)
     print("🚀 正在启动保险文档RAG检索系统...")
     print("=" * 60)
-    
     init_result = await initialize_agent()
     print(f"初始化结果: {init_result}")
-    
     if agent_instance:
         print("\n✅ Agent初始化成功")
         print(f"📂 工作目录: {WORKING_DIR}")
@@ -573,7 +1040,7 @@ if __name__ == "__main__":
     demo.queue().launch(
         server_name="127.0.0.1",
         server_port=7860,
-        share=False,
+        share=True,
         debug=True,
         show_error=True
     )

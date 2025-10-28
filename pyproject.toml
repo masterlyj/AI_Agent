@@ -1,50 +1,59 @@
 [project]
 name = "ai-agent"
 version = "0.1.0"
-description = "Add your description here"
+description = "AI Agent with Knowledge Graph RAG capabilities"
 readme = "README.md"
 requires-python = ">=3.11"
 
 # --- 核心依赖 ---
+# 基础框架和工具
 dependencies = [
+    # LangChain 生态
     "langchain-community>=0.3.30",
     "langchain-text-splitters>=0.3.11",
     "langgraph>=0.6.8",
     "langchain-openai>=0.3.27",
     "langchain-google-genai>=2.1.12",
     "langchain-ollama>=0.3.10",
-    "nano-vectordb>=0.0.4.3",
-    "networkx>=3.5",
     "langchain-deepseek>=0.1.4",
-    "json-repair>=0.52.0",
+    "langchain-huggingface>=0.3.1",
+    # 向量数据库
+    "nano-vectordb>=0.0.4.3",
+    # 图数据库
+    "networkx>=3.5",
+    # 机器学习框架
     "transformers>=4.57.0",
     "torch>=2.8.0",
+    "sentence-transformers>=5.1.1", # reranker 必需/embedding 可选
+    # 注意：如需 GPU 加速，请手动安装 CUDA 版本的 PyTorch：
+    # uv add torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+    # BCE 中文embedding/reranker
     "bcembedding>=0.1.3",
-]
-
-# --- 可选依赖 ---
-# 按功能分组
-[project.optional-dependencies]
-local_embeddings = [
-    "langchain-huggingface>=0.3.1",
-    "sentence-transformers>=5.1.1",
-]
-vectorstore = [
-    "faiss-cpu>=1.12.0",
-]
-loaders = [
-    "pymupdf>=1.26.4",
-    "arxiv>=2.2.0",
-    "beautifulsoup4>=4.14.2",
-]
-ui = [
+    # 工具库
+    "json-repair>=0.52.0",
+    # 用户界面
     "gradio>=5.49.0",
 ]
 
+# --- 可选依赖 ---
+# 按功能模块分组
+[project.optional-dependencies]
+
+# 向量存储后端
+vectorstore = [
+    "faiss-cpu>=1.12.0",
+]
+
+# 文档加载器
+loaders = [
+    "pymupdf>=1.26.4",      # PDF解析
+    "arxiv>=2.2.0",         # arXiv论文下载
+    "beautifulsoup4>=4.14.2", # HTML解析
+]
+
+
 # 完整依赖
 all = [
-    "ai-agent[local_embeddings]",
     "ai-agent[vectorstore]",
     "ai-agent[loaders]",
-    "ai-agent[ui]",
 ]

@@ -1,6 +1,6 @@
 import asyncio
 import os
-from typing import List, Optional
+from typing import List, Optional, Dict
 #导入 Reranker 模块
 from .reranker import RerankerModel
 from .light_graph_rag import LightRAG
@@ -23,6 +23,8 @@ class RAGAgent:
         self.querying_graph = None
         self.smart_indexer: Optional[SmartDocumentIndexer] = None
         self.reranker: Optional[RerankerModel] = None
+        self.langchain_llm = None
+        self.rerank_top_k = 20
 
     @classmethod
     async def create(cls, working_dir: str = "data/rag_storage", rerank_config: dict = None):
@@ -31,7 +33,11 @@ class RAGAgent:
         os.makedirs(working_dir, exist_ok=True)
         
         # === 1. 获取 LangChain LLM 实例 ===
-        langchain_llm = get_llm()  # 自动选择 DeepSeek / Gemini
+        langchain_llm = get_llm() 
+        
+        # LLM 实例
+        instance.langchain_llm = langchain_llm
+        logger.info(f"✅ LangChain LLM 已加载用于问答生成")
         
         # === 2. 包装为 LightRAG 兼容的异步函数 ===
         llm_func = create_lightrag_compatible_complete(
@@ -56,15 +62,18 @@ class RAGAgent:
             langchain_embedder,
             embedding_dim=1024
         )
-        #初始化 Reranker 模型
+        
+        # 初始化 Reranker 模型
         if rerank_config and rerank_config.get("enabled", False):
             logger.info("🔧 初始化 Reranker 模型...")
             try:
                 instance.reranker = RerankerModel(
                     model_name_or_path=rerank_config.get("model"),
-                    device=rerank_config.get("device")
+                    device=rerank_config.get("device"),
+                    top_k=rerank_config.get("top_k", 20)
                 )
-                logger.info("✅ Reranker 模型加载完成。")
+                # 保存 top_k 配置
+                logger.info(f"✅ Reranker 模型加载完成 (top_k={instance.rerank_top_k})")
             except Exception as e:
                 logger.error(f"❌ 加载 Reranker 模型失败: {e}")
                 instance.reranker = None
@@ -153,15 +162,23 @@ class RAGAgent:
         logger.info(f"📌 索引流程结束: {result['status_message']}")
         return result
 
-    async def query(self, question: str, mode: str = "hybrid", enable_rerank: bool = True):
+    async def query(
+        self, 
+        question: str, 
+        mode: str = "mix", 
+        enable_rerank: bool = True,
+        chat_history: List[Dict] = None
+    ):
         """通过 LangGraph 查询流程查询知识图谱
         
         Args:
             question: 查询问题
-            mode: 查询模式 (naive, local, global, hybrid)
+            mode: 查询模式 (naive, local, global, hybrid, mix)
+            enable_rerank: 是否启用精排
+            chat_history: 对话历史 [{"role": "user/assistant", "content": "..."}]
         
         Returns:
-            包含 context 和 answer 的字典
+            包含 context, answer, chat_history 的字典
         """
         from .state import QueryState
         
@@ -170,7 +187,14 @@ class RAGAgent:
             "working_dir": self.working_dir,
             "query": question,
             "query_mode": mode,
+            "llm": self.langchain_llm,  # 传入 LLM 实例
             "reranker": self.reranker if enable_rerank else None,
+            "rerank_top_k": self.rerank_top_k,  # 传入 top_k 配置
+            "chat_history": chat_history or [],  # 传入对话历史
+            "retrieved_docs": [],
+            "retrieved_entities": [],
+            "retrieved_relationships": [],
+            "final_docs": [],
             "context": {},
             "answer": ""
         }
@@ -178,7 +202,13 @@ class RAGAgent:
         result = await self.querying_graph.ainvoke(initial_query_state)
         
         logger.info(f"🔍 查询流程完成 (mode={mode})")
-        return result
+        
+        # 返回结果（包含更新后的对话历史）
+        return {
+            "answer": result.get("answer", ""),
+            "context": result.get("context", {}),
+            "chat_history": result.get("chat_history", [])
+        }
 
 
 # --- Main ---
@@ -189,9 +219,22 @@ async def main():
     # 索引文档
     await agent.index_documents(["data/inputs/111002_tk.md"])
     
-    # 查询
-    result = await agent.query("这份保险条款的主要内容是什么?", mode="hybrid")
-    print("\n🤖 答案:", result)
+    # 第一轮查询
+    result1 = await agent.query(
+        "这份保险条款的主要内容是什么?", 
+        mode="hybrid",
+        enable_rerank=True
+    )
+    print("\n🤖 第一轮答案:", result1["answer"])
+    
+    # 第二轮查询（带对话历史）
+    result2 = await agent.query(
+        "那犹豫期是多长时间?",
+        mode="hybrid", 
+        enable_rerank=True,
+        chat_history=result1["chat_history"]  # 传入对话历史
+    )
+    print("\n🤖 第二轮答案:", result2["answer"])
 
 
 if __name__ == "__main__":

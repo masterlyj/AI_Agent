@@ -2352,9 +2352,9 @@ class LightRAG:
                     system_prompt=system_prompt,
                 )
             elif param.mode == "bypass":
-                # Bypass mode: directly use LLM without knowledge retrieval
+                # 绕过模式：直接使用大语言模型（LLM），不进行知识检索
                 use_llm_func = param.model_func or global_config["llm_model_func"]
-                # Apply higher priority (8) to entity/relation summary tasks
+                # 为实体/关系摘要任务设置更高的优先级（8）
                 use_llm_func = partial(use_llm_func, _priority=8)
 
                 param.stream = True if param.stream is None else param.stream

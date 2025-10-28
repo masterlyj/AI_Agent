@@ -1,5 +1,5 @@
-from typing import Dict, Any
-#新增Document导入
+from typing import Dict, Any, TypedDict, Literal, Optional, List
+from pathlib import Path
 from langchain_core.documents import Document
 from .light_graph_rag import LightRAG
 from .state import IndexingState, QueryState
@@ -43,24 +43,19 @@ class WorkflowNodes:
         logger.info("--- 运行节点：retrieve_context ---")
         try:
             query = state["query"]
-            query_mode = state.get("query_mode", "hybrid")
-            # # 🔧 调试日志：检查 state 中的关键信息
-            # logger.info(f"📦 State 信息:")
-            # logger.info(f"   - query: {query}")
-            # logger.info(f"   - query_mode: {query_mode}")
-            # logger.info(f"   - reranker 存在: {'reranker' in state}")
-            # logger.info(f"   - reranker 值: {state.get('reranker')}")
+            query_mode = state.get("query_mode", "mix")
             
-            # 调用 LightRAG 的 aquery_data 方法，它只检索数据而不调用 LLM
-            # 我们检索更多的文档（例如 20 个）以供精排
             logger.info(f"正在以 '{query_mode}' 模式为查询进行粗排检索...")
             retrieval_result = await self.rag.aquery_data(
                 query,
-                param=QueryParam(mode=query_mode, chunk_top_k=20)
+                param=QueryParam(mode=query_mode, chunk_top_k=40)
             )
             
-            # 从返回的结构化数据中提取文档块 (chunks)
-            retrieved_chunks_data = retrieval_result.get("data", {}).get("chunks", [])
+            # 从返回的结构化数据中提取所有信息
+            data = retrieval_result.get("data", {})
+            retrieved_chunks_data = data.get("chunks", [])
+            retrieved_entities = data.get("entities", [])
+            retrieved_relationships = data.get("relationships", [])
             
             # 将字典格式的 chunks 转换为 LangChain 的 Document 对象，以便后续处理
             retrieved_docs = [
@@ -74,17 +69,50 @@ class WorkflowNodes:
                 ) for chunk in retrieved_chunks_data
             ]
             
-            logger.info(f"✅ 粗排检索到 {len(retrieved_docs)} 个文档块。")
+            logger.info(f"✅ 粗排检索完成:")
+            logger.info(f"   - 文档块: {len(retrieved_docs)} 个")
+            logger.info(f"   - 实体: {len(retrieved_entities)} 个")
+            logger.info(f"   - 关系: {len(retrieved_relationships)} 条")
             
-            # 将原始文档列表放入 state，传递给 rerank 节点
+            # # 打印实体信息
+            # if retrieved_entities:
+            #     logger.info("\n" + "=" * 60)
+            #     logger.info("📊 检索到的实体")
+            #     logger.info("=" * 60)
+            #     for idx, entity in enumerate(retrieved_entities[:5], 1):  # 只显示前5个
+            #         logger.info(f"  [{idx}] {entity.get('entity_name', '未知')}")
+            #         logger.info(f"      类型: {entity.get('entity_type', '未知')}")
+            #         logger.info(f"      描述: {entity.get('description', '无')[:100]}")
+            #     if len(retrieved_entities) > 5:
+            #         logger.info(f"  ... 及其他 {len(retrieved_entities) - 5} 个实体")
+            #     logger.info("=" * 60 + "\n")
+            
+            # # 打印关系信息
+            # if retrieved_relationships:
+            #     logger.info("\n" + "=" * 60)
+            #     logger.info("🔗 检索到的关系")
+            #     logger.info("=" * 60)
+            #     for idx, rel in enumerate(retrieved_relationships[:5], 1):  # 只显示前5条
+            #         logger.info(f"  [{idx}] {rel.get('src_id', '?')} → {rel.get('tgt_id', '?')}")
+            #         logger.info(f"      关系: {rel.get('description', '无')[:100]}")
+            #         logger.info(f"      权重: {rel.get('weight', 0):.2f}")
+            #     if len(retrieved_relationships) > 5:
+            #         logger.info(f"  ... 及其他 {len(retrieved_relationships) - 5} 条关系")
+            #     logger.info("=" * 60 + "\n")
+            
+            # 将原始文档列表和知识图谱信息放入 state，传递给 rerank 节点
             return {
-                "retrieved_docs": retrieved_docs
+                "retrieved_docs": retrieved_docs,
+                "retrieved_entities": retrieved_entities,
+                "retrieved_relationships": retrieved_relationships
             }
             
         except Exception as e:
             logger.error(f"❌ 上下文检索失败: {e}")
             return {
-                "retrieved_docs": []  # 出错时返回空列表
+                "retrieved_docs": [],
+                "retrieved_entities": [],
+                "retrieved_relationships": []
             }
         
     async def rerank_context(self, state: QueryState) -> Dict[str, Any]:
@@ -145,8 +173,8 @@ class WorkflowNodes:
                 logger.info(f"      内容: {content_snippet}")
             logger.info("=" * 60 + "\n")
             
-            # 从 reranker 配置中获取 top_k，如果没有则默认为 3
-            top_k = getattr(reranker, 'rerank_top_k', 3)
+            # 从 reranker 配置中获取 top_k，如果没有则默认为 20
+            top_k = getattr(reranker, 'rerank_top_k', 20)
             final_docs = reranked_docs[:top_k]
             
             logger.info(f"✅ 精排完成，选取 Top {len(final_docs)} 文档传递给生成节点。")
@@ -161,80 +189,131 @@ class WorkflowNodes:
             logger.warning("⚠️ 精排失败，使用原始检索文档。")
             return {"final_docs": docs_to_rerank}
 
-    # --- 步骤3: 修改 generate_answer 节点，使其只负责生成 ---
-    async def generate_answer(self, state: QueryState) -> Dict[str, Any]:
+    async def generate_answer(self, state: "QueryState") -> Dict[str, Any]:
         """
         节点: 基于精排后的上下文生成最终答案。
-        这个节点不再执行任何检索。
+        使用 LangChain LLM，支持多轮对话。
         """
-        logger.info("--- 运行节点：generate_answer (生成答案) ---")
+        logger.info("--- 运行节点:generate_answer (生成答案) ---")
         try:
             query = state["query"]
-            # 从 state 中获取由 rerank 节点提供的最终文档
             final_docs = state.get("final_docs", [])
+            retrieved_entities = state.get("retrieved_entities", [])
+            retrieved_relationships = state.get("retrieved_relationships", [])
+            chat_history = state.get("chat_history", [])  # 获取对话历史
+            llm = state.get("llm")  # 获取 LLM 实例
             
-            if not final_docs:
+            if not llm:
+                raise ValueError("❌ LLM 实例未在 state 中配置")
+            
+            if not final_docs and not retrieved_entities and not retrieved_relationships:
                 logger.warning("⚠️ 没有上下文可供生成答案。")
                 return {
-                    "answer": "抱歉，根据可用信息我无法回答您的问题。",
+                    "answer": "抱歉,根据可用信息我无法回答您的问题。",
+                    "chat_history": chat_history + [
+                        {"role": "user", "content": query},
+                        {"role": "assistant", "content": "抱歉,根据可用信息我无法回答您的问题。"}
+                    ],
                     "context": {
                         "raw_context": "",
                         "query_mode": state.get("query_mode", "hybrid"),
                     }
                 }
 
-            # 将最终文档格式化为高质量的上下文字符串
-            context_parts = []
-            for idx, doc in enumerate(final_docs, 1):
-                rerank_score = doc.metadata.get('rerank_score', 'N/A')
-                score_str = f"{rerank_score:.4f}" if isinstance(rerank_score, float) else str(rerank_score)
-                
-                context_parts.append(
-                    f"【文档 {idx}】\n"
-                    f"来源: {doc.metadata.get('file_path', '未知')}\n"
-                    f"置信度: {score_str}\n"
-                    f"内容:\n{doc.page_content}\n"
-                )
+            # ==================== 标准化知识图谱上下文 ====================
+            kg_context = self._format_knowledge_graph(retrieved_entities, retrieved_relationships)
             
-            context_str = "\n" + ("-" * 60 + "\n").join(context_parts)
+            # ==================== 标准化文档上下文 ====================
+            doc_context = self._format_documents(final_docs)
             
-            # 构建发送给 LLM 的提示词
-            system_prompt = f'''你是一个专业的保险文档问答助手。
-                请根据下面提供的、经过精排的"相关上下文"来回答用户的问题。
-                这些文档已按相关性从高到低排序，请优先使用置信度高的信息。
-            回答时请：
-                1. 基于提供的上下文进行准确回答
-                2. 使用清晰、专业的语气
-                3. 如果可能，引用具体的文档来源
-                4. 如果上下文中没有足够信息，请直接告知
+            # ==================== 构建完整上下文 ====================
+            full_context = ""
+            if kg_context:
+                full_context += "# 📊 知识图谱信息\n\n" + kg_context + "\n"
+            if doc_context:
+                full_context += "# 📄 相关条款文档\n\n" + doc_context
+            
+            # ==================== 构建保险领域专用提示词 ====================
+            system_prompt = """你是一位专业的保险咨询顾问，擅长解读保险条款、理赔规则和产品说明。
 
-                --- 相关上下文 ---
-                    {context_str}
-                --- 上下文结束 ---
-            '''
+**你的职责:**
+1. 基于知识图谱中的实体关系理解保险业务逻辑
+2. 结合文档原文提供准确的条款解释
+3. 用清晰易懂的语言解答客户疑问
+
+**回答原则:**
+- **准确性优先**: 严格依据提供的保险条款和知识图谱
+- **结构化表达**: 使用分点、分段的方式组织答案
+- **引用来源**: 在关键信息后标注来源实体或条款
+- **风险提示**: 涉及免责条款时需特别强调
+- **诚实表达**: 信息不足时明确告知,不可臆测
+
+**回答格式建议:**
+1. 直接回答核心问题
+2. 列举关键条款和依据
+3. 补充注意事项或限制条件
+"""
             
-            logger.info("🤖 开始调用 LLM 生成答案...")
+            # ==================== 构建消息列表（包含对话历史）====================
+            logger.info("🤖 开始调用 LangChain LLM 生成答案...")
+            logger.info(f"📊 上下文统计:")
+            logger.info(f"   - 实体: {len(retrieved_entities)} 个")
+            logger.info(f"   - 关系: {len(retrieved_relationships)} 条")
+            logger.info(f"   - 文档: {len(final_docs)} 个")
+            logger.info(f"   - 对话历史: {len(chat_history)} 轮")
             
-            # 使用 'bypass' 模式调用 aquery_llm，这会跳过 LightRAG 内部的检索
-            # 直接将我们的 system_prompt 和 query 发送给 LLM
-            result = await self.rag.aquery_llm(
-                query,
-                param=QueryParam(mode="bypass"),  # 关键: 跳过内部检索
-                system_prompt=system_prompt       # 关键: 注入我们的上下文
-            )
+            messages = [{"role": "system", "content": system_prompt}]
             
-            # 从返回的复杂字典中提取最终答案
-            answer = result.get("llm_response", {}).get("content", "生成答案时出错，未收到有效回复。")
+            # 添加对话历史
+            for turn in chat_history:
+                messages.append({
+                    "role": turn["role"],
+                    "content": turn["content"]
+                })
+            
+            # 添加当前查询（包含上下文）
+            user_message = f"""请基于以下保险知识库信息回答问题:
+
+{full_context}
+
+**用户问题:** {query}"""
+            
+            messages.append({"role": "user", "content": user_message})
+            
+            # 调用 LangChain LLM
+            try:
+                response = await llm.ainvoke(messages)
+                answer = response.content
+            except Exception as e:
+                logger.error(f"❌ LLM 调用失败: {e}")
+                answer = f"生成答案时出错: {str(e)}"
+            
+            # 🆕 更新对话历史
+            new_history = chat_history + [
+                {"role": "user", "content": query},
+                {"role": "assistant", "content": answer}
+            ]
             
             logger.info(f"✅ 答案生成完成 (长度: {len(answer)} 字符)")
             
             return {
                 "answer": answer,
+                "chat_history": new_history,  # 返回更新后的对话历史
                 "context": {
-                    "raw_context": context_str,
+                    "raw_context": full_context,
                     "query_mode": state.get("query_mode", "hybrid"),
                     "num_docs_used": len(final_docs),
-                    "rerank_enabled": state.get("reranker") is not None
+                    "num_entities": len(retrieved_entities),
+                    "num_relationships": len(retrieved_relationships),
+                    "rerank_enabled": state.get("reranker") is not None,
+                    "entities": retrieved_entities,  # 传递给前端可视化
+                    "relationships": retrieved_relationships,  # 传递给前端可视化
+                    "documents": [
+                        {
+                            "content": doc.page_content,
+                            "metadata": doc.metadata
+                        } for doc in final_docs
+                    ]
                 }
             }
             
@@ -244,5 +323,60 @@ class WorkflowNodes:
             logger.error(traceback.format_exc())
             return {
                 "answer": f"生成答案时出错: {str(e)}",
+                "chat_history": chat_history,
                 "context": {}
             }
+
+    def _format_knowledge_graph(self, entities: List[Dict], relationships: List[Dict]) -> str:
+        """标准化格式化知识图谱上下文"""
+        if not entities and not relationships:
+            return ""
+        
+        kg_parts = []
+        
+        # 格式化实体
+        if entities:
+            kg_parts.append("## 🏷️ 相关实体\n")
+            for idx, entity in enumerate(entities[:10], 1):  # 限制前10个
+                name = entity.get('entity_name', '未知')
+                type_ = entity.get('entity_type', '未知类型')
+                desc = entity.get('description', '无描述')
+                
+                kg_parts.append(f"**[{idx}] {name}** `{type_}`\n")
+                kg_parts.append(f"  └─ {desc}\n\n")
+        
+        # 格式化关系
+        if relationships:
+            kg_parts.append("## 🔗 实体关系\n")
+            for idx, rel in enumerate(relationships[:10], 1):  # 限制前10条
+                src = rel.get('src_id', '?')
+                tgt = rel.get('tgt_id', '?')
+                desc = rel.get('description', '无描述')
+                weight = rel.get('weight', 0)
+                
+                kg_parts.append(f"**[{idx}]** {src} ➜ {tgt} `权重:{weight:.2f}`\n")
+                kg_parts.append(f"  └─ {desc}\n\n")
+        
+        return "".join(kg_parts)
+
+    def _format_documents(self, documents: List[Document]) -> str:
+        """标准化格式化文档上下文"""
+        if not documents:
+            return ""
+        
+        doc_parts = []
+        
+        for idx, doc in enumerate(documents, 1):
+            rerank_score = doc.metadata.get('rerank_score', 'N/A')
+            score_str = f"{rerank_score:.4f}" if isinstance(rerank_score, float) else str(rerank_score)
+            chunk_id = doc.metadata.get('chunk_id', '未知')
+            file_path = doc.metadata.get('file_path', '未知来源')
+            
+            doc_parts.append(f"### 📑 文档片段 {idx}\n")
+            doc_parts.append(f"- **来源文件:** {Path(file_path).name}\n")
+            doc_parts.append(f"- **片段ID:** {chunk_id}\n")
+            doc_parts.append(f"- **相关度评分:** {score_str}\n")
+            doc_parts.append(f"\n**内容:**\n```\n{doc.page_content}\n```\n\n")
+            doc_parts.append("---\n\n")
+        
+        return "".join(doc_parts)
