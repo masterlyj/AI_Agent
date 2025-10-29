@@ -6,29 +6,35 @@ import base64
 from datetime import datetime
 from typing import Dict, Any, List
 from pathlib import Path
+from dotenv import load_dotenv
 
 from .agent import RAGAgent
 from .utils import logger
 
-# ===== 全局配置 =====
-WORKING_DIR = "data/rag_storage"
-DOC_LIBRARY = "data/inputs"
+# 加载环境变量
+load_dotenv()
 
-#新增reranker配置
-# RERANK_CONFIG = {
-#     "enabled": True,
-#     "model": "maidalun1020/bce-reranker-base_v1",  # 支持 HuggingFace 模型名或本地路径
-#     "device": None,  # 仅 HuggingFace 使用
-#     "top_k": 3
-# }
+# ===== 全局配置（从环境变量读取） =====
+WORKING_DIR = os.getenv("WORKING_DIR", "data/rag_storage")
+DOC_LIBRARY = os.getenv("DOC_LIBRARY", "data/inputs")
 
-# 本地模型加载示例（可选配置）
-RERANK_CONFIG = {
-    "enabled": True,
-    "model": "D:/Codes/modelscope/bce-reranker-base_v1",  # 本地模型路径
-    "device": None,  # 指定GPU设备
-    "top_k": 20
-}
+# Rerank 配置（从环境变量读取）
+def get_rerank_config():
+    """从环境变量读取 Rerank 配置"""
+    enabled = os.getenv("RERANK_ENABLED", "false").lower() == "true"
+    
+    if not enabled:
+        return None
+    
+    return {
+        "enabled": True,
+        "model": os.getenv("RERANK_MODEL", "maidalun1020/bce-reranker-base_v1").strip(),
+        "device": os.getenv("RERANK_DEVICE", "").strip() or None,
+        "top_k": int(os.getenv("RERANK_TOP_K", "20")),
+        "use_fp16": os.getenv("RERANK_USE_FP16", "false").lower() == "true"
+    }
+
+RERANK_CONFIG = get_rerank_config()
 
 # ===== 自定义CSS样式 =====
 custom_css = """
@@ -232,9 +238,22 @@ async def index_documents_async(file_paths: List[str], progress=gr.Progress()):
         logger.error(f"索引失败: {e}")
         return f"❌ 索引失败: {str(e)}", {}
 
-# ===== 生成知识图谱网络可视化HTML =====
+# ===== 加载HTML模板 =====
 import base64, json
 
+# 全局模板缓存
+_html_templates = None
+
+def load_html_templates():
+    """加载HTML模板配置"""
+    global _html_templates
+    if _html_templates is None:
+        template_path = Path(__file__).parent / "html_templates.json"
+        with open(template_path, 'r', encoding='utf-8') as f:
+            _html_templates = json.load(f)
+    return _html_templates
+
+# ===== 生成知识图谱网络可视化HTML =====
 def create_knowledge_graph_html(entities, relationships, iframe_height=800):
     """
     ✅ 可直接在 Gradio 中使用的知识图谱可视化组件。
@@ -242,253 +261,68 @@ def create_knowledge_graph_html(entities, relationships, iframe_height=800):
     - 节点点击显示详细信息
     - WARN 信息单独展示，不干扰图谱主视图
     """
-    page_html = f"""<!doctype html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <title>Knowledge Graph Visualization</title>
-  <style>
-    html, body {{
-      height: 100%; margin: 0; padding: 0;
-      font-family: Arial, Helvetica, sans-serif;
-      background-color: #fafafa;
-      display: flex; flex-direction: row;
-    }}
-    #network {{
-      flex: 1;
-      height: 100vh;
-      border-right: 1px solid #ddd;
-    }}
-    #sidebar {{
-      width: 300px;
-      background: #fff;
-      border-left: 1px solid #ddd;
-      padding: 12px;
-      box-sizing: border-box;
-      overflow-y: auto;
-    }}
-    #sidebar h3 {{
-      margin-top: 0;
-      color: #333;
-    }}
-    .info-item {{
-      font-size: 13px;
-      margin-bottom: 8px;
-      word-break: break-all;
-    }}
-    #log {{
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      height: 120px;
-      background: rgba(30,30,30,0.9);
-      color: #eee;
-      font-size: 12px;
-      font-family: monospace;
-      overflow-y: auto;
-      padding: 8px;
-      box-sizing: border-box;
-    }}
-  </style>
-  <script src="https://unpkg.com/vis-network@9.1.2/dist/vis-network.min.js"></script>
-</head>
-<body>
-  <div id="network"></div>
-  <div id="sidebar">
-    <h3>实体详情</h3>
-    <div id="entityDetails">点击节点查看详细信息</div>
-  </div>
-  <pre id="log"></pre>
-
-  <script>
-  (function() {{
-    const dataFromPy = {json.dumps({'entities': entities, 'relationships': relationships}, ensure_ascii=False)};
-    const log = msg => {{
-      const el = document.getElementById('log');
-      el.textContent += '\\n' + msg;
-      el.scrollTop = el.scrollHeight;
-      console.log(msg);
-    }};
-
-    const nodes = [];
-    const name2id = {{}};
-    const typeColorMap = {{}};
-
-    // 动态生成颜色（根据类型数量自动分配）
-    const palette = [
-      "#e57373","#64b5f6","#81c784","#fff176","#ba68c8",
-      "#4db6ac","#ffb74d","#9575cd","#7986cb","#f06292"
-    ];
-    const getColor = (type) => {{
-      if (!typeColorMap[type]) {{
-        const keys = Object.keys(typeColorMap);
-        typeColorMap[type] = palette[keys.length % palette.length];
-      }}
-      return typeColorMap[type];
-    }};
-
-    // 创建节点
-    (dataFromPy.entities || []).forEach((ent, i) => {{
-      const id = i + 1;
-      const name = (ent.entity_name || ent.name || ("Entity_"+i)).trim();
-      const type = (ent.entity_type || "Unknown").trim();
-      const desc = (ent.description || "无描述").toString();
-      const color = getColor(type);
-      name2id[name] = id;
-
-      nodes.push({{
-        id,
-        label: name,
-        title: type,
-        color: {{ background: color, border: "#555" }},
-        data: {{
-          name,
-          type,
-          description: desc,
-          source_id: ent.source_id || "",
-          file_path: ent.file_path || "",
-          created_at: ent.created_at || ""
-        }}
-      }});
-    }});
-
-    // 创建边
-    const edges = [];
-    (dataFromPy.relationships || []).forEach((rel) => {{
-      const src = (rel.src_id || rel.source || "").trim();
-      const tgt = (rel.tgt_id || rel.target || "").trim();
-      const from = name2id[src];
-      const to = name2id[tgt];
-      if (!from || !to) {{
-        log("⚠️ WARN: 关系未匹配实体: " + JSON.stringify({{src, tgt}}));
-        return;
-      }}
-      edges.push({{
-        from,
-        to,
-        label: (rel.keywords || "").toString().slice(0, 30),
-        arrows: "to",
-        color: {{ color: "#999" }},
-        font: {{ align: "middle", size: 10 }}
-      }});
-    }});
-
-    // 初始化图
-    const container = document.getElementById("network");
-    const data = {{
-      nodes: new vis.DataSet(nodes),
-      edges: new vis.DataSet(edges)
-    }};
-    const options = {{
-      nodes: {{
-        shape: "dot",
-        size: 18,
-        font: {{ size: 14, color: "#222" }},
-        borderWidth: 1
-      }},
-      edges: {{
-        smooth: true,
-        color: {{ color: "#aaa" }},
-        arrows: {{ to: {{ enabled: true }} }}
-      }},
-      physics: {{
-        stabilization: true,
-        barnesHut: {{ gravitationalConstant: -8000 }}
-      }},
-      interaction: {{ hover: true }}
-    }};
-    const network = new vis.Network(container, data, options);
-    log("✅ 初始化完成: 节点数 " + nodes.length + "，边数 " + edges.length);
-
-    // 点击节点显示详细信息
-    const sidebar = document.getElementById("entityDetails");
-    network.on("click", function(params) {{
-      if (params.nodes.length === 0) return;
-      const nodeId = params.nodes[0];
-      const node = data.nodes.get(nodeId);
-      if (node && node.data) {{
-        const info = node.data;
-        sidebar.innerHTML = `
-          <div class='info-item'><b>名称：</b>${{info.name}}</div>
-          <div class='info-item'><b>类型：</b>${{info.type}}</div>
-          <div class='info-item'><b>描述：</b>${{info.description}}</div>
-          <div class='info-item'><b>来源 chunk：</b>${{info.source_id}}</div>
-          <div class='info-item'><b>文档路径：</b>${{info.file_path}}</div>
-          <div class='info-item'><b>创建时间：</b>${{info.created_at}}</div>
-        `;
-      }}
-    }});
-  }})();
-  </script>
-</body>
-</html>"""
-
+    templates = load_html_templates()
+    kg_template = templates['knowledge_graph']
+    
+    # 准备数据
+    data_json = json.dumps({'entities': entities, 'relationships': relationships}, ensure_ascii=False)
+    
+    # 生成脚本内容
+    script_content = kg_template['script_template'].replace('{{data_json}}', data_json)
+    
+    # 生成完整HTML
+    page_html = kg_template['template'].replace('{{iframe_height}}', str(iframe_height))
+    page_html = page_html.replace('{{script_content}}', script_content)
+    
+    # Base64编码
     b64 = base64.b64encode(page_html.encode("utf-8")).decode("ascii")
-    iframe_html = f'<iframe src="data:text/html;base64,{b64}" style="width:100%;height:{iframe_height}px;border:none;"></iframe>'
+    iframe_html = f'<iframe src="data:text/html;base64,{b64}" style="width:100%;height:{iframe_height}px;border:none;display:block;" frameborder="0"></iframe>'
     return iframe_html
 
 
 def create_documents_html(documents: List[Dict]) -> str:
     """创建文档详情可视化HTML"""
-    if not documents:
-        return "<p style='text-align:center; color:#666; padding:40px;'>暂无文档数据</p>"
+    import html as html_module
     
+    templates = load_html_templates()
+    
+    if not documents:
+        return templates['empty_state']['no_documents']
+    
+    # 生成文档卡片
     docs_html = []
+    card_template = templates['document_card']['template']
+    
     for idx, doc in enumerate(documents, 1):
         content = doc.get('content', '')
         metadata = doc.get('metadata', {})
         
-        file_path = metadata.get('file_path', '未知来源')
-        chunk_id = metadata.get('chunk_id', '未知')
+        # HTML 转义，防止特殊字符显示异常
+        file_path = html_module.escape(metadata.get('file_path', '未知来源'))
+        chunk_id = html_module.escape(str(metadata.get('chunk_id', '未知')))
+        reference_id = html_module.escape(str(metadata.get('reference_id', 'N/A')))
+        content_escaped = html_module.escape(content)
+        
         rerank_score = metadata.get('rerank_score', 0)
-        reference_id = metadata.get('reference_id', 'N/A')
+        score_percent = f"{(rerank_score * 100):.2f}%" if isinstance(rerank_score, float) else "0.00%"
         
-        score_percent = (rerank_score * 100) if isinstance(rerank_score, float) else 0
+        # 替换模板占位符
+        card_html = (card_template
+                    .replace('{{idx}}', str(idx))
+                    .replace('{{file_path}}', file_path)
+                    .replace('{{chunk_id}}', chunk_id)
+                    .replace('{{score_percent}}', score_percent)
+                    .replace('{{reference_id}}', reference_id)
+                    .replace('{{content}}', content_escaped))
         
-        docs_html.append(f"""
-        <div style='background:#f8fafc; border:2px solid #10b981; border-radius:10px; 
-                    padding:20px; margin-bottom:15px; box-shadow:0 2px 8px rgba(0,0,0,0.1);'>
-            <div style='display:flex; align-items:center; gap:12px; margin-bottom:12px;'>
-                <div style='background:#10b981; color:white; width:35px; height:35px; 
-                            border-radius:50%; display:flex; align-items:center; 
-                            justify-content:center; font-weight:bold;'>{idx}</div>
-                <div style='flex:1;'>
-                    <div style='font-weight:bold; color:#065f46; font-size:15px;'>
-                        📁 {file_path}
-                    </div>
-                    <div style='margin-top:6px; display:flex; gap:10px; flex-wrap:wrap;'>
-                        <span style='background:#dbeafe; color:#1e40af; padding:4px 10px; 
-                                     border-radius:6px; font-size:12px;'>🔖 {chunk_id}</span>
-                        <span style='background:#fef3c7; color:#d97706; padding:4px 10px; 
-                                     border-radius:6px; font-size:12px; font-weight:600;'>
-                            📈 相关度: {score_percent:.2f}%
-                        </span>
-                        <span style='background:#f3e8ff; color:#7c3aed; padding:4px 10px; 
-                                     border-radius:6px; font-size:12px;'>
-                            🆔 {reference_id}
-                        </span>
-                    </div>
-                </div>
-            </div>
-            <div style='background:white; padding:15px; border-radius:8px; 
-                        border:1px solid #e5e7eb; margin-top:12px;'>
-                <div style='color:#1f2937; line-height:1.8; white-space:pre-wrap; font-size:14px;'>
-                    {content}
-                </div>
-            </div>
-        </div>
-        """)
+        docs_html.append(card_html)
     
-    html = f"""
-    <div style='padding:20px; max-height:650px; overflow-y:auto; font-family:"Microsoft YaHei", sans-serif;'>
-        <h3 style='color:#047857; margin-bottom:20px; display:flex; align-items:center;'>
-            <span style='font-size:24px; margin-right:10px;'>📄</span>
-            精排文档详情 - {len(documents)} 个文档片段
-        </h3>
-        {''.join(docs_html)}
-    </div>
-    """
+    # 生成容器HTML
+    container_template = templates['document_container']['template']
+    html = (container_template
+           .replace('{{doc_count}}', str(len(documents)))
+           .replace('{{docs_html}}', ''.join(docs_html)))
+    
     return html
 
 def generate_graph_callback(*args, **kwargs):
@@ -511,6 +345,7 @@ async def query_knowledge_async(
     query_mode: str,
     show_context: bool,
     enable_rerank: bool,
+    rerank_top_k: int,
     chat_history: List
 ):
     """异步查询知识库"""
@@ -521,21 +356,11 @@ async def query_knowledge_async(
         yield chat_history, {}, "", "", ""
         return
     try:
-        logger.info(f"🔍 查询: {question} (mode={query_mode}, rerank={'启用' if enable_rerank else '禁用'})")
+        logger.info(f"🔍 查询: {question} (mode={query_mode}, rerank={'启用' if enable_rerank else '禁用'}, top_k={rerank_top_k})")
         
         # 添加加载状态
-        loading_html = """
-        <div style="display: flex; justify-content: center; align-items: center; height: 400px; flex-direction: column;">
-            <div class="loading-spinner" style="width: 50px; height: 50px; border: 5px solid #f3f3f3; border-top: 5px solid #3b82f6; border-radius: 50%; animation: spin 1s linear infinite;"></div>
-            <p style="margin-top: 20px; color: #666;">正在查询知识库，请稍候...</p>
-            <style>
-                @keyframes spin {
-                    0% { transform: rotate(0deg); }
-                    100% { transform: rotate(360deg); }
-                }
-            </style>
-        </div>
-        """
+        templates = load_html_templates()
+        loading_html = templates['empty_state']['loading']
         
         # 返回加载状态，然后执行查询
         yield chat_history, {}, "", loading_html, ""
@@ -544,7 +369,8 @@ async def query_knowledge_async(
         result = await agent_instance.query(
             question=question,
             mode=query_mode,
-            enable_rerank=enable_rerank
+            enable_rerank=enable_rerank,
+            rerank_top_k=rerank_top_k
         )
         answer = result.get("answer", "无答案")
         context_data = result.get("context", {})
@@ -570,6 +396,7 @@ async def query_knowledge_async(
             "关系数量": len(relationships),
             "文档片段": len(documents),
             "精排状态": rerank_status,
+            "精排Top-K": rerank_top_k if enable_rerank else "N/A",
             "上下文长度": len(raw_context)
         }
         formatted_context = ""
@@ -647,8 +474,10 @@ def extract_metrics_from_context(raw_context: str, mode: str) -> Dict:
 
 def format_context_display(raw_context: str) -> str:
     """格式化上下文用于显示"""
+    templates = load_html_templates()
+    
     if not raw_context:
-        return "<div style='text-align:center; color:#999; padding:40px;'>📭 暂无上下文数据</div>"
+        return templates['empty_state']['no_context']
     
     # 尝试解析JSON格式的上下文
     try:
@@ -668,20 +497,10 @@ def format_context_display(raw_context: str) -> str:
         pass
     
     # 如果不是JSON格式，使用原始显示方式
-    return f"""
-    <div style="font-family: 'Microsoft YaHei', sans-serif; padding: 16px; background: #f8fafc; border-radius: 8px;">
-        <div style="display: flex; align-items: center; margin-bottom: 20px;">
-            <h3 style="margin: 0; color: #1e293b; font-size: 20px;">📄 原始上下文</h3>
-            <div style="margin-left: auto; background: #3b82f6; color: white; padding: 6px 12px; border-radius: 20px; font-size: 14px; font-weight: bold;">
-                {len(raw_context)} 字符
-            </div>
-        </div>
-        <details style="margin-top: 16px;">
-            <summary style="cursor: pointer; color: #3b82f6; font-weight: bold; padding: 8px; background: white; border-radius: 6px; border: 1px solid #e2e8f0;">点击展开/折叠原始上下文</summary>
-            <pre style="margin-top: 12px; padding: 16px; background: white; border-radius: 6px; border: 1px solid #e2e8f0; overflow-x: auto; font-size: 14px; line-height: 1.6;">{raw_context}</pre>
-        </details>
-    </div>
-    """
+    raw_template = templates['context_display']['raw_context_template']
+    return (raw_template
+           .replace('{{char_count}}', str(len(raw_context)))
+           .replace('{{content}}', raw_context))
 
 def _create_context_html(entities: List[Dict], relationships: List[Dict]) -> str:
     """创建实体和关系的HTML显示"""
@@ -850,7 +669,9 @@ def get_available_documents():
     return [str(f) for f in files]
 
 def clear_chat():
-    return [], {}, "", "<p style='text-align:center; color:#999;'>已清空</p>", "<p style='text-align:center; color:#999;'>已清空</p>"
+    templates = load_html_templates()
+    cleared_html = templates['empty_state']['cleared']
+    return [], {}, "", cleared_html, cleared_html
 
 # ===== Gradio界面构建 =====
 with gr.Blocks(
@@ -896,6 +717,14 @@ with gr.Blocks(
                     label="✅ 启用精排 (Rerank)",
                     value=True,
                     info="对向量检索结果进行二次排序, 提高精度 (仅对混合/向量模式有效)"
+                )
+                rerank_top_k_slider = gr.Slider(
+                    minimum=1,
+                    maximum=50,
+                    value=20,
+                    step=1,
+                    label="📊 精排Top-K文档数",
+                    info="精排后返回的文档数量，数值越大返回结果越多但可能引入噪声"
                 )
                 show_context = gr.Checkbox(
                     label="显示原始上下文",
@@ -953,13 +782,13 @@ with gr.Blocks(
                     )
     gr.Examples(
         examples=[
-            ["什么情况下保险公司会豁免保险费?", "hybrid", False, True],
-            ["犹豫期是多长时间?解除合同有什么后果?", "hybrid", True, True],
-            ["全残的定义包括哪些情况?", "local", False, True],
-            ["保险责任和责任免除有什么区别?", "global", False, True],
-            ["投保人年龄错误会如何处理?", "naive", False, True],
+            ["什么情况下保险公司会豁免保险费?", "hybrid", False, True, 20],
+            ["犹豫期是多长时间?解除合同有什么后果?", "hybrid", True, True, 15],
+            ["全残的定义包括哪些情况?", "local", False, True, 10],
+            ["保险责任和责任免除有什么区别?", "global", False, True, 20],
+            ["投保人年龄错误会如何处理?", "naive", False, True, 20],
         ],
-        inputs=[query_input, query_mode, show_context, enable_rerank_checkbox],
+        inputs=[query_input, query_mode, show_context, enable_rerank_checkbox, rerank_top_k_slider],
         label="💡 示例问题 (点击快速测试)"
     )
     gr.HTML("""
@@ -979,7 +808,7 @@ with gr.Blocks(
     )
     query_btn.click(
         fn=query_knowledge_async,
-        inputs=[query_input, query_mode, show_context, enable_rerank_checkbox, chatbot],
+        inputs=[query_input, query_mode, show_context, enable_rerank_checkbox, rerank_top_k_slider, chatbot],
         outputs=[chatbot, retrieval_metrics, context_display, kg_visualization, docs_visualization]
     ).then(
         fn=lambda: "",
@@ -993,7 +822,7 @@ with gr.Blocks(
     btn.click(fn=generate_graph_callback, inputs=[], outputs=[kg_out])
     query_input.submit(
         fn=query_knowledge_async,
-        inputs=[query_input, query_mode, show_context, enable_rerank_checkbox, chatbot],
+        inputs=[query_input, query_mode, show_context, enable_rerank_checkbox, rerank_top_k_slider, chatbot],
         outputs=[chatbot, retrieval_metrics, context_display, kg_visualization, docs_visualization]
     ).then(
         fn=lambda: "",

@@ -1,0 +1,170 @@
+# ======== LLM 大语言模型配置 ========
+# 可选值: google_genai | deepseek
+# 如果不设置，会按优先级自动选择 (DeepSeek > Google)
+LLM_PROVIDER=deepseek
+
+# LLM 模型名称
+# Google: gemini-2.5-flash, gemini-1.5-pro, etc.
+# DeepSeek: deepseek-chat, deepseek-reasoner, etc.
+LLM_MODEL=gemini-2.5-flash
+
+# LLM 温度参数 (0-1, 0 表示确定性最强)
+LLM_TEMPERATURE=0
+
+# Google Gemini API Key
+GOOGLE_API_KEY=your_google_api_key_here
+
+# DeepSeek API Key
+DEEPSEEK_API_KEY=your_deepseek_api_key_here
+
+# DeepSeek API Base URL (一般不需要修改)
+LLM_BASE_URL=https://api.deepseek.com/v1
+
+# ======== Embedding 嵌入模型配置 ========
+# 可选值: hf | ollama | vllm
+EMBEDDING_TYPE=ollama
+
+# --- HuggingFace 本地/远程模型配置 ---
+# 模型名称或本地路径 (例如: BAAI/bge-m3 或 /path/to/local/model)
+HF_EMBEDDING_MODEL_NAME=BAAI/bge-m3
+# 设备 (留空自动检测, 或指定 cuda, cpu, cuda:0 等)
+HF_EMBEDDING_DEVICE=
+# 是否信任远程代码
+HF_EMBEDDING_TRUST_REMOTE_CODE=false
+# 是否显示进度条
+HF_EMBEDDING_SHOW_PROGRESS=false
+# 是否启用多进程
+HF_EMBEDDING_MULTI_PROCESS=false
+
+# --- Ollama 模型配置 ---
+OLLAMA_EMBEDDING_MODEL=qwen3-embedding:0.6b
+OLLAMA_BASE_URL=http://localhost:11434
+
+# --- vLLM / OpenAI 兼容接口配置 ---
+VLLM_EMBEDDING_MODEL=text-embedding-3-large
+VLLM_BASE_URL=http://localhost:8000/v1
+VLLM_API_KEY=EMPTY
+
+# Embedding 向量维度 (需要与实际模型匹配)
+EMBEDDING_DIM=1024
+
+# ======== Rerank 精排模型配置 ========
+# 是否启用精排
+RERANK_ENABLED=false
+
+# Rerank 模型名称或本地路径
+# HuggingFace: maidalun1020/bce-reranker-base_v1, BAAI/bge-reranker-v2-m3
+# 本地路径: /path/to/local/reranker/model
+RERANK_MODEL=maidalun1020/bce-reranker-base_v1
+
+# 设备 (留空自动检测, 或指定 cpu, cuda, cuda:0 等)
+RERANK_DEVICE=
+
+# 精排后返回的 Top K 文档数
+RERANK_TOP_K=15
+
+# 是否使用 FP16 精度 (可加速推理)
+RERANK_USE_FP16=false
+
+# ======== 服务器配置 ========
+# Gunicorn 工作进程数
+WORKERS=2
+
+# Gunicorn 服务超时时间（秒）
+TIMEOUT=300
+
+# 知识图谱允许的最大节点数
+MAX_GRAPH_NODES=1000
+
+# ======== 信息抽取配置 ========
+# 文档处理默认使用的语言
+SUMMARY_LANGUAGE=Chinese
+
+# 默认最多梳理轮次（实体抽取时的迭代次数）
+MAX_GLEANING=1
+
+# 实体类型列表（JSON数组格式）
+# 示例: ["Person", "Organization", "Location", "Event", "Concept"]
+ENTITY_TYPES=["Person", "Creature", "Organization", "Location", "Event", "Concept", "Method", "Content", "Data", "Artifact", "NaturalObject"]
+
+# ======== LLM 总结配置 ========
+# 描述片段数量达到该值则触发 LLM 总结
+FORCE_LLM_SUMMARY_ON_MERGE=8
+
+# 触发 LLM 总结时允许的最大描述令牌数量
+SUMMARY_MAX_TOKENS=1200
+
+# 推荐的 LLM 输出摘要字数（单位：token）
+SUMMARY_LENGTH_RECOMMENDED=600
+
+# 总结时传给 LLM 的最大上下文 token 数
+SUMMARY_CONTEXT_SIZE=12000
+
+# ======== 查询和检索配置 ========
+# 全局召回数（向量检索返回的最大结果数）
+TOP_K=40
+
+# 文档片段召回 top-K
+CHUNK_TOP_K=20
+
+# 实体最大 token 数（上下文中实体描述的最大 token）
+MAX_ENTITY_TOKENS=6000
+
+# 关系描述最大 token 数（上下文中关系描述的最大 token）
+MAX_RELATION_TOKENS=8000
+
+# LLM 单轮最大可处理 token 数（包括系统提示、实体、关系和文档片段）
+MAX_TOTAL_TOKENS=30000
+
+# 向量检索相似度阈值（cosine similarity）
+COSINE_THRESHOLD=0.2
+
+# 相关文档片段默认数量（从单个实体或关系获取的相关片段数）
+RELATED_CHUNK_NUMBER=5
+
+# 知识片段选择方法（VECTOR: 基于向量相似度, WEIGHT: 基于权重）
+KG_CHUNK_PICK_METHOD=VECTOR
+
+# ======== 重排序配置 ========
+# 最小 rerank 分数（精排后过滤片段的最小分数阈值）
+MIN_RERANK_SCORE=0.0
+
+# ======== 异步处理配置 ========
+# 最大异步执行数量
+MAX_ASYNC=4
+
+# 最大并发插入操作数（向向量数据库插入数据时的并发数）
+MAX_PARALLEL_INSERT=2
+
+# ======== 向量嵌入配置 ========
+# 嵌入计算最大异步数量
+EMBEDDING_FUNC_MAX_ASYNC=8
+
+# 嵌入批处理默认数量
+EMBEDDING_BATCH_NUM=10
+
+# ======== 超时配置 ========
+# LLM 超时时间（秒）
+LLM_TIMEOUT=180
+
+# Embedding 超时时间（秒）
+EMBEDDING_TIMEOUT=30
+
+# ======== 日志配置 ========
+# 日志文件最大字节数（默认 10MB）
+LOG_MAX_BYTES=10485760
+
+# 保留日志备份数量
+LOG_BACKUP_COUNT=5
+
+# 默认日志文件名
+LOG_FILENAME=lightrag.log
+
+# ======== 其他配置 ========
+# MinerU PDF 解析 API Key (可选)
+MINERU_API_KEY=
+
+# RAG 工作目录配置
+WORKING_DIR=data/rag_storage
+DOC_LIBRARY=data/inputs
+

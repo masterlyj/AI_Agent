@@ -1,6 +1,8 @@
 import asyncio
 import os
 from typing import List, Optional, Dict
+from dotenv import load_dotenv
+
 #导入 Reranker 模块
 from .reranker import RerankerModel
 from .light_graph_rag import LightRAG
@@ -13,6 +15,9 @@ from .llm import get_llm
 from .async_lanchain_rag_adapter import create_lightrag_compatible_complete
 from .embedding_factory import get_embedder, create_lightrag_embedding_adapter
 from .mineru_integration import SmartDocumentIndexer
+
+#加载环境变量
+load_dotenv()
 
 # --- RAGAgent with Real LLM and Embedding ---
 class RAGAgent:
@@ -46,55 +51,105 @@ class RAGAgent:
             retry_min_wait=4
         )
         
-        # === 3. 获取嵌入模型 ===
-        # 配置 Ollama 嵌入模型 (qwen3_embedding:0.6b)
-        embedding_config = {
-            "type": "ollama",
-            "model": "qwen3-embedding:0.6b",
-            "base_url": "http://localhost:11434"
-        }
+        # === 3. 获取嵌入模型（从 .env 构建配置） ===
+        etype = os.getenv("EMBEDDING_TYPE", "ollama").strip()
+        
+        if etype == "hf":
+            model_name = os.getenv("HF_EMBEDDING_MODEL_NAME", "BAAI/bge-m3").strip()
+            model_kwargs = {}
+            device = os.getenv("HF_EMBEDDING_DEVICE", "").strip()
+            if device:
+                model_kwargs["device"] = device
+            # 可选附加参数
+            if os.getenv("HF_EMBEDDING_TRUST_REMOTE_CODE", "false").lower() == "true":
+                model_kwargs["trust_remote_code"] = True
+            
+            embedding_config = {
+                "type": "hf",
+                "model_name": model_name,
+                "model_kwargs": model_kwargs,
+                "encode_kwargs": {},
+                "show_progress": os.getenv("HF_EMBEDDING_SHOW_PROGRESS", "false").lower() == "true",
+                "multi_process": os.getenv("HF_EMBEDDING_MULTI_PROCESS", "false").lower() == "true",
+            }
+            logger.info(f"✅ 配置 HuggingFace Embedding: {model_name}")
+        
+        elif etype == "ollama":
+            embedding_config = {
+                "type": "ollama",
+                "model": os.getenv("OLLAMA_EMBEDDING_MODEL", "qwen3-embedding:0.6b").strip(),
+                "base_url": os.getenv("OLLAMA_BASE_URL", "http://localhost:11434").strip(),
+            }
+            logger.info(f"✅ 配置 Ollama Embedding: {embedding_config['model']}")
+        
+        elif etype == "vllm":
+            base_url = os.getenv("VLLM_BASE_URL")
+            if not base_url:
+                raise ValueError("EMBEDDING_TYPE=vllm 但未配置 VLLM_BASE_URL")
+            embedding_config = {
+                "type": "vllm",
+                "model": os.getenv("VLLM_EMBEDDING_MODEL", "text-embedding-3-large").strip(),
+                "base_url": base_url.strip(),
+                "api_key": os.getenv("VLLM_API_KEY", "EMPTY"),
+            }
+            logger.info(f"✅ 配置 vLLM Embedding: {embedding_config['model']}")
+        else:
+            raise ValueError(f"未知 EMBEDDING_TYPE: {etype}，支持: hf, ollama, vllm")
         
         # 创建 LangChain 嵌入模型实例
         langchain_embedder = get_embedder(embedding_config)
         
+        # 从 .env 读取 embedding 维度
+        embedding_dim = int(os.getenv("EMBEDDING_DIM", "1024"))
+        
         # 适配为 LightRAG 兼容的嵌入函数
         embedding_func = create_lightrag_embedding_adapter(
             langchain_embedder,
-            embedding_dim=1024
+            embedding_dim=embedding_dim
         )
         
-        # 初始化 Reranker 模型
-        if rerank_config and rerank_config.get("enabled", False):
+        # === 4. 初始化 Reranker 模型（.env 为默认，入参可覆盖） ===
+        env_enabled = os.getenv("RERANK_ENABLED", "false").lower() == "true"
+        cfg = rerank_config or {}
+        enabled = cfg.get("enabled", env_enabled)
+        
+        if enabled:
             logger.info("🔧 初始化 Reranker 模型...")
             try:
+                model = cfg.get("model", os.getenv("RERANK_MODEL", "maidalun1020/bce-reranker-base_v1").strip())
+                device = cfg.get("device", os.getenv("RERANK_DEVICE", "").strip() or None)
+                top_k = int(cfg.get("top_k", os.getenv("RERANK_TOP_K", "20")))
+                use_fp16 = cfg.get("use_fp16", os.getenv("RERANK_USE_FP16", "false").lower() == "true")
+                
                 instance.reranker = RerankerModel(
-                    model_name_or_path=rerank_config.get("model"),
-                    device=rerank_config.get("device"),
-                    top_k=rerank_config.get("top_k", 20)
+                    model_name_or_path=model,
+                    device=device,
+                    top_k=top_k,
+                    use_fp16=use_fp16,
                 )
-                # 保存 top_k 配置
-                logger.info(f"✅ Reranker 模型加载完成 (top_k={instance.rerank_top_k})")
+                instance.rerank_top_k = top_k
+                logger.info(f"✅ Reranker 模型加载完成 (model={model}, top_k={instance.rerank_top_k})")
             except Exception as e:
                 logger.error(f"❌ 加载 Reranker 模型失败: {e}")
                 instance.reranker = None
         
-        # === 4. 创建 LightRAG 实例 ===
+        # === 5. 创建 LightRAG 实例 ===
         instance.rag = LightRAG(
             working_dir=working_dir,
             embedding_func=embedding_func,
             llm_model_func=llm_func,
         )
         
-        # === 5. 初始化存储和流水线 ===
+        # === 6. 初始化存储和流水线 ===
         await instance.rag.initialize_storages()
         await initialize_pipeline_status()
         
-        # === 6. 初始化工作流 ===
+        # === 7. 初始化工作流 ===
         instance.nodes = WorkflowNodes(instance.rag)
         instance.indexing_graph = create_indexing_graph(instance.nodes)
         instance.querying_graph = create_querying_graph(instance.nodes)
         
-        # === 7. 初始化智能文档索引器 ===
+        # === 8. 初始化智能文档索引器 ===
         # 从环境变量获取MinerU API密钥
         mineru_api_key = os.environ.get("MINERU_API_KEY", "")
         instance.smart_indexer = SmartDocumentIndexer(mineru_api_key=mineru_api_key)
@@ -167,7 +222,8 @@ class RAGAgent:
         question: str, 
         mode: str = "mix", 
         enable_rerank: bool = True,
-        chat_history: List[Dict] = None
+        chat_history: List[Dict] = None,
+        rerank_top_k: int = None
     ):
         """通过 LangGraph 查询流程查询知识图谱
         
@@ -176,11 +232,15 @@ class RAGAgent:
             mode: 查询模式 (naive, local, global, hybrid, mix)
             enable_rerank: 是否启用精排
             chat_history: 对话历史 [{"role": "user/assistant", "content": "..."}]
+            rerank_top_k: 精排后返回的文档数量（None 则使用默认配置）
         
         Returns:
             包含 context, answer, chat_history 的字典
         """
         from .state import QueryState
+        
+        # 使用传入的 top_k 或默认值
+        top_k = rerank_top_k if rerank_top_k is not None else self.rerank_top_k
         
         # 构造初始查询状态
         initial_query_state: QueryState = {
@@ -189,7 +249,7 @@ class RAGAgent:
             "query_mode": mode,
             "llm": self.langchain_llm,  # 传入 LLM 实例
             "reranker": self.reranker if enable_rerank else None,
-            "rerank_top_k": self.rerank_top_k,  # 传入 top_k 配置
+            "rerank_top_k": top_k,  # 传入 top_k 配置
             "chat_history": chat_history or [],  # 传入对话历史
             "retrieved_docs": [],
             "retrieved_entities": [],

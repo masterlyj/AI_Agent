@@ -67,5 +67,78 @@
       "processing_start_time": 1760361332,
       "processing_end_time": 1760362077
     }
+  },
+  "tk.md": {
+    "status": "processing",
+    "chunks_count": 10,
+    "chunks_list": [
+      "chunk-ea3f6da912dbf90bb0e29e3b447063d7",
+      "chunk-24fccdc948f657c6ea54ac8eb2caa85c",
+      "chunk-22d93fc311e8c206d2936afc9345079b",
+      "chunk-5212a2deea83adbdc89951b633c4b226",
+      "chunk-87fd6ebff1f72daa9e409226330b69a2",
+      "chunk-0c73d980e7787f1b1127330bfedb55b2",
+      "chunk-066a9520d018d1b477198b19545bab07",
+      "chunk-bd316ec876730105d8a7ecfbbe2a63f7",
+      "chunk-87c8c4d7176b17ab8d1e1de10f4418ec",
+      "chunk-fa2e3bfc6c18be5c5855720f116d9c15"
+    ],
+    "content_summary": "# 利安人寿保险股份有限公司利安传家鑫享终身寿险条款\n\n# 阅读指引\n\n本阅读指引有助于您理解条款，对本合同内容的解释以条款为准。\n\n![](images/73427d1a8f7863572ddcdc343428a10c9b4149e13e4a7f9848e101312ac632bd.jpg)\n\n# 您拥有的重要权益\n\n签收本合同次日起15日（即犹豫期）内您若要求退保，我们全额退还保险费  \n本合同提供的保障在保险责任条款中列明 2.3  \n您有按本合同约定申请保单质押贷款的权利 6.2  \n您...",
+    "content_length": 15433,
+    "created_at": "2025-10-29T13:54:19.850619+00:00",
+    "updated_at": "2025-10-29T13:54:19.890303+00:00",
+    "file_path": "/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/tk.md",
+    "track_id": "insert_20251029_215419_d463074a",
+    "metadata": {
+      "processing_start_time": 1761746059
+    }
+  },
+  "mc.md": {
+    "status": "processed",
+    "chunks_count": 1,
+    "chunks_list": [
+      "chunk-5b24f698b4c3dc63f152c49182d55d74"
+    ],
+    "content_summary": "# 利安人寿保险股份有限公司免除保险人责任条款说明利安传家鑫享终身寿险\n\n# 尊敬的客户：\n\n您好！感谢您选择利安人寿《利安传家鑫享终身寿险》，为维护您的合法权益，请您认真阅读保险条款，其中关于免除保险人责任的内容已在条款中加阴影描述，请您重点关注并阅读。\n\n因下列情形之一导致被保险人身故或全残的，我们不承担给付保险金的责任：\n\n(1)投保人对被保险人的故意杀害、故意伤害；  \n(2)被保险人故意自伤、故意犯罪或者抗拒依法采取的刑事强制措施；  \n(3)被保险人自本合同成立或本合同效力恢复之日起...",
+    "content_length": 677,
+    "created_at": "2025-10-29T13:54:19.850655+00:00",
+    "updated_at": "2025-10-29T13:56:35.892278+00:00",
+    "file_path": "/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/mc.md",
+    "track_id": "insert_20251029_215419_d463074a",
+    "metadata": {
+      "processing_start_time": 1761746059,
+      "processing_end_time": 1761746195
+    }
+  },
+  "sms.md": {
+    "status": "processing",
+    "chunks_count": 6,
+    "chunks_list": [
+      "chunk-1685be5cdac9bfb8d29a978da6e2502c",
+      "chunk-6bc687f93a9d2e4bc10a7094fb026a7c",
+      "chunk-d05176126f0e68a6f3bdc2faae7cc422",
+      "chunk-e2bd47f5bcdd53ca97d61438e645c56c",
+      "chunk-13ec89158909f323fe4f184a067930c8",
+      "chunk-8a9062f11745d00b4d35ed27f63cfca6"
+    ],
+    "content_summary": "# 利安人寿保险股份有限公司\n\n# 利安传家鑫享终身寿险\n\n# 产品说明书\n\n谨致\n\n__________先生/女士\n\n保险顾问：\n\n联系电话：\n\n日期：\n\n# 重要声明：\n\n本产品说明书所载资料，包括投保示例部分，仅供投保人理解保险条款时参考，各项内容均以保险条款约定为准。\n\n# 利安人寿保险股份有限公司\n\n# 利安传家鑫享终身寿险\n\n# 产品说明书\n\n为方便您了解和购买本保险，请您仔细阅读本产品说明书。在本产品说明书中，“您”指投保人，“我们”、“本公司”均指利安人寿保险股份有限公司。\n\n#...",
+    "content_length": 9346,
+    "created_at": "2025-10-29T13:54:19.850650+00:00",
+    "updated_at": "2025-10-29T13:56:36.319285+00:00",
+    "file_path": "/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/sms.md",
+    "track_id": "insert_20251029_215419_d463074a",
+    "metadata": {
+      "processing_start_time": 1761746196
+    }
+  },
+  "flbe.md": {
+    "status": "pending",
+    "content_summary": "# 利安人寿保险股份有限公司\n\n# 利安传家鑫享终身寿险\n\n# 基本保险金额表\n\n（每1000元趸交或年交保险费）\n\n单位：人民币元  \n\n<table><tr><td rowspan=\"2\">年龄</td><td colspan=\"6\">男性</td><td colspan=\"6\">女性</td></tr><tr><td>趸交</td><td>3年交</td><td>5年交</td><td>10年交</td><td>15年交</td><td>20年交</td><td>趸交</td><td>3年...",
+    "content_length": 12499,
+    "created_at": "2025-10-29T13:54:19.850660+00:00",
+    "updated_at": "2025-10-29T13:54:19.850662+00:00",
+    "file_path": "/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/flbe.md",
+    "track_id": "insert_20251029_215419_d463074a",
+    "chunks_list": []
   }
 }

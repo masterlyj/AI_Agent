@@ -47,11 +47,11 @@
     </node>
     <node id="斗殴">
       <data key="d0">斗殴</data>
-      <data key="d1">definition</data>
-      <data key="d2">斗殴是指双方或多方通过拳脚、器械等武力以求制胜的互相攻击或打架行为。该术语在特定条款中有所定义，例如在条款9.13中可查阅其详细说明。在保险语境下，斗殴常被列为责任免除情形之一，无论是投保人斗殴还是被保险人参与斗殴，都可能导致保险公司免除相应责任。对于斗殴行为的认定，通常以司法机关或公安部门出具的法律文件为准。</data>
-      <data key="d3">chunk-f7faf62d3f6a0a3950f6865877caa934&lt;SEP&gt;chunk-9711ce8b36fae5fb4d0da4cc345a5b81&lt;SEP&gt;chunk-8373d6e7a829016bd3ce5dfab89c082e&lt;SEP&gt;chunk-e999db6e32d477ed4dcda8ba66e401ba&lt;SEP&gt;chunk-489329d3a4a922679a86ea0f89adbd06&lt;SEP&gt;chunk-d85279812f2d24c66a7c6a950cf9c3ff&lt;SEP&gt;chunk-2ad4ae27a07f6bbd501e741d75560867&lt;SEP&gt;chunk-df497509d008ae5c9487a82ccec5d65b&lt;SEP&gt;chunk-c5a3dcec68e87ba8c6040bdda3741204</data>
-      <data key="d4">D:\Codes\my_project\AI_Agent\data\inputs\111002_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\b954337edb01672487d8ed6c0d57c18664f8209f6709ad4e4f9af3f345f75eca\111003_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\561641d91eed8898aac879b468761a28b041111850d5c8ac8804035f85c51521\111005_tk.md</data>
-      <data key="d5">1760362044</data>
+      <data key="d1">exclusioncondition</data>
+      <data key="d2">斗殴是指双方或多方通过拳脚、器械等武力以求制胜的互相攻击或打架行为。该术语在特定条款中有所定义，例如在条款9.13中可查阅其详细说明。在保险语境下，斗殴常被列为责任免除情形之一，无论是投保人斗殴还是被保险人参与斗殴，都可能导致保险公司免除相应责任。对于斗殴行为的认定，通常以司法机关或公安部门出具的法律文件为准。&lt;SEP&gt;责任免除情形之一，被保险人斗殴</data>
+      <data key="d3">chunk-9711ce8b36fae5fb4d0da4cc345a5b81&lt;SEP&gt;chunk-2ad4ae27a07f6bbd501e741d75560867&lt;SEP&gt;chunk-f7faf62d3f6a0a3950f6865877caa934&lt;SEP&gt;chunk-c5a3dcec68e87ba8c6040bdda3741204&lt;SEP&gt;chunk-e999db6e32d477ed4dcda8ba66e401ba&lt;SEP&gt;chunk-489329d3a4a922679a86ea0f89adbd06&lt;SEP&gt;chunk-d85279812f2d24c66a7c6a950cf9c3ff&lt;SEP&gt;chunk-df497509d008ae5c9487a82ccec5d65b&lt;SEP&gt;chunk-5b24f698b4c3dc63f152c49182d55d74&lt;SEP&gt;chunk-8373d6e7a829016bd3ce5dfab89c082e</data>
+      <data key="d4">D:\Codes\my_project\AI_Agent\data\inputs\111002_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\b954337edb01672487d8ed6c0d57c18664f8209f6709ad4e4f9af3f345f75eca\111003_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\561641d91eed8898aac879b468761a28b041111850d5c8ac8804035f85c51521\111005_tk.md&lt;SEP&gt;/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/mc.md</data>
+      <data key="d5">1761746176</data>
     </node>
     <node id="毒品">
       <data key="d0">毒品</data>
@@ -63,23 +63,23 @@
     </node>
     <node id="酒后驾驶">
       <data key="d0">酒后驾驶</data>
-      <data key="d1">definition</data>
+      <data key="d1">exclusioncondition</data>
       <data key="d2">酒后驾驶是指饮酒后驾驶机动车的行为。在具体认定上，它特指经检测或鉴定，车辆驾驶人员每百毫升血液中的酒精含量达到或超过一定标准，并被公安机关交通管理部门依据《道路交通安全法》认定为饮酒后驾驶或醉酒后驾驶的行为。
 
-在保险领域，酒后驾驶是一个条款中定义的术语（例如，可能详见条款9.15），并且是被保险人或投保人酒后驾驶机动车时，保险公司责任免除的情形之一。</data>
-      <data key="d3">chunk-f7faf62d3f6a0a3950f6865877caa934&lt;SEP&gt;chunk-9711ce8b36fae5fb4d0da4cc345a5b81&lt;SEP&gt;chunk-8373d6e7a829016bd3ce5dfab89c082e&lt;SEP&gt;chunk-e999db6e32d477ed4dcda8ba66e401ba&lt;SEP&gt;chunk-489329d3a4a922679a86ea0f89adbd06&lt;SEP&gt;chunk-d85279812f2d24c66a7c6a950cf9c3ff&lt;SEP&gt;chunk-2ad4ae27a07f6bbd501e741d75560867&lt;SEP&gt;chunk-df497509d008ae5c9487a82ccec5d65b&lt;SEP&gt;chunk-c5a3dcec68e87ba8c6040bdda3741204</data>
-      <data key="d4">D:\Codes\my_project\AI_Agent\data\inputs\111002_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\b954337edb01672487d8ed6c0d57c18664f8209f6709ad4e4f9af3f345f75eca\111003_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\561641d91eed8898aac879b468761a28b041111850d5c8ac8804035f85c51521\111005_tk.md</data>
-      <data key="d5">1760362054</data>
+在保险领域，酒后驾驶是一个条款中定义的术语（例如，可能详见条款9.15），并且是被保险人或投保人酒后驾驶机动车时，保险公司责任免除的情形之一。&lt;SEP&gt;责任免除情形之一，酒后驾驶机动车</data>
+      <data key="d3">chunk-9711ce8b36fae5fb4d0da4cc345a5b81&lt;SEP&gt;chunk-2ad4ae27a07f6bbd501e741d75560867&lt;SEP&gt;chunk-f7faf62d3f6a0a3950f6865877caa934&lt;SEP&gt;chunk-c5a3dcec68e87ba8c6040bdda3741204&lt;SEP&gt;chunk-e999db6e32d477ed4dcda8ba66e401ba&lt;SEP&gt;chunk-489329d3a4a922679a86ea0f89adbd06&lt;SEP&gt;chunk-d85279812f2d24c66a7c6a950cf9c3ff&lt;SEP&gt;chunk-df497509d008ae5c9487a82ccec5d65b&lt;SEP&gt;chunk-5b24f698b4c3dc63f152c49182d55d74&lt;SEP&gt;chunk-8373d6e7a829016bd3ce5dfab89c082e</data>
+      <data key="d4">D:\Codes\my_project\AI_Agent\data\inputs\111002_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\b954337edb01672487d8ed6c0d57c18664f8209f6709ad4e4f9af3f345f75eca\111003_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\561641d91eed8898aac879b468761a28b041111850d5c8ac8804035f85c51521\111005_tk.md&lt;SEP&gt;/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/mc.md</data>
+      <data key="d5">1761746176</data>
     </node>
     <node id="无合法有效驾驶证驾驶">
       <data key="d0">无合法有效驾驶证驾驶</data>
-      <data key="d1">definition</data>
+      <data key="d1">exclusioncondition</data>
       <data key="d2">“无合法有效驾驶证驾驶”是指驾驶机动车时，驾驶人未取得合法有效的驾驶证件，或其驾驶证已失效的行为。这一概念涵盖了多种具体情形，包括但不仅限于：驾驶人根本未取得驾驶资格；驾驶的车辆类型与驾驶证上准许的车型不符；驾驶证未能通过规定的审验，处于不合格状态；以及持有学习驾驶证的驾驶人在学习驾车过程中，没有合格教练员随车指导，或未按照指定的时间、路线进行学习。
 
-在保险条款中，“无合法有效驾驶证驾驶”通常被明确列为责任免除情形之一。这意味着当投保人或被保险人发生此类行为并导致事故时，保险公司可能不承担赔偿责任。此术语的具体定义和适用范围，通常会在相关保险合同的条款中详细说明，例如条款9.16。</data>
-      <data key="d3">chunk-f7faf62d3f6a0a3950f6865877caa934&lt;SEP&gt;chunk-9711ce8b36fae5fb4d0da4cc345a5b81&lt;SEP&gt;chunk-8373d6e7a829016bd3ce5dfab89c082e&lt;SEP&gt;chunk-e999db6e32d477ed4dcda8ba66e401ba&lt;SEP&gt;chunk-489329d3a4a922679a86ea0f89adbd06&lt;SEP&gt;chunk-d85279812f2d24c66a7c6a950cf9c3ff&lt;SEP&gt;chunk-2ad4ae27a07f6bbd501e741d75560867&lt;SEP&gt;chunk-df497509d008ae5c9487a82ccec5d65b&lt;SEP&gt;chunk-c5a3dcec68e87ba8c6040bdda3741204</data>
-      <data key="d4">D:\Codes\my_project\AI_Agent\data\inputs\111002_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\b954337edb01672487d8ed6c0d57c18664f8209f6709ad4e4f9af3f345f75eca\111003_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\561641d91eed8898aac879b468761a28b041111850d5c8ac8804035f85c51521\111005_tk.md</data>
-      <data key="d5">1760362057</data>
+在保险条款中，“无合法有效驾驶证驾驶”通常被明确列为责任免除情形之一。这意味着当投保人或被保险人发生此类行为并导致事故时，保险公司可能不承担赔偿责任。此术语的具体定义和适用范围，通常会在相关保险合同的条款中详细说明，例如条款9.16。&lt;SEP&gt;责任免除情形之一，无合法有效驾驶证驾驶</data>
+      <data key="d3">chunk-9711ce8b36fae5fb4d0da4cc345a5b81&lt;SEP&gt;chunk-2ad4ae27a07f6bbd501e741d75560867&lt;SEP&gt;chunk-f7faf62d3f6a0a3950f6865877caa934&lt;SEP&gt;chunk-c5a3dcec68e87ba8c6040bdda3741204&lt;SEP&gt;chunk-e999db6e32d477ed4dcda8ba66e401ba&lt;SEP&gt;chunk-489329d3a4a922679a86ea0f89adbd06&lt;SEP&gt;chunk-d85279812f2d24c66a7c6a950cf9c3ff&lt;SEP&gt;chunk-df497509d008ae5c9487a82ccec5d65b&lt;SEP&gt;chunk-5b24f698b4c3dc63f152c49182d55d74&lt;SEP&gt;chunk-8373d6e7a829016bd3ce5dfab89c082e</data>
+      <data key="d4">D:\Codes\my_project\AI_Agent\data\inputs\111002_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\b954337edb01672487d8ed6c0d57c18664f8209f6709ad4e4f9af3f345f75eca\111003_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\561641d91eed8898aac879b468761a28b041111850d5c8ac8804035f85c51521\111005_tk.md&lt;SEP&gt;/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/mc.md</data>
+      <data key="d5">1761746176</data>
     </node>
     <node id="无有效行驶证">
       <data key="d0">无有效行驶证</data>
@@ -124,10 +124,10 @@
     <node id="现金价值">
       <data key="d0">现金价值</data>
       <data key="d1">monetaryamount</data>
-      <data key="d2">现金价值是指保险合同（包括附加险合同）所具有的累积价值。它通常体现为在解除保险合同或退保时，根据精算原理计算并由保险公司退还的金额。此外，现金价值还可用于质押贷款。在被保险人身故时，保险合同的基本保险金额也可能对应有其现金价值。&lt;SEP&gt;保险单所具有的价值&lt;SEP&gt;保险单所具有的价值，详见条款5.1&lt;SEP&gt;保险单所具有的价值，通常体现为解除合同时退还的金额&lt;SEP&gt;保险单在特定时间点所具有的价值</data>
-      <data key="d3">chunk-9711ce8b36fae5fb4d0da4cc345a5b81&lt;SEP&gt;chunk-55bda2f435d8a6bb608246c00a962b6f&lt;SEP&gt;chunk-8373d6e7a829016bd3ce5dfab89c082e&lt;SEP&gt;chunk-34c0c39857834fbade2eb7fa431b5855&lt;SEP&gt;chunk-e999db6e32d477ed4dcda8ba66e401ba&lt;SEP&gt;chunk-1032d36602e9b5f9d17cb8dc0bb0545b&lt;SEP&gt;chunk-489329d3a4a922679a86ea0f89adbd06&lt;SEP&gt;chunk-fc445def0341a1410c983aa0ebb444e1&lt;SEP&gt;chunk-2ac70f56b0a63558d2ef30b9a515f228&lt;SEP&gt;chunk-d85279812f2d24c66a7c6a950cf9c3ff&lt;SEP&gt;chunk-6aeafefd52656224c01b7587c6f96eac&lt;SEP&gt;chunk-df497509d008ae5c9487a82ccec5d65b&lt;SEP&gt;chunk-57b15c9c2e976a5f17cf53960108a69d&lt;SEP&gt;chunk-81f2fe1bbcf18fc40edc7632356edfef&lt;SEP&gt;chunk-c5a3dcec68e87ba8c6040bdda3741204&lt;SEP&gt;chunk-8b3daf65fd9493dd2205736022b25a81</data>
-      <data key="d4">D:\Codes\my_project\AI_Agent\data\inputs\111002_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\b954337edb01672487d8ed6c0d57c18664f8209f6709ad4e4f9af3f345f75eca\111003_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\561641d91eed8898aac879b468761a28b041111850d5c8ac8804035f85c51521\111005_tk.md</data>
-      <data key="d5">1760362036</data>
+      <data key="d2">现金价值是指保险合同（包括附加险合同）所具有的累积价值。它通常体现为在解除保险合同或退保时，根据精算原理计算并由保险公司退还的金额。此外，现金价值还可用于质押贷款。在被保险人身故时，保险合同的基本保险金额也可能对应有其现金价值。&lt;SEP&gt;保险单所具有的价值&lt;SEP&gt;保险单所具有的价值，详见条款5.1&lt;SEP&gt;保险单所具有的价值，通常体现为解除合同时退还的金额&lt;SEP&gt;保险单在特定时间点所具有的价值&lt;SEP&gt;保险单所具有的价值</data>
+      <data key="d3">chunk-81f2fe1bbcf18fc40edc7632356edfef&lt;SEP&gt;chunk-9711ce8b36fae5fb4d0da4cc345a5b81&lt;SEP&gt;chunk-1032d36602e9b5f9d17cb8dc0bb0545b&lt;SEP&gt;chunk-8b3daf65fd9493dd2205736022b25a81&lt;SEP&gt;chunk-c5a3dcec68e87ba8c6040bdda3741204&lt;SEP&gt;chunk-6aeafefd52656224c01b7587c6f96eac&lt;SEP&gt;chunk-55bda2f435d8a6bb608246c00a962b6f&lt;SEP&gt;chunk-e999db6e32d477ed4dcda8ba66e401ba&lt;SEP&gt;chunk-489329d3a4a922679a86ea0f89adbd06&lt;SEP&gt;chunk-d85279812f2d24c66a7c6a950cf9c3ff&lt;SEP&gt;chunk-2ac70f56b0a63558d2ef30b9a515f228&lt;SEP&gt;chunk-34c0c39857834fbade2eb7fa431b5855&lt;SEP&gt;chunk-57b15c9c2e976a5f17cf53960108a69d&lt;SEP&gt;chunk-df497509d008ae5c9487a82ccec5d65b&lt;SEP&gt;chunk-fc445def0341a1410c983aa0ebb444e1&lt;SEP&gt;chunk-5b24f698b4c3dc63f152c49182d55d74&lt;SEP&gt;chunk-8373d6e7a829016bd3ce5dfab89c082e</data>
+      <data key="d4">D:\Codes\my_project\AI_Agent\data\inputs\111002_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\b954337edb01672487d8ed6c0d57c18664f8209f6709ad4e4f9af3f345f75eca\111003_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\561641d91eed8898aac879b468761a28b041111850d5c8ac8804035f85c51521\111005_tk.md&lt;SEP&gt;/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/mc.md</data>
+      <data key="d5">1761746176</data>
     </node>
     <node id="关节永久完全僵硬">
       <data key="d0">关节永久完全僵硬</data>
@@ -620,10 +620,10 @@
     <node id="解除合同">
       <data key="d0">解除合同</data>
       <data key="d1">procedure</data>
-      <data key="d2">解除合同是指终止保险合同的行为。这一行为可由投保人（或申请人）或保险公司发起。具体而言，投保人可以在犹豫期内或在特定条件下终止保险合同；而保险公司则在符合特定法律或合同约定的条件下终止保险合同。无论是哪一方发起，解除合同都必须依法进行。此外，解除合同也常常是触发保险合同现金价值退还的条件之一。</data>
-      <data key="d3">chunk-55bda2f435d8a6bb608246c00a962b6f&lt;SEP&gt;chunk-34c0c39857834fbade2eb7fa431b5855&lt;SEP&gt;chunk-1032d36602e9b5f9d17cb8dc0bb0545b&lt;SEP&gt;chunk-2ac70f56b0a63558d2ef30b9a515f228&lt;SEP&gt;chunk-6aeafefd52656224c01b7587c6f96eac&lt;SEP&gt;chunk-df497509d008ae5c9487a82ccec5d65b&lt;SEP&gt;chunk-57b15c9c2e976a5f17cf53960108a69d&lt;SEP&gt;chunk-8b3daf65fd9493dd2205736022b25a81</data>
-      <data key="d4">D:\Codes\my_project\AI_Agent\data\inputs\111002_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\b954337edb01672487d8ed6c0d57c18664f8209f6709ad4e4f9af3f345f75eca\111003_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\561641d91eed8898aac879b468761a28b041111850d5c8ac8804035f85c51521\111005_tk.md</data>
-      <data key="d5">1760362052</data>
+      <data key="d2">解除合同是指终止保险合同的行为。这一行为可由投保人（或申请人）或保险公司发起。具体而言，投保人可以在犹豫期内或在特定条件下终止保险合同；而保险公司则在符合特定法律或合同约定的条件下终止保险合同。无论是哪一方发起，解除合同都必须依法进行。此外，解除合同也常常是触发保险合同现金价值退还的条件之一。&lt;SEP&gt;解除保险合同的手续</data>
+      <data key="d3">chunk-1032d36602e9b5f9d17cb8dc0bb0545b&lt;SEP&gt;chunk-8b3daf65fd9493dd2205736022b25a81&lt;SEP&gt;chunk-6aeafefd52656224c01b7587c6f96eac&lt;SEP&gt;chunk-55bda2f435d8a6bb608246c00a962b6f&lt;SEP&gt;chunk-2ac70f56b0a63558d2ef30b9a515f228&lt;SEP&gt;chunk-34c0c39857834fbade2eb7fa431b5855&lt;SEP&gt;chunk-57b15c9c2e976a5f17cf53960108a69d&lt;SEP&gt;chunk-df497509d008ae5c9487a82ccec5d65b&lt;SEP&gt;chunk-5b24f698b4c3dc63f152c49182d55d74</data>
+      <data key="d4">D:\Codes\my_project\AI_Agent\data\inputs\111002_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\b954337edb01672487d8ed6c0d57c18664f8209f6709ad4e4f9af3f345f75eca\111003_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\561641d91eed8898aac879b468761a28b041111850d5c8ac8804035f85c51521\111005_tk.md&lt;SEP&gt;/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/mc.md</data>
+      <data key="d5">1761746177</data>
     </node>
     <node id="精算原理">
       <data key="d0">精算原理</data>
@@ -716,10 +716,10 @@
     <node id="利安人寿保险股份有限公司">
       <data key="d0">利安人寿保险股份有限公司</data>
       <data key="d1">insurancecompany</data>
-      <data key="d2">一家提供保险服务的公司，是本附加险合同的“我们”&lt;SEP&gt;利安人寿保险股份有限公司是一家提供人寿保险服务的保险公司。&lt;SEP&gt;本保险条款中指“我们”，是传家福终身寿险的提供方</data>
-      <data key="d3">chunk-d85279812f2d24c66a7c6a950cf9c3ff&lt;SEP&gt;chunk-489329d3a4a922679a86ea0f89adbd06&lt;SEP&gt;chunk-e999db6e32d477ed4dcda8ba66e401ba</data>
-      <data key="d4">D:\Codes\my_project\AI_Agent\data\inputs\111002_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\b954337edb01672487d8ed6c0d57c18664f8209f6709ad4e4f9af3f345f75eca\111003_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\561641d91eed8898aac879b468761a28b041111850d5c8ac8804035f85c51521\111005_tk.md</data>
-      <data key="d5">1760362035</data>
+      <data key="d2">一家提供保险服务的公司，是本附加险合同的“我们”&lt;SEP&gt;利安人寿保险股份有限公司是一家提供人寿保险服务的保险公司。&lt;SEP&gt;本保险条款中指“我们”，是传家福终身寿险的提供方&lt;SEP&gt;利安人寿保险股份有限公司是一家提供人寿保险服务的保险公司</data>
+      <data key="d3">chunk-d85279812f2d24c66a7c6a950cf9c3ff&lt;SEP&gt;chunk-5b24f698b4c3dc63f152c49182d55d74&lt;SEP&gt;chunk-e999db6e32d477ed4dcda8ba66e401ba&lt;SEP&gt;chunk-489329d3a4a922679a86ea0f89adbd06</data>
+      <data key="d4">D:\Codes\my_project\AI_Agent\data\inputs\111002_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\b954337edb01672487d8ed6c0d57c18664f8209f6709ad4e4f9af3f345f75eca\111003_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\561641d91eed8898aac879b468761a28b041111850d5c8ac8804035f85c51521\111005_tk.md&lt;SEP&gt;/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/mc.md</data>
+      <data key="d5">1761746175</data>
     </node>
     <node id="附加豁免保险费定期寿险">
       <data key="d0">附加豁免保险费定期寿险</data>
@@ -836,18 +836,18 @@
     <node id="释义">
       <data key="d0">释义</data>
       <data key="d1">documentsection</data>
-      <data key="d2">合同中对特定术语进行解释的章节&lt;SEP&gt;条款目录中对合同术语进行解释的章节&lt;SEP&gt;对保险条款中重要术语进行解释的章节。&lt;SEP&gt;解释本合同中特定术语含义的部分&lt;SEP&gt;条款目录中的第九部分，对重要术语进行解释&lt;SEP&gt;对本合同中特定术语进行解释和定义的章节。</data>
-      <data key="d3">chunk-f7faf62d3f6a0a3950f6865877caa934&lt;SEP&gt;chunk-55bda2f435d8a6bb608246c00a962b6f&lt;SEP&gt;chunk-e999db6e32d477ed4dcda8ba66e401ba&lt;SEP&gt;chunk-489329d3a4a922679a86ea0f89adbd06&lt;SEP&gt;chunk-d85279812f2d24c66a7c6a950cf9c3ff&lt;SEP&gt;chunk-c31c9d7c108d7d8ecedfb97271f19f3f</data>
-      <data key="d4">D:\Codes\my_project\AI_Agent\data\inputs\111002_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\b954337edb01672487d8ed6c0d57c18664f8209f6709ad4e4f9af3f345f75eca\111003_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\561641d91eed8898aac879b468761a28b041111850d5c8ac8804035f85c51521\111005_tk.md</data>
-      <data key="d5">1760362037</data>
+      <data key="d2">合同中对特定术语进行解释的章节&lt;SEP&gt;条款目录中对合同术语进行解释的章节&lt;SEP&gt;对保险条款中重要术语进行解释的章节。&lt;SEP&gt;解释本合同中特定术语含义的部分&lt;SEP&gt;条款目录中的第九部分，对重要术语进行解释&lt;SEP&gt;对本合同中特定术语进行解释和定义的章节。&lt;SEP&gt;保险条款中术语定义的解释部分</data>
+      <data key="d3">chunk-f7faf62d3f6a0a3950f6865877caa934&lt;SEP&gt;chunk-e999db6e32d477ed4dcda8ba66e401ba&lt;SEP&gt;chunk-55bda2f435d8a6bb608246c00a962b6f&lt;SEP&gt;chunk-489329d3a4a922679a86ea0f89adbd06&lt;SEP&gt;chunk-d85279812f2d24c66a7c6a950cf9c3ff&lt;SEP&gt;chunk-c31c9d7c108d7d8ecedfb97271f19f3f&lt;SEP&gt;chunk-5b24f698b4c3dc63f152c49182d55d74</data>
+      <data key="d4">D:\Codes\my_project\AI_Agent\data\inputs\111002_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\b954337edb01672487d8ed6c0d57c18664f8209f6709ad4e4f9af3f345f75eca\111003_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\561641d91eed8898aac879b468761a28b041111850d5c8ac8804035f85c51521\111005_tk.md&lt;SEP&gt;/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/mc.md</data>
+      <data key="d5">1761746177</data>
     </node>
     <node id="犹豫期">
       <data key="d0">犹豫期</data>
       <data key="d1">policyterm</data>
-      <data key="d2">犹豫期是指投保人在签收保险合同后，自签收次日起，可在特定期限内无条件解除合同的时期。该特定期限通常为10日或15日。在此期间，投保人有权无条件解除保险合同，并要求保险公司全额退还已支付的保险费。</data>
-      <data key="d3">chunk-34c0c39857834fbade2eb7fa431b5855&lt;SEP&gt;chunk-e999db6e32d477ed4dcda8ba66e401ba&lt;SEP&gt;chunk-489329d3a4a922679a86ea0f89adbd06&lt;SEP&gt;chunk-1032d36602e9b5f9d17cb8dc0bb0545b&lt;SEP&gt;chunk-fc445def0341a1410c983aa0ebb444e1&lt;SEP&gt;chunk-d85279812f2d24c66a7c6a950cf9c3ff&lt;SEP&gt;chunk-c5a3dcec68e87ba8c6040bdda3741204&lt;SEP&gt;chunk-8b3daf65fd9493dd2205736022b25a81</data>
-      <data key="d4">D:\Codes\my_project\AI_Agent\data\inputs\111002_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\b954337edb01672487d8ed6c0d57c18664f8209f6709ad4e4f9af3f345f75eca\111003_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\561641d91eed8898aac879b468761a28b041111850d5c8ac8804035f85c51521\111005_tk.md</data>
-      <data key="d5">1760362045</data>
+      <data key="d2">犹豫期是指投保人在签收保险合同后，自签收次日起，可在特定期限内无条件解除合同的时期。该特定期限通常为10日或15日。在此期间，投保人有权无条件解除保险合同，并要求保险公司全额退还已支付的保险费。&lt;SEP&gt;签收合同后10日内可无条件解除合同的期间</data>
+      <data key="d3">chunk-1032d36602e9b5f9d17cb8dc0bb0545b&lt;SEP&gt;chunk-8b3daf65fd9493dd2205736022b25a81&lt;SEP&gt;chunk-c5a3dcec68e87ba8c6040bdda3741204&lt;SEP&gt;chunk-e999db6e32d477ed4dcda8ba66e401ba&lt;SEP&gt;chunk-489329d3a4a922679a86ea0f89adbd06&lt;SEP&gt;chunk-d85279812f2d24c66a7c6a950cf9c3ff&lt;SEP&gt;chunk-34c0c39857834fbade2eb7fa431b5855&lt;SEP&gt;chunk-fc445def0341a1410c983aa0ebb444e1&lt;SEP&gt;chunk-5b24f698b4c3dc63f152c49182d55d74</data>
+      <data key="d4">D:\Codes\my_project\AI_Agent\data\inputs\111002_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\b954337edb01672487d8ed6c0d57c18664f8209f6709ad4e4f9af3f345f75eca\111003_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\561641d91eed8898aac879b468761a28b041111850d5c8ac8804035f85c51521\111005_tk.md&lt;SEP&gt;/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/mc.md</data>
+      <data key="d5">1761746176</data>
     </node>
     <node id="10日">
       <data key="d0">10日</data>
@@ -892,10 +892,10 @@
     <node id="保险责任">
       <data key="d0">保险责任</data>
       <data key="d1">clause</data>
-      <data key="d2">保险责任指的是保险公司根据保险合同的约定，在合同有效的前提下，所承担的各项保障义务和赔付责任。这具体包括了保险公司在符合特定情形和条件时，向被保险人或受益人给付保险金，以及在某些情况下豁免保险费的责任。保险责任明确界定了保险公司承担赔偿或给付义务的情形、条件和范围，其具体内容和条款通常在保险合同中详细列明。</data>
-      <data key="d3">chunk-34c0c39857834fbade2eb7fa431b5855&lt;SEP&gt;chunk-e999db6e32d477ed4dcda8ba66e401ba&lt;SEP&gt;chunk-489329d3a4a922679a86ea0f89adbd06&lt;SEP&gt;chunk-1032d36602e9b5f9d17cb8dc0bb0545b&lt;SEP&gt;chunk-d85279812f2d24c66a7c6a950cf9c3ff&lt;SEP&gt;chunk-2ac70f56b0a63558d2ef30b9a515f228&lt;SEP&gt;chunk-6aeafefd52656224c01b7587c6f96eac&lt;SEP&gt;chunk-c5a3dcec68e87ba8c6040bdda3741204&lt;SEP&gt;chunk-8b3daf65fd9493dd2205736022b25a81</data>
-      <data key="d4">D:\Codes\my_project\AI_Agent\data\inputs\111002_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\b954337edb01672487d8ed6c0d57c18664f8209f6709ad4e4f9af3f345f75eca\111003_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\561641d91eed8898aac879b468761a28b041111850d5c8ac8804035f85c51521\111005_tk.md</data>
-      <data key="d5">1760362045</data>
+      <data key="d2">保险责任指的是保险公司根据保险合同的约定，在合同有效的前提下，所承担的各项保障义务和赔付责任。这具体包括了保险公司在符合特定情形和条件时，向被保险人或受益人给付保险金，以及在某些情况下豁免保险费的责任。保险责任明确界定了保险公司承担赔偿或给付义务的情形、条件和范围，其具体内容和条款通常在保险合同中详细列明。&lt;SEP&gt;规定保险公司承担的保险责任范围</data>
+      <data key="d3">chunk-1032d36602e9b5f9d17cb8dc0bb0545b&lt;SEP&gt;chunk-8b3daf65fd9493dd2205736022b25a81&lt;SEP&gt;chunk-c5a3dcec68e87ba8c6040bdda3741204&lt;SEP&gt;chunk-6aeafefd52656224c01b7587c6f96eac&lt;SEP&gt;chunk-e999db6e32d477ed4dcda8ba66e401ba&lt;SEP&gt;chunk-489329d3a4a922679a86ea0f89adbd06&lt;SEP&gt;chunk-d85279812f2d24c66a7c6a950cf9c3ff&lt;SEP&gt;chunk-2ac70f56b0a63558d2ef30b9a515f228&lt;SEP&gt;chunk-34c0c39857834fbade2eb7fa431b5855&lt;SEP&gt;chunk-5b24f698b4c3dc63f152c49182d55d74</data>
+      <data key="d4">D:\Codes\my_project\AI_Agent\data\inputs\111002_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\b954337edb01672487d8ed6c0d57c18664f8209f6709ad4e4f9af3f345f75eca\111003_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\561641d91eed8898aac879b468761a28b041111850d5c8ac8804035f85c51521\111005_tk.md&lt;SEP&gt;/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/mc.md</data>
+      <data key="d5">1761746176</data>
     </node>
     <node id="责任免除">
       <data key="d0">责任免除</data>
@@ -964,10 +964,10 @@
     <node id="投保人">
       <data key="d0">投保人</data>
       <data key="d1">person</data>
-      <data key="d2">投保人是指与保险公司订立保险合同，并承担支付保险费义务的一方。该方可以是个人，也可以是法人或其他组织等实体或单位。投保人通常是提出保险申请、购买保险合同的主体，因此也被视为保险合同的申请方。在某些保险文本或语境中，“投保人”可能被直接指代为“您”。&lt;SEP&gt;保险条款中指“您”，是与保险公司订立保险合同的一方&lt;SEP&gt;保险合同的当事人之一，指提出保险申请并支付保险费的一方&lt;SEP&gt;保险合同的申请人，负责支付保险费</data>
-      <data key="d3">chunk-f7faf62d3f6a0a3950f6865877caa934&lt;SEP&gt;chunk-9711ce8b36fae5fb4d0da4cc345a5b81&lt;SEP&gt;chunk-55bda2f435d8a6bb608246c00a962b6f&lt;SEP&gt;chunk-34c0c39857834fbade2eb7fa431b5855&lt;SEP&gt;chunk-e999db6e32d477ed4dcda8ba66e401ba&lt;SEP&gt;chunk-489329d3a4a922679a86ea0f89adbd06&lt;SEP&gt;chunk-fc445def0341a1410c983aa0ebb444e1&lt;SEP&gt;chunk-d85279812f2d24c66a7c6a950cf9c3ff&lt;SEP&gt;chunk-6aeafefd52656224c01b7587c6f96eac&lt;SEP&gt;chunk-81f2fe1bbcf18fc40edc7632356edfef&lt;SEP&gt;chunk-c5a3dcec68e87ba8c6040bdda3741204</data>
-      <data key="d4">D:\Codes\my_project\AI_Agent\data\inputs\111002_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\b954337edb01672487d8ed6c0d57c18664f8209f6709ad4e4f9af3f345f75eca\111003_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\561641d91eed8898aac879b468761a28b041111850d5c8ac8804035f85c51521\111005_tk.md</data>
-      <data key="d5">1760362038</data>
+      <data key="d2">投保人是指与保险公司订立保险合同，并承担支付保险费义务的一方。该方可以是个人，也可以是法人或其他组织等实体或单位。投保人通常是提出保险申请、购买保险合同的主体，因此也被视为保险合同的申请方。在某些保险文本或语境中，“投保人”可能被直接指代为“您”。&lt;SEP&gt;保险条款中指“您”，是与保险公司订立保险合同的一方&lt;SEP&gt;保险合同的当事人之一，指提出保险申请并支付保险费的一方&lt;SEP&gt;保险合同的申请人，负责支付保险费&lt;SEP&gt;与保险公司订立保险合同并支付保险费的人</data>
+      <data key="d3">chunk-9711ce8b36fae5fb4d0da4cc345a5b81&lt;SEP&gt;chunk-f7faf62d3f6a0a3950f6865877caa934&lt;SEP&gt;chunk-c5a3dcec68e87ba8c6040bdda3741204&lt;SEP&gt;chunk-6aeafefd52656224c01b7587c6f96eac&lt;SEP&gt;chunk-55bda2f435d8a6bb608246c00a962b6f&lt;SEP&gt;chunk-e999db6e32d477ed4dcda8ba66e401ba&lt;SEP&gt;chunk-489329d3a4a922679a86ea0f89adbd06&lt;SEP&gt;chunk-d85279812f2d24c66a7c6a950cf9c3ff&lt;SEP&gt;chunk-34c0c39857834fbade2eb7fa431b5855&lt;SEP&gt;chunk-81f2fe1bbcf18fc40edc7632356edfef&lt;SEP&gt;chunk-fc445def0341a1410c983aa0ebb444e1&lt;SEP&gt;chunk-5b24f698b4c3dc63f152c49182d55d74</data>
+      <data key="d4">D:\Codes\my_project\AI_Agent\data\inputs\111002_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\b954337edb01672487d8ed6c0d57c18664f8209f6709ad4e4f9af3f345f75eca\111003_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\561641d91eed8898aac879b468761a28b041111850d5c8ac8804035f85c51521\111005_tk.md&lt;SEP&gt;/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/mc.md</data>
+      <data key="d5">1761746177</data>
     </node>
     <node id="合同构成">
       <data key="d0">合同构成</data>
@@ -1124,10 +1124,10 @@
     <node id="年龄和性别确定与错误处理">
       <data key="d0">年龄和性别确定与错误处理</data>
       <data key="d1">clause</data>
-      <data key="d2">规定投保人年龄和性别的申报、确定及错误处理方式&lt;SEP&gt;规定投保人年龄和性别确定及错误处理方式的条款&lt;SEP&gt;规定投保时年龄和性别的确定方法以及发生错误时的处理方式`&lt;SEP&gt;规定被保险人年龄和性别确定及错误处理方式的条款。&lt;SEP&gt;处理被保险人年龄和性别申报错误的情况&lt;SEP&gt;规定年龄和性别确定及错误处理方式，详见条款8.3&lt;SEP&gt;规定被保险人年龄和性别申报及错误处理方式的条款</data>
-      <data key="d3">chunk-55bda2f435d8a6bb608246c00a962b6f&lt;SEP&gt;chunk-34c0c39857834fbade2eb7fa431b5855&lt;SEP&gt;chunk-e999db6e32d477ed4dcda8ba66e401ba&lt;SEP&gt;chunk-489329d3a4a922679a86ea0f89adbd06&lt;SEP&gt;chunk-d85279812f2d24c66a7c6a950cf9c3ff&lt;SEP&gt;chunk-57b15c9c2e976a5f17cf53960108a69d&lt;SEP&gt;chunk-8b3daf65fd9493dd2205736022b25a81</data>
-      <data key="d4">D:\Codes\my_project\AI_Agent\data\inputs\111002_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\b954337edb01672487d8ed6c0d57c18664f8209f6709ad4e4f9af3f345f75eca\111003_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\561641d91eed8898aac879b468761a28b041111850d5c8ac8804035f85c51521\111005_tk.md</data>
-      <data key="d5">1760362037</data>
+      <data key="d2">年龄和性别确定与错误处理是保险合同中规定投保人或被保险人年龄和性别相关事项的条款。该条款明确了投保时年龄和性别的申报要求、具体确定方法，以及当申报信息发生错误时的处理方式。其内容涵盖了对被保险人年龄和性别信息的核实机制，并针对申报错误的情况制定了相应的纠正与处理措施。相关具体规定可参考合同条款中的第8.3节。</data>
+      <data key="d3">chunk-8b3daf65fd9493dd2205736022b25a81&lt;SEP&gt;chunk-e999db6e32d477ed4dcda8ba66e401ba&lt;SEP&gt;chunk-55bda2f435d8a6bb608246c00a962b6f&lt;SEP&gt;chunk-489329d3a4a922679a86ea0f89adbd06&lt;SEP&gt;chunk-d85279812f2d24c66a7c6a950cf9c3ff&lt;SEP&gt;chunk-34c0c39857834fbade2eb7fa431b5855&lt;SEP&gt;chunk-57b15c9c2e976a5f17cf53960108a69d&lt;SEP&gt;chunk-5b24f698b4c3dc63f152c49182d55d74</data>
+      <data key="d4">D:\Codes\my_project\AI_Agent\data\inputs\111002_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\b954337edb01672487d8ed6c0d57c18664f8209f6709ad4e4f9af3f345f75eca\111003_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\561641d91eed8898aac879b468761a28b041111850d5c8ac8804035f85c51521\111005_tk.md&lt;SEP&gt;/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/mc.md</data>
+      <data key="d5">1761746185</data>
     </node>
     <node id="未还款项">
       <data key="d0">未还款项</data>
@@ -1181,11 +1181,11 @@
     </node>
     <node id="全残">
       <data key="d0">全残</data>
-      <data key="d1">definition</data>
-      <data key="d2">本附加险合同所述的完全残疾，包括多种具体情形&lt;SEP&gt;投保人完全残疾的事件，具体情形需参照条款定义。&lt;SEP&gt;指符合本附加险合同约定的完全残疾情形`&lt;SEP&gt;被保险人达到合同约定的完全残疾状态，具体定义见9.6&lt;SEP&gt;条款中定义的术语，详见条款9.6&lt;SEP&gt;指符合合同约定的完全残疾情形&lt;SEP&gt;指双目永久完全失明、两上肢腕关节以上或两下肢踝关节以上缺失等八种情形。</data>
-      <data key="d3">chunk-55bda2f435d8a6bb608246c00a962b6f&lt;SEP&gt;chunk-e999db6e32d477ed4dcda8ba66e401ba&lt;SEP&gt;chunk-489329d3a4a922679a86ea0f89adbd06&lt;SEP&gt;chunk-fc445def0341a1410c983aa0ebb444e1&lt;SEP&gt;chunk-c31c9d7c108d7d8ecedfb97271f19f3f&lt;SEP&gt;chunk-81f2fe1bbcf18fc40edc7632356edfef&lt;SEP&gt;chunk-c5a3dcec68e87ba8c6040bdda3741204</data>
-      <data key="d4">D:\Codes\my_project\AI_Agent\data\inputs\111002_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\561641d91eed8898aac879b468761a28b041111850d5c8ac8804035f85c51521\111005_tk.md</data>
-      <data key="d5">1760362037</data>
+      <data key="d1">benefittype</data>
+      <data key="d2">全残，又称完全残疾，是本附加险合同中所定义的一项术语，具体指被保险人达到合同约定的完全残疾状态。该状态包括双目永久完全失明、两上肢腕关节以上或两下肢踝关节以上缺失等八种具体情形。完全残疾事件的发生是保险公司给付保险金的前提条件，其详细定义和具体情形需参照合同条款第9.6节的规定。</data>
+      <data key="d3">chunk-c5a3dcec68e87ba8c6040bdda3741204&lt;SEP&gt;chunk-e999db6e32d477ed4dcda8ba66e401ba&lt;SEP&gt;chunk-55bda2f435d8a6bb608246c00a962b6f&lt;SEP&gt;chunk-489329d3a4a922679a86ea0f89adbd06&lt;SEP&gt;chunk-c31c9d7c108d7d8ecedfb97271f19f3f&lt;SEP&gt;chunk-81f2fe1bbcf18fc40edc7632356edfef&lt;SEP&gt;chunk-fc445def0341a1410c983aa0ebb444e1&lt;SEP&gt;chunk-5b24f698b4c3dc63f152c49182d55d74</data>
+      <data key="d4">D:\Codes\my_project\AI_Agent\data\inputs\111002_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\561641d91eed8898aac879b468761a28b041111850d5c8ac8804035f85c51521\111005_tk.md&lt;SEP&gt;/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/mc.md</data>
+      <data key="d5">1761746191</data>
     </node>
     <node id="条款1.1">
       <data key="d0">条款1.1</data>
@@ -1838,10 +1838,10 @@
     <node id="被保险人">
       <data key="d0">被保险人</data>
       <data key="d1">person</data>
-      <data key="d2">指保险合同中受保障的对象。&lt;SEP&gt;其生命或身体受保险合同保障的个人&lt;SEP&gt;其人身或财产受保险合同保障的人&lt;SEP&gt;保险合同的当事人之一，指其生命或身体受保险合同保障的人&lt;SEP&gt;其人身受保险合同保障的对象&lt;SEP&gt;其人身或财产受保险合同保障的人</data>
-      <data key="d3">chunk-9711ce8b36fae5fb4d0da4cc345a5b81&lt;SEP&gt;chunk-fc445def0341a1410c983aa0ebb444e1&lt;SEP&gt;chunk-2ac70f56b0a63558d2ef30b9a515f228&lt;SEP&gt;chunk-6aeafefd52656224c01b7587c6f96eac&lt;SEP&gt;chunk-81f2fe1bbcf18fc40edc7632356edfef&lt;SEP&gt;chunk-c5a3dcec68e87ba8c6040bdda3741204</data>
-      <data key="d4">D:\Codes\my_project\AI_Agent\data\inputs\111002_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\b954337edb01672487d8ed6c0d57c18664f8209f6709ad4e4f9af3f345f75eca\111003_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\561641d91eed8898aac879b468761a28b041111850d5c8ac8804035f85c51521\111005_tk.md</data>
-      <data key="d5">1760362048</data>
+      <data key="d2">指保险合同中受保障的对象。&lt;SEP&gt;其生命或身体受保险合同保障的个人&lt;SEP&gt;其人身或财产受保险合同保障的人&lt;SEP&gt;保险合同的当事人之一，指其生命或身体受保险合同保障的人&lt;SEP&gt;其人身受保险合同保障的对象&lt;SEP&gt;其人身或财产受保险合同保障的人&lt;SEP&gt;保险合同保障的对象</data>
+      <data key="d3">chunk-9711ce8b36fae5fb4d0da4cc345a5b81&lt;SEP&gt;chunk-c5a3dcec68e87ba8c6040bdda3741204&lt;SEP&gt;chunk-6aeafefd52656224c01b7587c6f96eac&lt;SEP&gt;chunk-2ac70f56b0a63558d2ef30b9a515f228&lt;SEP&gt;chunk-81f2fe1bbcf18fc40edc7632356edfef&lt;SEP&gt;chunk-fc445def0341a1410c983aa0ebb444e1&lt;SEP&gt;chunk-5b24f698b4c3dc63f152c49182d55d74</data>
+      <data key="d4">D:\Codes\my_project\AI_Agent\data\inputs\111002_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\b954337edb01672487d8ed6c0d57c18664f8209f6709ad4e4f9af3f345f75eca\111003_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\561641d91eed8898aac879b468761a28b041111850d5c8ac8804035f85c51521\111005_tk.md&lt;SEP&gt;/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/mc.md</data>
+      <data key="d5">1761746177</data>
     </node>
     <node id="主险合同被保险人">
       <data key="d0">主险合同被保险人</data>
@@ -2037,11 +2037,11 @@
     </node>
     <node id="身故">
       <data key="d0">身故</data>
-      <data key="d1">event</data>
-      <data key="d2">投保人死亡的事件。&lt;SEP&gt;被保险人死亡的事件&lt;SEP&gt;被保险人死亡&lt;SEP&gt;被保险人死亡的事件</data>
-      <data key="d3">chunk-fc445def0341a1410c983aa0ebb444e1&lt;SEP&gt;chunk-81f2fe1bbcf18fc40edc7632356edfef&lt;SEP&gt;chunk-c5a3dcec68e87ba8c6040bdda3741204&lt;SEP&gt;chunk-1032d36602e9b5f9d17cb8dc0bb0545b</data>
-      <data key="d4">D:\Codes\my_project\AI_Agent\data\inputs\111002_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\b954337edb01672487d8ed6c0d57c18664f8209f6709ad4e4f9af3f345f75eca\111003_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\561641d91eed8898aac879b468761a28b041111850d5c8ac8804035f85c51521\111005_tk.md</data>
-      <data key="d5">1760362047</data>
+      <data key="d1">benefittype</data>
+      <data key="d2">投保人死亡的事件。&lt;SEP&gt;被保险人死亡的事件&lt;SEP&gt;被保险人死亡&lt;SEP&gt;被保险人死亡的事件&lt;SEP&gt;被保险人死亡时保险公司给付保险金的情形</data>
+      <data key="d3">chunk-1032d36602e9b5f9d17cb8dc0bb0545b&lt;SEP&gt;chunk-c5a3dcec68e87ba8c6040bdda3741204&lt;SEP&gt;chunk-81f2fe1bbcf18fc40edc7632356edfef&lt;SEP&gt;chunk-fc445def0341a1410c983aa0ebb444e1&lt;SEP&gt;chunk-5b24f698b4c3dc63f152c49182d55d74</data>
+      <data key="d4">D:\Codes\my_project\AI_Agent\data\inputs\111002_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\b954337edb01672487d8ed6c0d57c18664f8209f6709ad4e4f9af3f345f75eca\111003_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\561641d91eed8898aac879b468761a28b041111850d5c8ac8804035f85c51521\111005_tk.md&lt;SEP&gt;/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/mc.md</data>
+      <data key="d5">1761746177</data>
     </node>
     <node id="附加险合同生效或复效">
       <data key="d0">附加险合同生效或复效</data>
@@ -2102,34 +2102,34 @@
     <node id="故意杀害">
       <data key="d0">故意杀害</data>
       <data key="d1">exclusioncondition</data>
-      <data key="d2">责任免除情形之一，主险被保险人对投保人的故意杀害。</data>
-      <data key="d3">chunk-c5a3dcec68e87ba8c6040bdda3741204</data>
-      <data key="d4">D:\Codes\my_project\AI_Agent\data\inputs\111002_tk.md</data>
-      <data key="d5">1760254558</data>
+      <data key="d2">责任免除情形之一，主险被保险人对投保人的故意杀害。&lt;SEP&gt;责任免除情形之一，投保人对被保险人的故意杀害</data>
+      <data key="d3">chunk-5b24f698b4c3dc63f152c49182d55d74&lt;SEP&gt;chunk-c5a3dcec68e87ba8c6040bdda3741204</data>
+      <data key="d4">D:\Codes\my_project\AI_Agent\data\inputs\111002_tk.md&lt;SEP&gt;/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/mc.md</data>
+      <data key="d5">1761746175</data>
     </node>
     <node id="故意伤害">
       <data key="d0">故意伤害</data>
       <data key="d1">exclusioncondition</data>
-      <data key="d2">责任免除情形之一，主险被保险人对投保人的故意伤害。</data>
-      <data key="d3">chunk-c5a3dcec68e87ba8c6040bdda3741204</data>
-      <data key="d4">D:\Codes\my_project\AI_Agent\data\inputs\111002_tk.md</data>
-      <data key="d5">1760254558</data>
+      <data key="d2">责任免除情形之一，主险被保险人对投保人的故意伤害。&lt;SEP&gt;责任免除情形之一，投保人对被保险人的故意伤害</data>
+      <data key="d3">chunk-5b24f698b4c3dc63f152c49182d55d74&lt;SEP&gt;chunk-c5a3dcec68e87ba8c6040bdda3741204</data>
+      <data key="d4">D:\Codes\my_project\AI_Agent\data\inputs\111002_tk.md&lt;SEP&gt;/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/mc.md</data>
+      <data key="d5">1761746175</data>
     </node>
     <node id="故意自伤">
       <data key="d0">故意自伤</data>
       <data key="d1">exclusioncondition</data>
-      <data key="d2">责任免除情形之一，投保人故意自伤。</data>
-      <data key="d3">chunk-c5a3dcec68e87ba8c6040bdda3741204</data>
-      <data key="d4">D:\Codes\my_project\AI_Agent\data\inputs\111002_tk.md</data>
-      <data key="d5">1760254558</data>
+      <data key="d2">责任免除情形之一，投保人故意自伤。&lt;SEP&gt;责任免除情形之一，被保险人故意自伤</data>
+      <data key="d3">chunk-5b24f698b4c3dc63f152c49182d55d74&lt;SEP&gt;chunk-c5a3dcec68e87ba8c6040bdda3741204</data>
+      <data key="d4">D:\Codes\my_project\AI_Agent\data\inputs\111002_tk.md&lt;SEP&gt;/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/mc.md</data>
+      <data key="d5">1761746175</data>
     </node>
     <node id="故意犯罪">
       <data key="d0">故意犯罪</data>
       <data key="d1">exclusioncondition</data>
-      <data key="d2">责任免除情形之一，投保人故意犯罪。</data>
-      <data key="d3">chunk-c5a3dcec68e87ba8c6040bdda3741204</data>
-      <data key="d4">D:\Codes\my_project\AI_Agent\data\inputs\111002_tk.md</data>
-      <data key="d5">1760254558</data>
+      <data key="d2">责任免除情形之一，投保人故意犯罪。&lt;SEP&gt;责任免除情形之一，被保险人故意犯罪</data>
+      <data key="d3">chunk-5b24f698b4c3dc63f152c49182d55d74&lt;SEP&gt;chunk-c5a3dcec68e87ba8c6040bdda3741204</data>
+      <data key="d4">D:\Codes\my_project\AI_Agent\data\inputs\111002_tk.md&lt;SEP&gt;/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/mc.md</data>
+      <data key="d5">1761746175</data>
     </node>
     <node id="抗拒刑事强制措施">
       <data key="d0">抗拒刑事强制措施</data>
@@ -2142,34 +2142,34 @@
     <node id="自杀">
       <data key="d0">自杀</data>
       <data key="d1">exclusioncondition</data>
-      <data key="d2">责任免除情形之一，投保人2年内自杀。&lt;SEP&gt;责任免除情形之一，被保险人自杀</data>
-      <data key="d3">chunk-9711ce8b36fae5fb4d0da4cc345a5b81&lt;SEP&gt;chunk-c5a3dcec68e87ba8c6040bdda3741204</data>
-      <data key="d4">D:\Codes\my_project\AI_Agent\data\inputs\111002_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\b954337edb01672487d8ed6c0d57c18664f8209f6709ad4e4f9af3f345f75eca\111003_tk.md</data>
-      <data key="d5">1760361905</data>
+      <data key="d2">责任免除情形之一，投保人2年内自杀。&lt;SEP&gt;责任免除情形之一，被保险人自杀&lt;SEP&gt;责任免除情形之一，合同成立后2年内自杀</data>
+      <data key="d3">chunk-9711ce8b36fae5fb4d0da4cc345a5b81&lt;SEP&gt;chunk-5b24f698b4c3dc63f152c49182d55d74&lt;SEP&gt;chunk-c5a3dcec68e87ba8c6040bdda3741204</data>
+      <data key="d4">D:\Codes\my_project\AI_Agent\data\inputs\111002_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\b954337edb01672487d8ed6c0d57c18664f8209f6709ad4e4f9af3f345f75eca\111003_tk.md&lt;SEP&gt;/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/mc.md</data>
+      <data key="d5">1761746176</data>
     </node>
     <node id="2年内">
       <data key="d0">2年内</data>
       <data key="d1">timeperiod</data>
-      <data key="d2">自杀免责的时间限制。&lt;SEP&gt;合同成立或效力恢复之日起的2年时间限制&lt;SEP&gt;合同效力中止后可申请恢复的期限，或保险公司解除合同的期限&lt;SEP&gt;自杀免责的时间限制&lt;SEP&gt;合同效力中止后可申请恢复效力的时间限制</data>
-      <data key="d3">chunk-9711ce8b36fae5fb4d0da4cc345a5b81&lt;SEP&gt;chunk-8373d6e7a829016bd3ce5dfab89c082e&lt;SEP&gt;chunk-57b15c9c2e976a5f17cf53960108a69d&lt;SEP&gt;chunk-c5a3dcec68e87ba8c6040bdda3741204&lt;SEP&gt;chunk-8b3daf65fd9493dd2205736022b25a81</data>
-      <data key="d4">D:\Codes\my_project\AI_Agent\data\inputs\111002_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\b954337edb01672487d8ed6c0d57c18664f8209f6709ad4e4f9af3f345f75eca\111003_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\561641d91eed8898aac879b468761a28b041111850d5c8ac8804035f85c51521\111005_tk.md</data>
-      <data key="d5">1760362041</data>
+      <data key="d2">自杀免责的时间限制。&lt;SEP&gt;合同成立或效力恢复之日起的2年时间限制&lt;SEP&gt;合同效力中止后可申请恢复的期限，或保险公司解除合同的期限&lt;SEP&gt;自杀免责的时间限制&lt;SEP&gt;合同效力中止后可申请恢复效力的时间限制&lt;SEP&gt;自杀免责的时间限制</data>
+      <data key="d3">chunk-9711ce8b36fae5fb4d0da4cc345a5b81&lt;SEP&gt;chunk-8b3daf65fd9493dd2205736022b25a81&lt;SEP&gt;chunk-c5a3dcec68e87ba8c6040bdda3741204&lt;SEP&gt;chunk-57b15c9c2e976a5f17cf53960108a69d&lt;SEP&gt;chunk-5b24f698b4c3dc63f152c49182d55d74&lt;SEP&gt;chunk-8373d6e7a829016bd3ce5dfab89c082e</data>
+      <data key="d4">D:\Codes\my_project\AI_Agent\data\inputs\111002_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\b954337edb01672487d8ed6c0d57c18664f8209f6709ad4e4f9af3f345f75eca\111003_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\561641d91eed8898aac879b468761a28b041111850d5c8ac8804035f85c51521\111005_tk.md&lt;SEP&gt;/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/mc.md</data>
+      <data key="d5">1761746176</data>
     </node>
     <node id="无民事行为能力人">
       <data key="d0">无民事行为能力人</data>
-      <data key="d1">concept</data>
-      <data key="d2">自杀免责的例外情况，指自杀时为无民事行为能力人。&lt;SEP&gt;指无法独立进行民事活动的人&lt;SEP&gt;无法独立进行民事行为的人&lt;SEP&gt;不能独立实施民事法律行为的人</data>
-      <data key="d3">chunk-81f2fe1bbcf18fc40edc7632356edfef&lt;SEP&gt;chunk-9711ce8b36fae5fb4d0da4cc345a5b81&lt;SEP&gt;chunk-8373d6e7a829016bd3ce5dfab89c082e&lt;SEP&gt;chunk-c5a3dcec68e87ba8c6040bdda3741204</data>
-      <data key="d4">D:\Codes\my_project\AI_Agent\data\inputs\111002_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\b954337edb01672487d8ed6c0d57c18664f8209f6709ad4e4f9af3f345f75eca\111003_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\561641d91eed8898aac879b468761a28b041111850d5c8ac8804035f85c51521\111005_tk.md</data>
-      <data key="d5">1760362053</data>
+      <data key="d1">definition</data>
+      <data key="d2">自杀免责的例外情况，指自杀时为无民事行为能力人。&lt;SEP&gt;指无法独立进行民事活动的人&lt;SEP&gt;无法独立进行民事行为的人&lt;SEP&gt;不能独立实施民事法律行为的人&lt;SEP&gt;自杀免责的例外情形</data>
+      <data key="d3">chunk-9711ce8b36fae5fb4d0da4cc345a5b81&lt;SEP&gt;chunk-c5a3dcec68e87ba8c6040bdda3741204&lt;SEP&gt;chunk-81f2fe1bbcf18fc40edc7632356edfef&lt;SEP&gt;chunk-5b24f698b4c3dc63f152c49182d55d74&lt;SEP&gt;chunk-8373d6e7a829016bd3ce5dfab89c082e</data>
+      <data key="d4">D:\Codes\my_project\AI_Agent\data\inputs\111002_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\b954337edb01672487d8ed6c0d57c18664f8209f6709ad4e4f9af3f345f75eca\111003_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\561641d91eed8898aac879b468761a28b041111850d5c8ac8804035f85c51521\111005_tk.md&lt;SEP&gt;/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/mc.md</data>
+      <data key="d5">1761746176</data>
     </node>
     <node id="吸食或注射毒品">
       <data key="d0">吸食或注射毒品</data>
       <data key="d1">exclusioncondition</data>
-      <data key="d2">责任免除情形之一，投保人吸食或注射毒品。&lt;SEP&gt;责任免除情形之一，被保险人吸食或注射毒品&lt;SEP&gt;被保险人吸食或注射毒品</data>
-      <data key="d3">chunk-9711ce8b36fae5fb4d0da4cc345a5b81&lt;SEP&gt;chunk-c5a3dcec68e87ba8c6040bdda3741204&lt;SEP&gt;chunk-8373d6e7a829016bd3ce5dfab89c082e</data>
-      <data key="d4">D:\Codes\my_project\AI_Agent\data\inputs\111002_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\b954337edb01672487d8ed6c0d57c18664f8209f6709ad4e4f9af3f345f75eca\111003_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\561641d91eed8898aac879b468761a28b041111850d5c8ac8804035f85c51521\111005_tk.md</data>
-      <data key="d5">1760362053</data>
+      <data key="d2">责任免除情形之一，投保人吸食或注射毒品。&lt;SEP&gt;责任免除情形之一，被保险人吸食或注射毒品&lt;SEP&gt;被保险人吸食或注射毒品&lt;SEP&gt;责任免除情形之一，吸食或注射毒品</data>
+      <data key="d3">chunk-9711ce8b36fae5fb4d0da4cc345a5b81&lt;SEP&gt;chunk-5b24f698b4c3dc63f152c49182d55d74&lt;SEP&gt;chunk-c5a3dcec68e87ba8c6040bdda3741204&lt;SEP&gt;chunk-8373d6e7a829016bd3ce5dfab89c082e</data>
+      <data key="d4">D:\Codes\my_project\AI_Agent\data\inputs\111002_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\b954337edb01672487d8ed6c0d57c18664f8209f6709ad4e4f9af3f345f75eca\111003_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\561641d91eed8898aac879b468761a28b041111850d5c8ac8804035f85c51521\111005_tk.md&lt;SEP&gt;/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/mc.md</data>
+      <data key="d5">1761746176</data>
     </node>
     <node id="驾驶无有效行驶证机动车">
       <data key="d0">驾驶无有效行驶证机动车</data>
@@ -2205,11 +2205,11 @@
     </node>
     <node id="合同终止">
       <data key="d0">合同终止</data>
-      <data key="d1">event</data>
-      <data key="d2">发生责任免除情形时，附加险合同终止。&lt;SEP&gt;保险合同法律效力的终结&lt;SEP&gt;保险合同效力结束&lt;SEP&gt;保险合同法律效力的终结&lt;SEP&gt;保险合同效力结束的状态&lt;SEP&gt;保险合同效力结束&lt;SEP&gt;保险合同效力永久性结束</data>
-      <data key="d3">chunk-34c0c39857834fbade2eb7fa431b5855&lt;SEP&gt;chunk-1032d36602e9b5f9d17cb8dc0bb0545b&lt;SEP&gt;chunk-fc445def0341a1410c983aa0ebb444e1&lt;SEP&gt;chunk-2ac70f56b0a63558d2ef30b9a515f228&lt;SEP&gt;chunk-6aeafefd52656224c01b7587c6f96eac&lt;SEP&gt;chunk-c5a3dcec68e87ba8c6040bdda3741204&lt;SEP&gt;chunk-8b3daf65fd9493dd2205736022b25a81</data>
-      <data key="d4">D:\Codes\my_project\AI_Agent\data\inputs\111002_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\b954337edb01672487d8ed6c0d57c18664f8209f6709ad4e4f9af3f345f75eca\111003_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\561641d91eed8898aac879b468761a28b041111850d5c8ac8804035f85c51521\111005_tk.md</data>
-      <data key="d5">1760362041</data>
+      <data key="d1">policyterm</data>
+      <data key="d2">合同终止是指保险合同法律效力的终结，即保险合同效力永久性结束的状态。当发生责任免除情形时，附加险合同也会随之终止。这一状态标志着保险合同效力的完全和永久性结束。</data>
+      <data key="d3">chunk-1032d36602e9b5f9d17cb8dc0bb0545b&lt;SEP&gt;chunk-8b3daf65fd9493dd2205736022b25a81&lt;SEP&gt;chunk-c5a3dcec68e87ba8c6040bdda3741204&lt;SEP&gt;chunk-6aeafefd52656224c01b7587c6f96eac&lt;SEP&gt;chunk-2ac70f56b0a63558d2ef30b9a515f228&lt;SEP&gt;chunk-34c0c39857834fbade2eb7fa431b5855&lt;SEP&gt;chunk-fc445def0341a1410c983aa0ebb444e1&lt;SEP&gt;chunk-5b24f698b4c3dc63f152c49182d55d74</data>
+      <data key="d4">D:\Codes\my_project\AI_Agent\data\inputs\111002_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\b954337edb01672487d8ed6c0d57c18664f8209f6709ad4e4f9af3f345f75eca\111003_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\561641d91eed8898aac879b468761a28b041111850d5c8ac8804035f85c51521\111005_tk.md&lt;SEP&gt;/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/mc.md</data>
+      <data key="d5">1761746193</data>
     </node>
     <node id="退还现金价值">
       <data key="d0">退还现金价值</data>
@@ -2678,10 +2678,10 @@
     <node id="减额交清">
       <data key="d0">减额交清</data>
       <data key="d1">procedure</data>
-      <data key="d2">一种保险合同处理方式，减少保额以一次性缴清后续保费</data>
-      <data key="d3">chunk-34c0c39857834fbade2eb7fa431b5855</data>
-      <data key="d4">D:\Codes\my_project\AI_Agent\data\inputs\111002_tk.md</data>
-      <data key="d5">1760254559</data>
+      <data key="d2">一种保险合同处理方式，减少保额以一次性缴清后续保费&lt;SEP&gt;减少保险金额以交清保险费的程序</data>
+      <data key="d3">chunk-5b24f698b4c3dc63f152c49182d55d74&lt;SEP&gt;chunk-34c0c39857834fbade2eb7fa431b5855</data>
+      <data key="d4">D:\Codes\my_project\AI_Agent\data\inputs\111002_tk.md&lt;SEP&gt;/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/mc.md</data>
+      <data key="d5">1761746177</data>
     </node>
     <node id="附加险合同效力终止">
       <data key="d0">附加险合同效力终止</data>
@@ -2702,10 +2702,10 @@
     <node id="保险事故通知">
       <data key="d0">保险事故通知</data>
       <data key="d1">procedure</data>
-      <data key="d2">向保险公司报告保险事故的程序&lt;SEP&gt;关于保险事故发生后通知保险公司的规定&lt;SEP&gt;保险事故发生后，向保险公司报告的行为。&lt;SEP&gt;保险事故发生后，投保人及时通知保险公司的义务，详见条款3.2&lt;SEP&gt;投保人或受益人将保险事故告知保险公司的行为</data>
-      <data key="d3">chunk-9711ce8b36fae5fb4d0da4cc345a5b81&lt;SEP&gt;chunk-34c0c39857834fbade2eb7fa431b5855&lt;SEP&gt;chunk-e999db6e32d477ed4dcda8ba66e401ba&lt;SEP&gt;chunk-d85279812f2d24c66a7c6a950cf9c3ff&lt;SEP&gt;chunk-81f2fe1bbcf18fc40edc7632356edfef</data>
-      <data key="d4">D:\Codes\my_project\AI_Agent\data\inputs\111002_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\b954337edb01672487d8ed6c0d57c18664f8209f6709ad4e4f9af3f345f75eca\111003_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\561641d91eed8898aac879b468761a28b041111850d5c8ac8804035f85c51521\111005_tk.md</data>
-      <data key="d5">1760362036</data>
+      <data key="d2">向保险公司报告保险事故的程序&lt;SEP&gt;关于保险事故发生后通知保险公司的规定&lt;SEP&gt;保险事故发生后，向保险公司报告的行为。&lt;SEP&gt;保险事故发生后，投保人及时通知保险公司的义务，详见条款3.2&lt;SEP&gt;投保人或受益人将保险事故告知保险公司的行为&lt;SEP&gt;发生保险事故后的通知程序</data>
+      <data key="d3">chunk-9711ce8b36fae5fb4d0da4cc345a5b81&lt;SEP&gt;chunk-e999db6e32d477ed4dcda8ba66e401ba&lt;SEP&gt;chunk-d85279812f2d24c66a7c6a950cf9c3ff&lt;SEP&gt;chunk-34c0c39857834fbade2eb7fa431b5855&lt;SEP&gt;chunk-81f2fe1bbcf18fc40edc7632356edfef&lt;SEP&gt;chunk-5b24f698b4c3dc63f152c49182d55d74</data>
+      <data key="d4">D:\Codes\my_project\AI_Agent\data\inputs\111002_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\b954337edb01672487d8ed6c0d57c18664f8209f6709ad4e4f9af3f345f75eca\111003_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\561641d91eed8898aac879b468761a28b041111850d5c8ac8804035f85c51521\111005_tk.md&lt;SEP&gt;/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/mc.md</data>
+      <data key="d5">1761746176</data>
     </node>
     <node id="宽限期">
       <data key="d0">宽限期</data>
@@ -2717,11 +2717,11 @@
     </node>
     <node id="效力中止">
       <data key="d0">效力中止</data>
-      <data key="d1">clause</data>
-      <data key="d2">保险合同效力暂时停止&lt;SEP&gt;规定保险合同效力暂时停止的情形。&lt;SEP&gt;合同效力暂停期间，保险公司不承担保险责任&lt;SEP&gt;规定合同效力中止的情形，详见条款6.1&lt;SEP&gt;保险合同因未支付保险费而暂停效力&lt;SEP&gt;保险合同暂时失去法律效力</data>
-      <data key="d3">chunk-34c0c39857834fbade2eb7fa431b5855&lt;SEP&gt;chunk-e999db6e32d477ed4dcda8ba66e401ba&lt;SEP&gt;chunk-d85279812f2d24c66a7c6a950cf9c3ff&lt;SEP&gt;chunk-2ac70f56b0a63558d2ef30b9a515f228&lt;SEP&gt;chunk-57b15c9c2e976a5f17cf53960108a69d&lt;SEP&gt;chunk-8b3daf65fd9493dd2205736022b25a81</data>
-      <data key="d4">D:\Codes\my_project\AI_Agent\data\inputs\111002_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\b954337edb01672487d8ed6c0d57c18664f8209f6709ad4e4f9af3f345f75eca\111003_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\561641d91eed8898aac879b468761a28b041111850d5c8ac8804035f85c51521\111005_tk.md</data>
-      <data key="d5">1760362036</data>
+      <data key="d1">policyterm</data>
+      <data key="d2">保险合同效力暂时停止&lt;SEP&gt;规定保险合同效力暂时停止的情形。&lt;SEP&gt;合同效力暂停期间，保险公司不承担保险责任&lt;SEP&gt;规定合同效力中止的情形，详见条款6.1&lt;SEP&gt;保险合同因未支付保险费而暂停效力&lt;SEP&gt;保险合同暂时失去法律效力&lt;SEP&gt;保险合同效力中止的状态</data>
+      <data key="d3">chunk-8b3daf65fd9493dd2205736022b25a81&lt;SEP&gt;chunk-e999db6e32d477ed4dcda8ba66e401ba&lt;SEP&gt;chunk-d85279812f2d24c66a7c6a950cf9c3ff&lt;SEP&gt;chunk-2ac70f56b0a63558d2ef30b9a515f228&lt;SEP&gt;chunk-34c0c39857834fbade2eb7fa431b5855&lt;SEP&gt;chunk-57b15c9c2e976a5f17cf53960108a69d&lt;SEP&gt;chunk-5b24f698b4c3dc63f152c49182d55d74</data>
+      <data key="d4">D:\Codes\my_project\AI_Agent\data\inputs\111002_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\b954337edb01672487d8ed6c0d57c18664f8209f6709ad4e4f9af3f345f75eca\111003_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\561641d91eed8898aac879b468761a28b041111850d5c8ac8804035f85c51521\111005_tk.md&lt;SEP&gt;/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/mc.md</data>
+      <data key="d5">1761746176</data>
     </node>
     <node id="效力恢复">
       <data key="d0">效力恢复</data>
@@ -2734,10 +2734,10 @@
     <node id="明确说明与如实告知">
       <data key="d0">明确说明与如实告知</data>
       <data key="d1">clause</data>
-      <data key="d2">保险公司对条款的明确说明义务和投保人的如实告知义务&lt;SEP&gt;规定保险公司明确说明义务和投保人如实告知义务的条款。&lt;SEP&gt;保险公司对条款的说明义务和投保人的如实告知义务&lt;SEP&gt;规定保险公司说明义务和投保人告知义务，详见条款8.1&lt;SEP&gt;规定保险公司说明义务和投保人告知义务的条款</data>
-      <data key="d3">chunk-34c0c39857834fbade2eb7fa431b5855&lt;SEP&gt;chunk-e999db6e32d477ed4dcda8ba66e401ba&lt;SEP&gt;chunk-d85279812f2d24c66a7c6a950cf9c3ff&lt;SEP&gt;chunk-57b15c9c2e976a5f17cf53960108a69d&lt;SEP&gt;chunk-8b3daf65fd9493dd2205736022b25a81</data>
-      <data key="d4">D:\Codes\my_project\AI_Agent\data\inputs\111002_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\b954337edb01672487d8ed6c0d57c18664f8209f6709ad4e4f9af3f345f75eca\111003_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\561641d91eed8898aac879b468761a28b041111850d5c8ac8804035f85c51521\111005_tk.md</data>
-      <data key="d5">1760362036</data>
+      <data key="d2">保险公司对条款的明确说明义务和投保人的如实告知义务&lt;SEP&gt;规定保险公司明确说明义务和投保人如实告知义务的条款。&lt;SEP&gt;保险公司对条款的说明义务和投保人的如实告知义务&lt;SEP&gt;规定保险公司说明义务和投保人告知义务，详见条款8.1&lt;SEP&gt;规定保险公司说明义务和投保人告知义务的条款&lt;SEP&gt;投保人的如实告知义务和保险人的明确说明义务</data>
+      <data key="d3">chunk-8b3daf65fd9493dd2205736022b25a81&lt;SEP&gt;chunk-e999db6e32d477ed4dcda8ba66e401ba&lt;SEP&gt;chunk-d85279812f2d24c66a7c6a950cf9c3ff&lt;SEP&gt;chunk-34c0c39857834fbade2eb7fa431b5855&lt;SEP&gt;chunk-57b15c9c2e976a5f17cf53960108a69d&lt;SEP&gt;chunk-5b24f698b4c3dc63f152c49182d55d74</data>
+      <data key="d4">D:\Codes\my_project\AI_Agent\data\inputs\111002_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\b954337edb01672487d8ed6c0d57c18664f8209f6709ad4e4f9af3f345f75eca\111003_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\561641d91eed8898aac879b468761a28b041111850d5c8ac8804035f85c51521\111005_tk.md&lt;SEP&gt;/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/mc.md</data>
+      <data key="d5">1761746177</data>
     </node>
     <node id="合同解除权限制">
       <data key="d0">合同解除权限制</data>
@@ -2902,10 +2902,10 @@
     <node id="减保">
       <data key="d0">减保</data>
       <data key="d1">procedure</data>
-      <data key="d2">减少保险金额的行为&lt;SEP&gt;减少保险合同基本保险金额的行为&lt;SEP&gt;减少保险金额或保险费的行为&lt;SEP&gt;减少保险金额或基本保险金额的行为。&lt;SEP&gt;减少合同的基本保险金额，并按比例减少有效保险金额和期交保险费，同时退还相应现金价值</data>
-      <data key="d3">chunk-9711ce8b36fae5fb4d0da4cc345a5b81&lt;SEP&gt;chunk-1032d36602e9b5f9d17cb8dc0bb0545b&lt;SEP&gt;chunk-d85279812f2d24c66a7c6a950cf9c3ff&lt;SEP&gt;chunk-6aeafefd52656224c01b7587c6f96eac&lt;SEP&gt;chunk-57b15c9c2e976a5f17cf53960108a69d</data>
-      <data key="d4">C:\Users\罗亚骏\AppData\Local\Temp\gradio\b954337edb01672487d8ed6c0d57c18664f8209f6709ad4e4f9af3f345f75eca\111003_tk.md</data>
-      <data key="d5">1760361900</data>
+      <data key="d2">减少保险金额的行为&lt;SEP&gt;减少保险合同基本保险金额的行为&lt;SEP&gt;减少保险金额或保险费的行为&lt;SEP&gt;减少保险金额或基本保险金额的行为。&lt;SEP&gt;减少合同的基本保险金额，并按比例减少有效保险金额和期交保险费，同时退还相应现金价值&lt;SEP&gt;减少保险金额的程序</data>
+      <data key="d3">chunk-1032d36602e9b5f9d17cb8dc0bb0545b&lt;SEP&gt;chunk-9711ce8b36fae5fb4d0da4cc345a5b81&lt;SEP&gt;chunk-6aeafefd52656224c01b7587c6f96eac&lt;SEP&gt;chunk-d85279812f2d24c66a7c6a950cf9c3ff&lt;SEP&gt;chunk-57b15c9c2e976a5f17cf53960108a69d&lt;SEP&gt;chunk-5b24f698b4c3dc63f152c49182d55d74</data>
+      <data key="d4">C:\Users\罗亚骏\AppData\Local\Temp\gradio\b954337edb01672487d8ed6c0d57c18664f8209f6709ad4e4f9af3f345f75eca\111003_tk.md&lt;SEP&gt;/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/mc.md</data>
+      <data key="d5">1761746177</data>
     </node>
     <node id="基本保险金额">
       <data key="d0">基本保险金额</data>
@@ -6574,18 +6574,18 @@
     <node id="驾驶无合法有效行驶证的机动车">
       <data key="d0">驾驶无合法有效行驶证的机动车</data>
       <data key="d1">exclusioncondition</data>
-      <data key="d2">被保险人驾驶无合法有效行驶证的机动车</data>
-      <data key="d3">chunk-8373d6e7a829016bd3ce5dfab89c082e</data>
-      <data key="d4">C:\Users\罗亚骏\AppData\Local\Temp\gradio\561641d91eed8898aac879b468761a28b041111850d5c8ac8804035f85c51521\111005_tk.md</data>
-      <data key="d5">1760362053</data>
+      <data key="d2">被保险人驾驶无合法有效行驶证的机动车&lt;SEP&gt;责任免除情形之一，驾驶无合法有效行驶证的机动车</data>
+      <data key="d3">chunk-5b24f698b4c3dc63f152c49182d55d74&lt;SEP&gt;chunk-8373d6e7a829016bd3ce5dfab89c082e</data>
+      <data key="d4">C:\Users\罗亚骏\AppData\Local\Temp\gradio\561641d91eed8898aac879b468761a28b041111850d5c8ac8804035f85c51521\111005_tk.md&lt;SEP&gt;/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/mc.md</data>
+      <data key="d5">1761746176</data>
     </node>
     <node id="二年以上保险费">
       <data key="d0">二年以上保险费</data>
       <data key="d1">timeperiod</data>
-      <data key="d2">指已交足两年以上的保险费&lt;SEP&gt;已交纳保险费的期限达到两年以上</data>
-      <data key="d3">chunk-81f2fe1bbcf18fc40edc7632356edfef&lt;SEP&gt;chunk-8373d6e7a829016bd3ce5dfab89c082e</data>
-      <data key="d4">C:\Users\罗亚骏\AppData\Local\Temp\gradio\561641d91eed8898aac879b468761a28b041111850d5c8ac8804035f85c51521\111005_tk.md</data>
-      <data key="d5">1760362053</data>
+      <data key="d2">指已交足两年以上的保险费&lt;SEP&gt;已交纳保险费的期限达到两年以上&lt;SEP&gt;已交足二年以上保险费的条件</data>
+      <data key="d3">chunk-81f2fe1bbcf18fc40edc7632356edfef&lt;SEP&gt;chunk-5b24f698b4c3dc63f152c49182d55d74&lt;SEP&gt;chunk-8373d6e7a829016bd3ce5dfab89c082e</data>
+      <data key="d4">C:\Users\罗亚骏\AppData\Local\Temp\gradio\561641d91eed8898aac879b468761a28b041111850d5c8ac8804035f85c51521\111005_tk.md&lt;SEP&gt;/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/mc.md</data>
+      <data key="d5">1761746176</data>
     </node>
     <node id="滑坡">
       <data key="d0">滑坡</data>
@@ -6654,26 +6654,26 @@
     <node id="核爆炸">
       <data key="d0">核爆炸</data>
       <data key="d1">exclusioncondition</data>
-      <data key="d2">导致被保险人身故或全残时，保险公司不承担给付保险金责任的情形之一</data>
-      <data key="d3">chunk-81f2fe1bbcf18fc40edc7632356edfef</data>
-      <data key="d4">C:\Users\罗亚骏\AppData\Local\Temp\gradio\561641d91eed8898aac879b468761a28b041111850d5c8ac8804035f85c51521\111005_tk.md</data>
-      <data key="d5">1760362054</data>
+      <data key="d2">导致被保险人身故或全残时，保险公司不承担给付保险金责任的情形之一&lt;SEP&gt;责任免除情形之一，核爆炸</data>
+      <data key="d3">chunk-81f2fe1bbcf18fc40edc7632356edfef&lt;SEP&gt;chunk-5b24f698b4c3dc63f152c49182d55d74</data>
+      <data key="d4">C:\Users\罗亚骏\AppData\Local\Temp\gradio\561641d91eed8898aac879b468761a28b041111850d5c8ac8804035f85c51521\111005_tk.md&lt;SEP&gt;/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/mc.md</data>
+      <data key="d5">1761746176</data>
     </node>
     <node id="核辐射">
       <data key="d0">核辐射</data>
       <data key="d1">exclusioncondition</data>
-      <data key="d2">导致被保险人身故或全残时，保险公司不承担给付保险金责任的情形之一</data>
-      <data key="d3">chunk-81f2fe1bbcf18fc40edc7632356edfef</data>
-      <data key="d4">C:\Users\罗亚骏\AppData\Local\Temp\gradio\561641d91eed8898aac879b468761a28b041111850d5c8ac8804035f85c51521\111005_tk.md</data>
-      <data key="d5">1760362054</data>
+      <data key="d2">导致被保险人身故或全残时，保险公司不承担给付保险金责任的情形之一&lt;SEP&gt;责任免除情形之一，核辐射</data>
+      <data key="d3">chunk-81f2fe1bbcf18fc40edc7632356edfef&lt;SEP&gt;chunk-5b24f698b4c3dc63f152c49182d55d74</data>
+      <data key="d4">C:\Users\罗亚骏\AppData\Local\Temp\gradio\561641d91eed8898aac879b468761a28b041111850d5c8ac8804035f85c51521\111005_tk.md&lt;SEP&gt;/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/mc.md</data>
+      <data key="d5">1761746176</data>
     </node>
     <node id="核污染">
       <data key="d0">核污染</data>
       <data key="d1">exclusioncondition</data>
-      <data key="d2">导致被保险人身故或全残时，保险公司不承担给付保险金责任的情形之一</data>
-      <data key="d3">chunk-81f2fe1bbcf18fc40edc7632356edfef</data>
-      <data key="d4">C:\Users\罗亚骏\AppData\Local\Temp\gradio\561641d91eed8898aac879b468761a28b041111850d5c8ac8804035f85c51521\111005_tk.md</data>
-      <data key="d5">1760362054</data>
+      <data key="d2">导致被保险人身故或全残时，保险公司不承担给付保险金责任的情形之一&lt;SEP&gt;责任免除情形之一，核污染</data>
+      <data key="d3">chunk-81f2fe1bbcf18fc40edc7632356edfef&lt;SEP&gt;chunk-5b24f698b4c3dc63f152c49182d55d74</data>
+      <data key="d4">C:\Users\罗亚骏\AppData\Local\Temp\gradio\561641d91eed8898aac879b468761a28b041111850d5c8ac8804035f85c51521\111005_tk.md&lt;SEP&gt;/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/mc.md</data>
+      <data key="d5">1761746176</data>
     </node>
     <node id="条款2.4责任免除">
       <data key="d0">条款2.4责任免除</data>
@@ -6915,6 +6915,70 @@
       <data key="d4">C:\Users\罗亚骏\AppData\Local\Temp\gradio\561641d91eed8898aac879b468761a28b041111850d5c8ac8804035f85c51521\111005_tk.md</data>
       <data key="d5">1760362076</data>
     </node>
+    <node id="利安传家鑫享终身寿险">
+      <data key="d0">利安传家鑫享终身寿险</data>
+      <data key="d1">insuranceproduct</data>
+      <data key="d2">利安传家鑫享终身寿险是利安人寿推出的终身寿险产品</data>
+      <data key="d3">chunk-5b24f698b4c3dc63f152c49182d55d74</data>
+      <data key="d4">/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/mc.md</data>
+      <data key="d5">1761746175</data>
+    </node>
+    <node id="免除保险人责任条款">
+      <data key="d0">免除保险人责任条款</data>
+      <data key="d1">clause</data>
+      <data key="d2">规定保险公司不承担保险责任的情形</data>
+      <data key="d3">chunk-5b24f698b4c3dc63f152c49182d55d74</data>
+      <data key="d4">/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/mc.md</data>
+      <data key="d5">1761746175</data>
+    </node>
+    <node id="抗拒依法采取的刑事强制措施">
+      <data key="d0">抗拒依法采取的刑事强制措施</data>
+      <data key="d1">exclusioncondition</data>
+      <data key="d2">责任免除情形之一，抗拒依法采取的刑事强制措施</data>
+      <data key="d3">chunk-5b24f698b4c3dc63f152c49182d55d74</data>
+      <data key="d4">/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/mc.md</data>
+      <data key="d5">1761746175</data>
+    </node>
+    <node id="战争">
+      <data key="d0">战争</data>
+      <data key="d1">exclusioncondition</data>
+      <data key="d2">责任免除情形之一，战争</data>
+      <data key="d3">chunk-5b24f698b4c3dc63f152c49182d55d74</data>
+      <data key="d4">/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/mc.md</data>
+      <data key="d5">1761746176</data>
+    </node>
+    <node id="军事冲突">
+      <data key="d0">军事冲突</data>
+      <data key="d1">exclusioncondition</data>
+      <data key="d2">责任免除情形之一，军事冲突</data>
+      <data key="d3">chunk-5b24f698b4c3dc63f152c49182d55d74</data>
+      <data key="d4">/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/mc.md</data>
+      <data key="d5">1761746176</data>
+    </node>
+    <node id="暴乱">
+      <data key="d0">暴乱</data>
+      <data key="d1">exclusioncondition</data>
+      <data key="d2">责任免除情形之一，暴乱</data>
+      <data key="d3">chunk-5b24f698b4c3dc63f152c49182d55d74</data>
+      <data key="d4">/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/mc.md</data>
+      <data key="d5">1761746176</data>
+    </node>
+    <node id="武装叛乱">
+      <data key="d0">武装叛乱</data>
+      <data key="d1">exclusioncondition</data>
+      <data key="d2">责任免除情形之一，武装叛乱</data>
+      <data key="d3">chunk-5b24f698b4c3dc63f152c49182d55d74</data>
+      <data key="d4">/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/mc.md</data>
+      <data key="d5">1761746176</data>
+    </node>
+    <node id="继承人">
+      <data key="d0">继承人</data>
+      <data key="d1">person</data>
+      <data key="d2">被保险人身故后继承其权益的人</data>
+      <data key="d3">chunk-5b24f698b4c3dc63f152c49182d55d74</data>
+      <data key="d4">/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/mc.md</data>
+      <data key="d5">1761746177</data>
+    </node>
     <edge source="节机能的丧失" target="关节永久完全僵硬">
       <data key="d6">1.0</data>
       <data key="d7">关节永久完全僵硬是节机能丧失的一种表现。</data>
@@ -7138,6 +7202,14 @@
       <data key="d9">chunk-2ad4ae27a07f6bbd501e741d75560867&lt;SEP&gt;chunk-8373d6e7a829016bd3ce5dfab89c082e&lt;SEP&gt;chunk-e999db6e32d477ed4dcda8ba66e401ba</data>
       <data key="d10">C:\Users\罗亚骏\AppData\Local\Temp\gradio\561641d91eed8898aac879b468761a28b041111850d5c8ac8804035f85c51521\111005_tk.md</data>
       <data key="d11">1760362063</data>
+    </edge>
+    <edge source="斗殴" target="免除保险人责任条款">
+      <data key="d6">1.0</data>
+      <data key="d7">斗殴是责任免除的情形之一</data>
+      <data key="d8">免责条件,包含情形</data>
+      <data key="d9">chunk-5b24f698b4c3dc63f152c49182d55d74</data>
+      <data key="d10">/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/mc.md</data>
+      <data key="d11">1761746194</data>
     </edge>
     <edge source="毒品" target="中华人民共和国刑法">
       <data key="d6">3.0</data>
@@ -7379,6 +7451,14 @@
       <data key="d10">C:\Users\罗亚骏\AppData\Local\Temp\gradio\561641d91eed8898aac879b468761a28b041111850d5c8ac8804035f85c51521\111005_tk.md</data>
       <data key="d11">1760362063</data>
     </edge>
+    <edge source="酒后驾驶" target="免除保险人责任条款">
+      <data key="d6">1.0</data>
+      <data key="d7">酒后驾驶是责任免除的情形之一</data>
+      <data key="d8">免责条件,包含情形</data>
+      <data key="d9">chunk-5b24f698b4c3dc63f152c49182d55d74</data>
+      <data key="d10">/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/mc.md</data>
+      <data key="d11">1761746194</data>
+    </edge>
     <edge source="无合法有效驾驶证驾驶" target="驾驶资格">
       <data key="d6">3.0</data>
       <data key="d7">没有取得驾驶资格是无合法有效驾驶证驾驶的情形之一。&lt;SEP&gt;没有取得驾驶资格是无合法有效驾驶证驾驶的情形之一&lt;SEP&gt;没有取得驾驶资格是无合法有效驾驶证驾驶的情形之一。</data>
@@ -7482,6 +7562,14 @@
       <data key="d9">chunk-2ad4ae27a07f6bbd501e741d75560867</data>
       <data key="d10">C:\Users\罗亚骏\AppData\Local\Temp\gradio\561641d91eed8898aac879b468761a28b041111850d5c8ac8804035f85c51521\111005_tk.md</data>
       <data key="d11">1760362075</data>
+    </edge>
+    <edge source="无合法有效驾驶证驾驶" target="免除保险人责任条款">
+      <data key="d6">1.0</data>
+      <data key="d7">无合法有效驾驶证驾驶是责任免除的情形之一</data>
+      <data key="d8">免责条件,包含情形</data>
+      <data key="d9">chunk-5b24f698b4c3dc63f152c49182d55d74</data>
+      <data key="d10">/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/mc.md</data>
+      <data key="d11">1761746194</data>
     </edge>
     <edge source="无有效行驶证" target="行驶证">
       <data key="d6">3.0</data>
@@ -7987,6 +8075,14 @@
       <data key="d10">C:\Users\罗亚骏\AppData\Local\Temp\gradio\561641d91eed8898aac879b468761a28b041111850d5c8ac8804035f85c51521\111005_tk.md</data>
       <data key="d11">1760362072</data>
     </edge>
+    <edge source="现金价值" target="故意杀害">
+      <data key="d6">1.0</data>
+      <data key="d7">故意杀害导致身故时向继承人退还现金价值</data>
+      <data key="d8">资金处理,退还处理</data>
+      <data key="d9">chunk-5b24f698b4c3dc63f152c49182d55d74</data>
+      <data key="d10">/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/mc.md</data>
+      <data key="d11">1761746194</data>
+    </edge>
     <edge source="关节永久完全僵硬" target="关节机能的丧失">
       <data key="d6">2.0</data>
       <data key="d7">关节永久完全僵硬是关节机能丧失的一种情形&lt;SEP&gt;关节永久完全僵硬是关节机能丧失的一种情况。</data>
@@ -8395,6 +8491,14 @@
       <data key="d10">C:\Users\罗亚骏\AppData\Local\Temp\gradio\561641d91eed8898aac879b468761a28b041111850d5c8ac8804035f85c51521\111005_tk.md</data>
       <data key="d11">1760362072</data>
     </edge>
+    <edge source="解除合同" target="利安传家鑫享终身寿险">
+      <data key="d6">1.0</data>
+      <data key="d7">利安传家鑫享终身寿险包含解除合同条款</data>
+      <data key="d8">产品条款,包含关系</data>
+      <data key="d9">chunk-5b24f698b4c3dc63f152c49182d55d74</data>
+      <data key="d10">/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/mc.md</data>
+      <data key="d11">1761746195</data>
+    </edge>
     <edge source="精算原理" target="退还金额">
       <data key="d6">2.0</data>
       <data key="d7">退还金额根据精算原理计算&lt;SEP&gt;退还金额根据精算原理计算</data>
@@ -8450,6 +8554,14 @@
       <data key="d9">chunk-e999db6e32d477ed4dcda8ba66e401ba</data>
       <data key="d10">C:\Users\罗亚骏\AppData\Local\Temp\gradio\561641d91eed8898aac879b468761a28b041111850d5c8ac8804035f85c51521\111005_tk.md</data>
       <data key="d11">1760362063</data>
+    </edge>
+    <edge source="利安人寿保险股份有限公司" target="利安传家鑫享终身寿险">
+      <data key="d6">1.0</data>
+      <data key="d7">利安传家鑫享终身寿险由利安人寿保险股份有限公司提供</data>
+      <data key="d8">产品提供,公司关系</data>
+      <data key="d9">chunk-5b24f698b4c3dc63f152c49182d55d74</data>
+      <data key="d10">/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/mc.md</data>
+      <data key="d11">1761746193</data>
     </edge>
     <edge source="附加豁免保险费定期寿险" target="附加豁免定寿">
       <data key="d6">1.0</data>
@@ -9011,6 +9123,14 @@
       <data key="d10">C:\Users\罗亚骏\AppData\Local\Temp\gradio\561641d91eed8898aac879b468761a28b041111850d5c8ac8804035f85c51521\111005_tk.md</data>
       <data key="d11">1760362063</data>
     </edge>
+    <edge source="释义" target="利安传家鑫享终身寿险">
+      <data key="d6">1.0</data>
+      <data key="d7">利安传家鑫享终身寿险包含释义部分</data>
+      <data key="d8">产品条款,包含关系</data>
+      <data key="d9">chunk-5b24f698b4c3dc63f152c49182d55d74</data>
+      <data key="d10">/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/mc.md</data>
+      <data key="d11">1761746195</data>
+    </edge>
     <edge source="犹豫期" target="10日">
       <data key="d6">4.0</data>
       <data key="d7">犹豫期为签收合同次日起的10日。&lt;SEP&gt;犹豫期持续10日&lt;SEP&gt;犹豫期为10日&lt;SEP&gt;犹豫期持续10天。</data>
@@ -9090,6 +9210,14 @@
       <data key="d9">chunk-fc445def0341a1410c983aa0ebb444e1</data>
       <data key="d10">C:\Users\罗亚骏\AppData\Local\Temp\gradio\561641d91eed8898aac879b468761a28b041111850d5c8ac8804035f85c51521\111005_tk.md</data>
       <data key="d11">1760362067</data>
+    </edge>
+    <edge source="犹豫期" target="利安传家鑫享终身寿险">
+      <data key="d6">1.0</data>
+      <data key="d7">利安传家鑫享终身寿险包含犹豫期条款</data>
+      <data key="d8">产品条款,包含关系</data>
+      <data key="d9">chunk-5b24f698b4c3dc63f152c49182d55d74</data>
+      <data key="d10">/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/mc.md</data>
+      <data key="d11">1761746194</data>
     </edge>
     <edge source="10日" target="履行豁免保险费义务">
       <data key="d6">1.0</data>
@@ -9250,6 +9378,14 @@
       <data key="d9">chunk-2ac70f56b0a63558d2ef30b9a515f228</data>
       <data key="d10">C:\Users\罗亚骏\AppData\Local\Temp\gradio\561641d91eed8898aac879b468761a28b041111850d5c8ac8804035f85c51521\111005_tk.md</data>
       <data key="d11">1760362071</data>
+    </edge>
+    <edge source="保险责任" target="利安传家鑫享终身寿险">
+      <data key="d6">1.0</data>
+      <data key="d7">利安传家鑫享终身寿险包含保险责任条款</data>
+      <data key="d8">产品条款,包含关系</data>
+      <data key="d9">chunk-5b24f698b4c3dc63f152c49182d55d74</data>
+      <data key="d10">/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/mc.md</data>
+      <data key="d11">1761746194</data>
     </edge>
     <edge source="责任免除" target="条款2.3">
       <data key="d6">3.0</data>
@@ -10571,6 +10707,14 @@
       <data key="d10">C:\Users\罗亚骏\AppData\Local\Temp\gradio\b954337edb01672487d8ed6c0d57c18664f8209f6709ad4e4f9af3f345f75eca\111003_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\561641d91eed8898aac879b468761a28b041111850d5c8ac8804035f85c51521\111005_tk.md</data>
       <data key="d11">1760362061</data>
     </edge>
+    <edge source="年龄和性别确定与错误处理" target="利安传家鑫享终身寿险">
+      <data key="d6">1.0</data>
+      <data key="d7">利安传家鑫享终身寿险包含年龄和性别确定与错误处理条款</data>
+      <data key="d8">产品条款,包含关系</data>
+      <data key="d9">chunk-5b24f698b4c3dc63f152c49182d55d74</data>
+      <data key="d10">/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/mc.md</data>
+      <data key="d11">1761746195</data>
+    </edge>
     <edge source="未还款项" target="条款6.4">
       <data key="d6">2.0</data>
       <data key="d7">条款6.4描述了未还款项&lt;SEP&gt;未还款项条款的编号是6.4</data>
@@ -11146,6 +11290,30 @@
       <data key="d9">chunk-81f2fe1bbcf18fc40edc7632356edfef</data>
       <data key="d10">C:\Users\罗亚骏\AppData\Local\Temp\gradio\561641d91eed8898aac879b468761a28b041111850d5c8ac8804035f85c51521\111005_tk.md</data>
       <data key="d11">1760362076</data>
+    </edge>
+    <edge source="全残" target="故意杀害">
+      <data key="d6">1.0</data>
+      <data key="d7">故意杀害导致被保险人全残</data>
+      <data key="d8">因果关系,导致结果</data>
+      <data key="d9">chunk-5b24f698b4c3dc63f152c49182d55d74</data>
+      <data key="d10">/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/mc.md</data>
+      <data key="d11">1761746195</data>
+    </edge>
+    <edge source="全残" target="被保险人">
+      <data key="d6">1.0</data>
+      <data key="d7">被保险人全残时保险金给付给被保险人</data>
+      <data key="d8">受益关系,权益归属</data>
+      <data key="d9">chunk-5b24f698b4c3dc63f152c49182d55d74</data>
+      <data key="d10">/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/mc.md</data>
+      <data key="d11">1761746195</data>
+    </edge>
+    <edge source="全残" target="免除保险人责任条款">
+      <data key="d6">1.0</data>
+      <data key="d7">责任免除条款适用于被保险人全残的情形</data>
+      <data key="d8">保险事件,免责情形</data>
+      <data key="d9">chunk-5b24f698b4c3dc63f152c49182d55d74</data>
+      <data key="d10">/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/mc.md</data>
+      <data key="d11">1761746195</data>
     </edge>
     <edge source="条款1.3" target="投保年龄">
       <data key="d6">4.0</data>
@@ -12611,6 +12779,30 @@
       <data key="d10">C:\Users\罗亚骏\AppData\Local\Temp\gradio\561641d91eed8898aac879b468761a28b041111850d5c8ac8804035f85c51521\111005_tk.md</data>
       <data key="d11">1760362076</data>
     </edge>
+    <edge source="身故" target="故意杀害">
+      <data key="d6">1.0</data>
+      <data key="d7">故意杀害导致被保险人身故</data>
+      <data key="d8">因果关系,导致结果</data>
+      <data key="d9">chunk-5b24f698b4c3dc63f152c49182d55d74</data>
+      <data key="d10">/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/mc.md</data>
+      <data key="d11">1761746195</data>
+    </edge>
+    <edge source="身故" target="继承人">
+      <data key="d6">1.0</data>
+      <data key="d7">被保险人身故后保险金给付给继承人</data>
+      <data key="d8">受益关系,权益转移</data>
+      <data key="d9">chunk-5b24f698b4c3dc63f152c49182d55d74</data>
+      <data key="d10">/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/mc.md</data>
+      <data key="d11">1761746195</data>
+    </edge>
+    <edge source="身故" target="免除保险人责任条款">
+      <data key="d6">1.0</data>
+      <data key="d7">责任免除条款适用于被保险人身故的情形</data>
+      <data key="d8">保险事件,免责情形</data>
+      <data key="d9">chunk-5b24f698b4c3dc63f152c49182d55d74</data>
+      <data key="d10">/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/mc.md</data>
+      <data key="d11">1761746195</data>
+    </edge>
     <edge source="180日" target="意外伤害以外原因">
       <data key="d6">1.0</data>
       <data key="d7">因意外伤害以外原因导致身故或全残需在180日后。</data>
@@ -12635,21 +12827,61 @@
       <data key="d10">D:\Codes\my_project\AI_Agent\data\inputs\111002_tk.md</data>
       <data key="d11">1760254566</data>
     </edge>
+    <edge source="故意杀害" target="免除保险人责任条款">
+      <data key="d6">1.0</data>
+      <data key="d7">故意杀害是责任免除的情形之一</data>
+      <data key="d8">免责条件,包含情形</data>
+      <data key="d9">chunk-5b24f698b4c3dc63f152c49182d55d74</data>
+      <data key="d10">/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/mc.md</data>
+      <data key="d11">1761746193</data>
+    </edge>
+    <edge source="故意杀害" target="二年以上保险费">
+      <data key="d6">1.0</data>
+      <data key="d7">已交足二年以上保险费是退还现金价值的条件</data>
+      <data key="d8">条件限制,资格条件</data>
+      <data key="d9">chunk-5b24f698b4c3dc63f152c49182d55d74</data>
+      <data key="d10">/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/mc.md</data>
+      <data key="d11">1761746194</data>
+    </edge>
+    <edge source="故意伤害" target="免除保险人责任条款">
+      <data key="d6">1.0</data>
+      <data key="d7">故意伤害是责任免除的情形之一</data>
+      <data key="d8">免责条件,包含情形</data>
+      <data key="d9">chunk-5b24f698b4c3dc63f152c49182d55d74</data>
+      <data key="d10">/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/mc.md</data>
+      <data key="d11">1761746193</data>
+    </edge>
+    <edge source="故意自伤" target="免除保险人责任条款">
+      <data key="d6">1.0</data>
+      <data key="d7">故意自伤是责任免除的情形之一</data>
+      <data key="d8">免责条件,包含情形</data>
+      <data key="d9">chunk-5b24f698b4c3dc63f152c49182d55d74</data>
+      <data key="d10">/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/mc.md</data>
+      <data key="d11">1761746193</data>
+    </edge>
+    <edge source="故意犯罪" target="免除保险人责任条款">
+      <data key="d6">1.0</data>
+      <data key="d7">故意犯罪是责任免除的情形之一</data>
+      <data key="d8">免责条件,包含情形</data>
+      <data key="d9">chunk-5b24f698b4c3dc63f152c49182d55d74</data>
+      <data key="d10">/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/mc.md</data>
+      <data key="d11">1761746193</data>
+    </edge>
     <edge source="自杀" target="2年内">
-      <data key="d6">2.0</data>
-      <data key="d7">自杀免责适用于合同成立或效力恢复之日起2年内。&lt;SEP&gt;自杀免责适用于合同成立或效力恢复之日起2年内</data>
+      <data key="d6">3.0</data>
+      <data key="d7">自杀免责适用于合同成立或效力恢复之日起2年内。&lt;SEP&gt;自杀免责适用于合同成立或效力恢复之日起2年内&lt;SEP&gt;自杀免责适用于合同成立后2年内</data>
       <data key="d8">免责条件,时间限制</data>
-      <data key="d9">chunk-9711ce8b36fae5fb4d0da4cc345a5b81&lt;SEP&gt;chunk-c5a3dcec68e87ba8c6040bdda3741204</data>
-      <data key="d10">D:\Codes\my_project\AI_Agent\data\inputs\111002_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\b954337edb01672487d8ed6c0d57c18664f8209f6709ad4e4f9af3f345f75eca\111003_tk.md</data>
-      <data key="d11">1760361943</data>
+      <data key="d9">chunk-9711ce8b36fae5fb4d0da4cc345a5b81&lt;SEP&gt;chunk-5b24f698b4c3dc63f152c49182d55d74&lt;SEP&gt;chunk-c5a3dcec68e87ba8c6040bdda3741204</data>
+      <data key="d10">D:\Codes\my_project\AI_Agent\data\inputs\111002_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\b954337edb01672487d8ed6c0d57c18664f8209f6709ad4e4f9af3f345f75eca\111003_tk.md&lt;SEP&gt;/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/mc.md</data>
+      <data key="d11">1761746194</data>
     </edge>
     <edge source="自杀" target="无民事行为能力人">
-      <data key="d6">2.0</data>
-      <data key="d7">被保险人自杀时为无民事行为能力人的除外。&lt;SEP&gt;被保险人自杀时为无民事行为能力人的除外</data>
-      <data key="d8">例外情况,免责条件,条件限制,除外情形</data>
-      <data key="d9">chunk-9711ce8b36fae5fb4d0da4cc345a5b81&lt;SEP&gt;chunk-c5a3dcec68e87ba8c6040bdda3741204</data>
-      <data key="d10">D:\Codes\my_project\AI_Agent\data\inputs\111002_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\b954337edb01672487d8ed6c0d57c18664f8209f6709ad4e4f9af3f345f75eca\111003_tk.md</data>
-      <data key="d11">1760361943</data>
+      <data key="d6">3.0</data>
+      <data key="d7">被保险人自杀时为无民事行为能力人的除外。&lt;SEP&gt;被保险人自杀时为无民事行为能力人的除外&lt;SEP&gt;自杀时为无民事行为能力人的除外</data>
+      <data key="d8">例外情况,例外情形,免责排除,免责条件,条件限制,除外情形</data>
+      <data key="d9">chunk-9711ce8b36fae5fb4d0da4cc345a5b81&lt;SEP&gt;chunk-5b24f698b4c3dc63f152c49182d55d74&lt;SEP&gt;chunk-c5a3dcec68e87ba8c6040bdda3741204</data>
+      <data key="d10">D:\Codes\my_project\AI_Agent\data\inputs\111002_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\b954337edb01672487d8ed6c0d57c18664f8209f6709ad4e4f9af3f345f75eca\111003_tk.md&lt;SEP&gt;/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/mc.md</data>
+      <data key="d11">1761746194</data>
     </edge>
     <edge source="自杀" target="保险合同终止">
       <data key="d6">1.0</data>
@@ -12658,6 +12890,14 @@
       <data key="d9">chunk-9711ce8b36fae5fb4d0da4cc345a5b81</data>
       <data key="d10">C:\Users\罗亚骏\AppData\Local\Temp\gradio\b954337edb01672487d8ed6c0d57c18664f8209f6709ad4e4f9af3f345f75eca\111003_tk.md</data>
       <data key="d11">1760361945</data>
+    </edge>
+    <edge source="自杀" target="免除保险人责任条款">
+      <data key="d6">1.0</data>
+      <data key="d7">2年内自杀是责任免除的情形之一</data>
+      <data key="d8">免责条件,包含情形</data>
+      <data key="d9">chunk-5b24f698b4c3dc63f152c49182d55d74</data>
+      <data key="d10">/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/mc.md</data>
+      <data key="d11">1761746194</data>
     </edge>
     <edge source="2年内" target="效力恢复">
       <data key="d6">1.0</data>
@@ -12722,6 +12962,14 @@
       <data key="d9">chunk-8373d6e7a829016bd3ce5dfab89c082e</data>
       <data key="d10">C:\Users\罗亚骏\AppData\Local\Temp\gradio\561641d91eed8898aac879b468761a28b041111850d5c8ac8804035f85c51521\111005_tk.md</data>
       <data key="d11">1760362074</data>
+    </edge>
+    <edge source="吸食或注射毒品" target="免除保险人责任条款">
+      <data key="d6">1.0</data>
+      <data key="d7">吸食或注射毒品是责任免除的情形之一</data>
+      <data key="d8">免责条件,包含情形</data>
+      <data key="d9">chunk-5b24f698b4c3dc63f152c49182d55d74</data>
+      <data key="d10">/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/mc.md</data>
+      <data key="d11">1761746194</data>
     </edge>
     <edge source="战争、军事冲突、暴乱或武装叛乱" target="保险合同终止">
       <data key="d6">1.0</data>
@@ -13435,6 +13683,14 @@
       <data key="d10">D:\Codes\my_project\AI_Agent\data\inputs\111002_tk.md</data>
       <data key="d11">1760254569</data>
     </edge>
+    <edge source="减额交清" target="利安传家鑫享终身寿险">
+      <data key="d6">1.0</data>
+      <data key="d7">利安传家鑫享终身寿险包含减额交清条款</data>
+      <data key="d8">产品条款,包含关系</data>
+      <data key="d9">chunk-5b24f698b4c3dc63f152c49182d55d74</data>
+      <data key="d10">/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/mc.md</data>
+      <data key="d11">1761746195</data>
+    </edge>
     <edge source="适用主险合同" target="保险事故通知">
       <data key="d6">1.0</data>
       <data key="d7">保险事故通知适用主险合同条款</data>
@@ -13515,6 +13771,14 @@
       <data key="d10">C:\Users\罗亚骏\AppData\Local\Temp\gradio\561641d91eed8898aac879b468761a28b041111850d5c8ac8804035f85c51521\111005_tk.md</data>
       <data key="d11">1760362075</data>
     </edge>
+    <edge source="保险事故通知" target="利安传家鑫享终身寿险">
+      <data key="d6">1.0</data>
+      <data key="d7">利安传家鑫享终身寿险包含保险事故通知条款</data>
+      <data key="d8">产品条款,包含关系</data>
+      <data key="d9">chunk-5b24f698b4c3dc63f152c49182d55d74</data>
+      <data key="d10">/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/mc.md</data>
+      <data key="d11">1761746194</data>
+    </edge>
     <edge source="宽限期" target="条款4.2">
       <data key="d6">4.0</data>
       <data key="d7">条款4.2是宽限期&lt;SEP&gt;宽限期条款编号为4.2。&lt;SEP&gt;宽限期条款编号为4.2&lt;SEP&gt;宽限期是条款4.2的内容</data>
@@ -13579,6 +13843,14 @@
       <data key="d10">C:\Users\罗亚骏\AppData\Local\Temp\gradio\561641d91eed8898aac879b468761a28b041111850d5c8ac8804035f85c51521\111005_tk.md</data>
       <data key="d11">1760362072</data>
     </edge>
+    <edge source="效力中止" target="利安传家鑫享终身寿险">
+      <data key="d6">1.0</data>
+      <data key="d7">利安传家鑫享终身寿险包含效力中止条款</data>
+      <data key="d8">产品条款,包含关系</data>
+      <data key="d9">chunk-5b24f698b4c3dc63f152c49182d55d74</data>
+      <data key="d10">/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/mc.md</data>
+      <data key="d11">1761746195</data>
+    </edge>
     <edge source="效力恢复" target="补交保险费及相应利息">
       <data key="d6">1.0</data>
       <data key="d7">效力恢复需补交保险费及相应利息</data>
@@ -13626,6 +13898,14 @@
       <data key="d9">chunk-d85279812f2d24c66a7c6a950cf9c3ff&lt;SEP&gt;chunk-8b3daf65fd9493dd2205736022b25a81&lt;SEP&gt;chunk-e999db6e32d477ed4dcda8ba66e401ba&lt;SEP&gt;chunk-57b15c9c2e976a5f17cf53960108a69d</data>
       <data key="d10">C:\Users\罗亚骏\AppData\Local\Temp\gradio\b954337edb01672487d8ed6c0d57c18664f8209f6709ad4e4f9af3f345f75eca\111003_tk.md&lt;SEP&gt;C:\Users\罗亚骏\AppData\Local\Temp\gradio\561641d91eed8898aac879b468761a28b041111850d5c8ac8804035f85c51521\111005_tk.md</data>
       <data key="d11">1760362061</data>
+    </edge>
+    <edge source="明确说明与如实告知" target="利安传家鑫享终身寿险">
+      <data key="d6">1.0</data>
+      <data key="d7">利安传家鑫享终身寿险包含明确说明与如实告知条款</data>
+      <data key="d8">产品条款,包含关系</data>
+      <data key="d9">chunk-5b24f698b4c3dc63f152c49182d55d74</data>
+      <data key="d10">/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/mc.md</data>
+      <data key="d11">1761746195</data>
     </edge>
     <edge source="性别" target="申请投保">
       <data key="d6">1.0</data>
@@ -13770,6 +14050,14 @@
       <data key="d9">chunk-6aeafefd52656224c01b7587c6f96eac</data>
       <data key="d10">C:\Users\罗亚骏\AppData\Local\Temp\gradio\b954337edb01672487d8ed6c0d57c18664f8209f6709ad4e4f9af3f345f75eca\111003_tk.md</data>
       <data key="d11">1760361948</data>
+    </edge>
+    <edge source="减保" target="利安传家鑫享终身寿险">
+      <data key="d6">1.0</data>
+      <data key="d7">利安传家鑫享终身寿险包含减保条款</data>
+      <data key="d8">产品条款,包含关系</data>
+      <data key="d9">chunk-5b24f698b4c3dc63f152c49182d55d74</data>
+      <data key="d10">/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/mc.md</data>
+      <data key="d11">1761746195</data>
     </edge>
     <edge source="基本保险金额" target="减保比例">
       <data key="d6">1.0</data>
@@ -16899,6 +17187,14 @@
       <data key="d10">C:\Users\罗亚骏\AppData\Local\Temp\gradio\561641d91eed8898aac879b468761a28b041111850d5c8ac8804035f85c51521\111005_tk.md</data>
       <data key="d11">1760362073</data>
     </edge>
+    <edge source="驾驶无合法有效行驶证的机动车" target="免除保险人责任条款">
+      <data key="d6">1.0</data>
+      <data key="d7">驾驶无合法有效行驶证的机动车是责任免除的情形之一</data>
+      <data key="d8">免责条件,包含情形</data>
+      <data key="d9">chunk-5b24f698b4c3dc63f152c49182d55d74</data>
+      <data key="d10">/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/mc.md</data>
+      <data key="d11">1761746194</data>
+    </edge>
     <edge source="滑坡" target="岩石山体">
       <data key="d6">1.0</data>
       <data key="d7">滑坡发生于岩石山体。</data>
@@ -16922,6 +17218,30 @@
       <data key="d9">chunk-2ad4ae27a07f6bbd501e741d75560867</data>
       <data key="d10">C:\Users\罗亚骏\AppData\Local\Temp\gradio\561641d91eed8898aac879b468761a28b041111850d5c8ac8804035f85c51521\111005_tk.md</data>
       <data key="d11">1760362074</data>
+    </edge>
+    <edge source="核爆炸" target="免除保险人责任条款">
+      <data key="d6">1.0</data>
+      <data key="d7">核爆炸是责任免除的情形之一</data>
+      <data key="d8">免责条件,包含情形</data>
+      <data key="d9">chunk-5b24f698b4c3dc63f152c49182d55d74</data>
+      <data key="d10">/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/mc.md</data>
+      <data key="d11">1761746194</data>
+    </edge>
+    <edge source="核辐射" target="免除保险人责任条款">
+      <data key="d6">1.0</data>
+      <data key="d7">核辐射是责任免除的情形之一</data>
+      <data key="d8">免责条件,包含情形</data>
+      <data key="d9">chunk-5b24f698b4c3dc63f152c49182d55d74</data>
+      <data key="d10">/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/mc.md</data>
+      <data key="d11">1761746195</data>
+    </edge>
+    <edge source="核污染" target="免除保险人责任条款">
+      <data key="d6">1.0</data>
+      <data key="d7">核污染是责任免除的情形之一</data>
+      <data key="d8">免责条件,包含情形</data>
+      <data key="d9">chunk-5b24f698b4c3dc63f152c49182d55d74</data>
+      <data key="d10">/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/mc.md</data>
+      <data key="d11">1761746195</data>
     </edge>
     <edge source="保险金作为遗产" target="国家现行有效的法律规定">
       <data key="d6">1.0</data>
@@ -16954,6 +17274,54 @@
       <data key="d9">chunk-81f2fe1bbcf18fc40edc7632356edfef</data>
       <data key="d10">C:\Users\罗亚骏\AppData\Local\Temp\gradio\561641d91eed8898aac879b468761a28b041111850d5c8ac8804035f85c51521\111005_tk.md</data>
       <data key="d11">1760362075</data>
+    </edge>
+    <edge source="利安传家鑫享终身寿险" target="免除保险人责任条款">
+      <data key="d6">1.0</data>
+      <data key="d7">利安传家鑫享终身寿险包含免除保险人责任条款</data>
+      <data key="d8">产品条款,包含关系</data>
+      <data key="d9">chunk-5b24f698b4c3dc63f152c49182d55d74</data>
+      <data key="d10">/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/mc.md</data>
+      <data key="d11">1761746195</data>
+    </edge>
+    <edge source="免除保险人责任条款" target="抗拒依法采取的刑事强制措施">
+      <data key="d6">1.0</data>
+      <data key="d7">抗拒依法采取的刑事强制措施是责任免除的情形之一</data>
+      <data key="d8">免责条件,包含情形</data>
+      <data key="d9">chunk-5b24f698b4c3dc63f152c49182d55d74</data>
+      <data key="d10">/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/mc.md</data>
+      <data key="d11">1761746193</data>
+    </edge>
+    <edge source="免除保险人责任条款" target="战争">
+      <data key="d6">1.0</data>
+      <data key="d7">战争是责任免除的情形之一</data>
+      <data key="d8">免责条件,包含情形</data>
+      <data key="d9">chunk-5b24f698b4c3dc63f152c49182d55d74</data>
+      <data key="d10">/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/mc.md</data>
+      <data key="d11">1761746194</data>
+    </edge>
+    <edge source="免除保险人责任条款" target="军事冲突">
+      <data key="d6">1.0</data>
+      <data key="d7">军事冲突是责任免除的情形之一</data>
+      <data key="d8">免责条件,包含情形</data>
+      <data key="d9">chunk-5b24f698b4c3dc63f152c49182d55d74</data>
+      <data key="d10">/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/mc.md</data>
+      <data key="d11">1761746194</data>
+    </edge>
+    <edge source="免除保险人责任条款" target="暴乱">
+      <data key="d6">1.0</data>
+      <data key="d7">暴乱是责任免除的情形之一</data>
+      <data key="d8">免责条件,包含情形</data>
+      <data key="d9">chunk-5b24f698b4c3dc63f152c49182d55d74</data>
+      <data key="d10">/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/mc.md</data>
+      <data key="d11">1761746194</data>
+    </edge>
+    <edge source="免除保险人责任条款" target="武装叛乱">
+      <data key="d6">1.0</data>
+      <data key="d7">武装叛乱是责任免除的情形之一</data>
+      <data key="d8">免责条件,包含情形</data>
+      <data key="d9">chunk-5b24f698b4c3dc63f152c49182d55d74</data>
+      <data key="d10">/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/mc.md</data>
+      <data key="d11">1761746194</data>
     </edge>
   </graph>
 </graphml>
