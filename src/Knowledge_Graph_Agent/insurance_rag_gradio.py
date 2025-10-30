@@ -355,6 +355,27 @@ async def query_knowledge_async(
     if not question.strip():
         yield chat_history, {}, "", "", ""
         return
+    
+    # 保存当前代理设置（此时可能为空）
+    current_http_proxy = os.environ.get("HTTP_PROXY", "")
+    current_https_proxy = os.environ.get("HTTPS_PROXY", "")
+    current_all_proxy = os.environ.get("ALL_PROXY", "")
+    
+    # 获取原始代理设置（如果存在）
+    saved_http_proxy = os.environ.get("SAVED_HTTP_PROXY", "")
+    saved_https_proxy = os.environ.get("SAVED_HTTPS_PROXY", "")
+    saved_all_proxy = os.environ.get("SAVED_ALL_PROXY", "")
+    
+    # 恢复代理设置用于模型调用
+    if saved_http_proxy:
+        os.environ["HTTP_PROXY"] = saved_http_proxy
+    if saved_https_proxy:
+        os.environ["HTTPS_PROXY"] = saved_https_proxy
+    if saved_all_proxy:
+        os.environ["ALL_PROXY"] = saved_all_proxy
+    
+    logger.info(f"已恢复代理设置用于模型调用: HTTP_PROXY={saved_http_proxy}, HTTPS_PROXY={saved_https_proxy}, ALL_PROXY={saved_all_proxy}")
+    
     try:
         logger.info(f"🔍 查询: {question} (mode={query_mode}, rerank={'启用' if enable_rerank else '禁用'}, top_k={rerank_top_k})")
         
@@ -414,6 +435,12 @@ async def query_knowledge_async(
         })
         yield chat_history, {}, "", "", ""
         return
+    finally:
+        # 恢复查询前的代理设置
+        os.environ["HTTP_PROXY"] = current_http_proxy
+        os.environ["HTTPS_PROXY"] = current_https_proxy
+        os.environ["ALL_PROXY"] = current_all_proxy
+        logger.info(f"已恢复查询前的代理设置: HTTP_PROXY={current_http_proxy}, HTTPS_PROXY={current_https_proxy}, ALL_PROXY={current_all_proxy}")
 
 def extract_metrics_from_context(raw_context: str, mode: str) -> Dict:
     """从上下文中提取检索指标，支持多种数据格式"""
@@ -864,6 +891,23 @@ async def startup():
 if __name__ == "__main__":
     # 在 Gradio 启动前初始化 Agent
     asyncio.run(startup())
+
+    # 保存当前代理设置
+    current_http_proxy = os.environ.get("HTTP_PROXY", "")
+    current_https_proxy = os.environ.get("HTTPS_PROXY", "")
+    current_all_proxy = os.environ.get("ALL_PROXY", "")
+    
+    # 将当前代理设置保存到SAVED_*_PROXY环境变量，供模型调用时使用
+    os.environ["SAVED_HTTP_PROXY"] = current_http_proxy
+    os.environ["SAVED_HTTPS_PROXY"] = current_https_proxy
+    os.environ["SAVED_ALL_PROXY"] = current_all_proxy
+    
+    print(f"当前代理设置: HTTP_PROXY={current_http_proxy}, HTTPS_PROXY={current_https_proxy}, ALL_PROXY={current_all_proxy}")
+    print("禁用代理以启动 Gradio 共享链接...")
+    # 禁用代理以确保Gradio能够创建共享链接
+    os.environ["HTTP_PROXY"] = ""
+    os.environ["HTTPS_PROXY"] = ""
+    os.environ["ALL_PROXY"] = ""
     
     # 启动 Gradio (使用 queue 启用异步支持)
     demo.queue().launch(
@@ -873,3 +917,9 @@ if __name__ == "__main__":
         debug=True,
         show_error=True
     )
+    
+    # 恢复原始代理设置（在Gradio关闭后）
+    os.environ["HTTP_PROXY"] = current_http_proxy
+    os.environ["HTTPS_PROXY"] = current_https_proxy
+    os.environ["ALL_PROXY"] = current_all_proxy
+    print("已恢复原始代理设置")
