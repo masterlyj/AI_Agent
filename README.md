@@ -133,32 +133,49 @@ pip install -e .
 
     请确保 Ollama 服务在 `http://localhost:11434` 端口（或您配置的任何端口）正常运行。
 
-### 5. 项目配置
+### 5. PostgreSQL数据库安装
 
-#### 5.1 Embedding 模型配置
+本项目默认使用 PostgreSQL 作为数据库存储。您需要在本地安装并启动 PostgreSQL 服务。
 
-在 `src/Knowledge_Graph_Agent/agent.py` 文件中，可以配置嵌入模型（默认已配置 Ollama）：
+*   **备注**：windows用户建议在linux虚拟机中安装PostgreSQL，否则age扩展无法安装。mac用户应该可以在本地安装PostgreSQL（未测试过）。
+本系统PostgreSQL数据库详细配置请参考`env_template.txt`文件中的注释。
 
-```python
-# src/Knowledge_Graph_Agent/agent.py
-# ...
-embedding_config = {
-    "type": "ollama",
-    "model": "qwen3-embedding:0.6b",
-    "base_url": "http://localhost:11434"
-}
-# ...
-```
+*   **安装 PostgreSQL(需要安装16.6以上的版本)**：请访问 [postgresql.org](https://www.postgresql.org/)，按照官方指南安装并启动 PostgreSQL 服务。(可以选择安装pgAdmin 4工具方便管理数据库)
 
-#### 5.2 LLM 配置 (可选)
+*   **安装 pgvector 扩展**：在 PostgreSQL 中安装 `pgvector` 扩展，用于存储和查询向量数据。请参考 [pgvector 官方文档](https://github.com/pgvector/pgvector) 进行安装。
 
-您可以在 `src/Knowledge_Graph_Agent/llm.py` 中配置您希望使用的大型语言模型（目前支持 DeepSeek 和 Google Gemini）。
+*   **安装 age 扩展**：在 PostgreSQL 中安装 `age` 扩展，用于存储和查询知识图谱数据。请参考 [age 官方文档](https://github.com/apache/age/tree/master) 进行安装。
 
-### 6. 准备文档
+*   **成功安装上述扩展后需要进入数据库并创建扩展**：
+    ```sql
+    -- 进入 PostgreSQL 数据库
+    psql -U postgres -d postgres
+
+    -- 创建 pgvector 扩展
+    CREATE EXTENSION IF NOT EXISTS vector;
+
+    -- 创建 age 扩展
+    CREATE EXTENSION IF NOT EXISTS age;
+    ```
+
+
+
+
+### 6. 项目配置（参考env_template.txt）
+
+#### 6.1 Embedding 模型配置
+
+在 `.env` 文件中，可以配置嵌入模型（默认已配置 Ollama）：
+
+#### 6.2 LLM 配置 
+
+您可以在 `.env` 文件中配置您希望使用的大型语言模型（目前支持 DeepSeek 和 Google Gemini）。
+
+### 7. 准备文档
 
 将您需要索引的保险文档（如寿险条款、产品说明书、理赔指南等，支持 `.md`）放置在 `data/inputs` 目录下。
 
-### 7. 运行应用
+### 8. 运行应用
 
 在激活的虚拟环境中，执行以下命令启动 Gradio Web UI：
 
