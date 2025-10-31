@@ -66,6 +66,56 @@ RERANK_TOP_K=15
 # 是否使用 FP16 精度 (可加速推理)
 RERANK_USE_FP16=false
 
+# ======== 数据库配置Postgresql ========
+
+## PostgreSQL 系统配置
+LIGHTRAG_KV_STORAGE=PGKVStorage
+LIGHTRAG_DOC_STATUS_STORAGE=PGDocStatusStorage
+LIGHTRAG_GRAPH_STORAGE=PGGraphStorage
+LIGHTRAG_VECTOR_STORAGE=PGVectorStorage
+
+
+### PostgreSQL 连接配置（这个必须适配自己的数据库，要仔细配置）
+POSTGRES_HOST=192.168.3.64
+POSTGRES_PORT=5432
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD='123456'
+POSTGRES_DATABASE=postgres
+POSTGRES_MAX_CONNECTIONS=12
+# POSTGRES_WORKSPACE=forced_workspace_name
+
+### PostgreSQL 向量存储配置
+### 向量存储类型: HNSW, IVFFlat
+POSTGRES_VECTOR_INDEX_TYPE=HNSW
+POSTGRES_HNSW_M=16
+POSTGRES_HNSW_EF=200
+POSTGRES_IVFFLAT_LISTS=100
+
+## PostgreSQL 连接重试配置（网络健壮性）
+## 重试次数 (1-10, 默认: 3)
+## 初始重试退避时间（秒）(0.1-5.0, 默认: 0.5)
+## 最大重试退避时间（秒）(退避值-60.0, 默认: 5.0)
+## 连接池关闭超时时间（秒）(1.0-30.0, 默认: 5.0)
+POSTGRES_CONNECTION_RETRIES=3
+POSTGRES_CONNECTION_RETRY_BACKOFF=0.5
+POSTGRES_CONNECTION_RETRY_BACKOFF_MAX=5.0
+POSTGRES_POOL_CLOSE_TIMEOUT=5.0
+
+# ## PostgreSQL SSL配置（可选）
+# POSTGRES_SSL_MODE=require
+# POSTGRES_SSL_CERT=/path/to/client-cert.pem
+# POSTGRES_SSL_KEY=/path/to/client-key.pem
+# POSTGRES_SSL_ROOT_CERT=/path/to/ca-cert.pem
+# POSTGRES_SSL_CRL=/path/to/crl.pem
+
+# ## PostgreSQL服务器设置（适用于Supabase Supavisor）（可选）
+# 用于向PostgreSQL连接字符串传递额外选项。
+# 对于Supabase，您可能需要这样设置：
+# POSTGRES_SERVER_SETTINGS="options=reference%3D[project-ref]"
+
+# 默认值为100，设置为0以禁用（可选）
+# POSTGRES_STATEMENT_CACHE_SIZE=100
+
 # ======== 服务器配置 ========
 # Gunicorn 工作进程数
 WORKERS=2
@@ -164,7 +214,7 @@ LOG_FILENAME=lightrag.log
 # MinerU PDF 解析 API Key (可选)
 MINERU_API_KEY=
 
-# RAG 工作目录配置
+# RAG 工作目录配置（使用了）
 WORKING_DIR=data/rag_storage
 DOC_LIBRARY=data/inputs
 

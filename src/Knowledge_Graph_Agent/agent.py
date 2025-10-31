@@ -133,11 +133,15 @@ class RAGAgent:
                 logger.error(f"❌ 加载 Reranker 模型失败: {e}")
                 instance.reranker = None
         
-        # === 5. 创建 LightRAG 实例 ===
-        instance.rag = LightRAG(
+        # === 5. 创建 LightRAG 实例 ===(默认使用 PostgreSQL 存储，如果修改存储方式，修改这个初始化即可)
+        instance.rag = LightRAG( 
             working_dir=working_dir,
             embedding_func=embedding_func,
             llm_model_func=llm_func,
+            kv_storage="PGKVStorage",
+            vector_storage="PGVectorStorage",
+            graph_storage="PGGraphStorage",
+            doc_status_storage="PGDocStatusStorage"
         )
         
         # === 6. 初始化存储和流水线 ===
