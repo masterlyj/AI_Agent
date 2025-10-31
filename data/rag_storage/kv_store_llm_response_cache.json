@@ -1450,5 +1450,45 @@
     "create_time": 1761746240,
     "update_time": 1761746240,
     "_id": "default:extract:9deb19f517e97db4f5cb88e54a314303"
+  },
+  "mix:keywords:27ecdc946023132ac3d2066965a14048": {
+    "return": "{\"high_level_keywords\": [\"\\u4fdd\\u5355\\u53d8\\u66f4\", \"\\u51cf\\u4fdd\", \"\\u4fdd\\u5355\\u8d28\\u62bc\\u8d37\\u6b3e\", \"\\u73b0\\u91d1\\u4ef7\\u503c\\u8ba1\\u7b97\", \"\\u4fdd\\u5355\\u5931\\u6548\", \"\\u5bbd\\u9650\\u671f\", \"\\u8d37\\u6b3e\\u507f\\u8fd8\", \"\\u4fdd\\u8d39\\u7f34\\u7eb3\"], \"low_level_keywords\": [\"\\u4f20\\u5bb6\\u798f\", \"20 \\u5e74\\u4ea4\", \"5 \\u5e74\", \"\\u57fa\\u672c\\u4fdd\\u9669\\u91d1\\u989d\", \"50 \\u4e07\", \"30 \\u4e07\", \"\\u73b0\\u91d1\\u4ef7\\u503c\", \"\\u8d37\\u6b3e\\u91d1\\u989d\", \"\\u8d37\\u6b3e\\u5229\\u606f\", \"\\u5bbd\\u9650\\u671f\", \"\\u4fdd\\u8d39\", \"\\u5931\\u6548\"]}",
+    "cache_type": "keywords",
+    "chunk_id": null,
+    "original_prompt": "我买了传家福，选 20 年交，现在交了 5 年，想做两件事：一是减保，把基本保险金额从 50 万降到 30 万，能退多少现金价值？二是减保后想申请保单质押贷款，最多能贷多少钱？另外如果贷款后我没按时还利息，加上宽限期内没交保费，保单会直接失效吗",
+    "queryparam": {
+      "mode": "mix",
+      "response_type": "Multiple Paragraphs",
+      "top_k": 40,
+      "chunk_top_k": 40,
+      "max_entity_tokens": 10000,
+      "max_relation_tokens": 10000,
+      "max_total_tokens": 40000,
+      "user_prompt": "",
+      "enable_rerank": true
+    },
+    "create_time": 1761825752,
+    "update_time": 1761825752,
+    "_id": "mix:keywords:27ecdc946023132ac3d2066965a14048"
+  },
+  "mix:keywords:8204261607153ffc42b14906ec78fff8": {
+    "return": "{\"high_level_keywords\": [\"\\u53d7\\u76ca\\u4eba\\u53d8\\u66f4\", \"\\u5168\\u6b8b\\u4fdd\\u9669\\u91d1\", \"\\u4fdd\\u5355\\u8d28\\u62bc\\u8d37\\u6b3e\", \"\\u4fdd\\u9669\\u91d1\\u9886\\u53d6\", \"\\u5408\\u540c\\u53d8\\u66f4\", \"\\u4fdd\\u5355\\u6743\\u76ca\", \"\\u540c\\u610f\\u6743\"], \"low_level_keywords\": [\"\\u4f20\\u5bb6\\u5b9d\\u7ec8\\u8eab\\u5bff\\u9669\", \"\\u8db8\\u4ea4\", \"12 \\u4e07\", \"\\u4fdd\\u8d39\", \"\\u6cd5\\u5b9a\\u53d7\\u76ca\\u4eba\", \"\\u6307\\u5b9a\\u53d7\\u76ca\\u4eba\", \"10 \\u5c81\", \"\\u88ab\\u4fdd\\u9669\\u4eba\", \"55 \\u5c81\", \"\\u5168\\u6b8b\", \"\\u4fdd\\u9669\\u91d1\", \"\\u4fdd\\u5355\", \"\\u8d28\\u62bc\\u8d37\\u6b3e\", \"\\u4fdd\\u9669\\u91d1\\u989d\", \"\\u8d37\\u6b3e\\u6bd4\\u4f8b\", \"\\u4fdd\\u5355\\u6548\\u529b\", \"\\u4fdd\\u9669\\u8d23\\u4efb\"]}",
+    "cache_type": "keywords",
+    "chunk_id": null,
+    "original_prompt": "我给我妈（55 岁）买了传家宝，选趸交，交了 12 万保费，现在想做两件事：一是把受益人从‘法定’改成我女儿（10 岁），需要我妈同意吗？二是如果之后我妈不幸全残，能领多少保险金？领完保险金后，保单还能申请质押贷款吗？",
+    "queryparam": {
+      "mode": "mix",
+      "response_type": "Multiple Paragraphs",
+      "top_k": 40,
+      "chunk_top_k": 40,
+      "max_entity_tokens": 10000,
+      "max_relation_tokens": 10000,
+      "max_total_tokens": 40000,
+      "user_prompt": "",
+      "enable_rerank": true
+    },
+    "create_time": 1761826132,
+    "update_time": 1761826132,
+    "_id": "mix:keywords:8204261607153ffc42b14906ec78fff8"
   }
 }
