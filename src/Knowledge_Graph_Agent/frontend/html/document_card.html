@@ -1,0 +1,52 @@
+<div style="background:#f8fafc; border:2px solid #10b981; border-radius:10px; padding:20px; margin-bottom:20px; box-shadow:0 2px 8px rgba(0,0,0,0.1);">
+
+  <div style="display:flex; align-items:flex-start; gap:12px; margin-bottom:15px;">
+    <div
+      style="background:#10b981; color:white; min-width:35px; height:35px; border-radius:50%; 
+             display:flex; align-items:center; justify-content:center; font-weight:bold; flex-shrink:0;">
+      {{idx}}
+    </div>
+
+    <div style="flex:1; min-width:0;">
+
+      <div
+        style="font-weight:bold; color:#065f46; font-size:15px; word-break:break-all;">
+        📁 {{file_path}}
+      </div>
+
+      <div style="margin-top:8px; display:flex; gap:8px; flex-wrap:wrap;">
+
+        <span
+          style="background:#dbeafe; color:#1e40af; padding:4px 10px; border-radius:6px; 
+                 font-size:12px; white-space:nowrap;">
+          🔖 {{chunk_id}}
+        </span>
+
+        <span
+          style="background:#fef3c7; color:#d97706; padding:4px 10px; border-radius:6px; 
+                 font-size:12px; font-weight:600; white-space:nowrap;">
+          📈 相关度: {{score_percent}}
+        </span>
+
+        <span
+          style="background:#f3e8ff; color:#7c3aed; padding:4px 10px; border-radius:6px; 
+                 font-size:12px; white-space:nowrap;">
+          🆔 {{reference_id}}
+        </span>
+
+      </div>
+    </div>
+  </div>
+
+  <div
+    style="background:white; padding:16px; border-radius:8px; border:1px solid #e5e7eb; 
+           margin-top:12px; overflow:hidden;">
+    <div
+      style="color:#1f2937; line-height:1.8; white-space:pre-line; font-size:14px; 
+             word-wrap:break-word; overflow-wrap:break-word; max-width:100%; 
+             font-family:'Microsoft YaHei', sans-serif;">
+      {{content}}
+    </div>
+  </div>
+
+</div>

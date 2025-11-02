@@ -1,0 +1,47 @@
+<div style="font-family: 'Microsoft YaHei', sans-serif; padding: 16px; background: #f8fafc; border-radius: 8px;">
+  <!-- Header -->
+  <div style="display: flex; align-items: center; margin-bottom: 20px;">
+    <h3 style="margin: 0; color: #1e293b; font-size: 20px;">
+      📄 原始上下文
+    </h3>
+    <div style="margin-left: auto;">
+      <span style="background: #3b82f6; color: white; padding: 6px 12px; border-radius: 20px; font-size: 14px; font-weight: bold;">
+        {{char_count}} 字符
+      </span>
+    </div>
+  </div>
+
+  <!-- Context Detail Section -->
+  <details style="margin-top: 16px;">
+    <summary style="cursor: pointer; color: #3b82f6; font-weight: bold; padding: 8px; background: white; border-radius: 6px; border: 1px solid #e2e8f0;">
+      点击展开/折叠原始上下文
+    </summary>
+
+    <!-- Raw Context Content Wrapper -->
+    <div style="margin-top: 12px; max-height: 500px; overflow-y: auto; background: white; border-radius: 6px; border: 1px solid #e2e8f0;">
+      <pre style="margin: 0; padding: 16px; font-size: 14px; line-height: 1.6; white-space: pre-wrap; word-wrap: break-word;">
+{{content}}
+      </pre>
+    </div>
+
+    <!-- Custom Scrollbar Style -->
+    <style>
+      /* 自定义滚动条样式 */
+      details > div::-webkit-scrollbar {
+        width: 10px;
+        height: 10px;
+      }
+      details > div::-webkit-scrollbar-track {
+        background: #f1f5f9;
+        border-radius: 5px;
+      }
+      details > div::-webkit-scrollbar-thumb {
+        background: linear-gradient(180deg, #3b82f6 0%, #2563eb 100%);
+        border-radius: 5px;
+      }
+      details > div::-webkit-scrollbar-thumb:hover {
+        background: linear-gradient(180deg, #2563eb 0%, #1d4ed8 100%);
+      }
+    </style>
+  </details>
+</div>
