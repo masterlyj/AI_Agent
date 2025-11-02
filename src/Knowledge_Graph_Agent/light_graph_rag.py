@@ -426,9 +426,9 @@ class LightRAG:
         ]
 
         for storage_type, storage_name in storage_configs:
-            # Verify storage implementation compatibility
+            # 验证存储实现的兼容性
             verify_storage_implementation(storage_type, storage_name)
-            # Check environment variables
+            # 检查环境变量
             check_storage_env_vars(storage_name)
 
         # Ensure vector_db_storage_cls_kwargs has required fields
@@ -590,7 +590,7 @@ class LightRAG:
         self._storages_status = StoragesStatus.CREATED
 
     async def initialize_storages(self):
-        """Storage initialization must be called one by one to prevent deadlock"""
+        """存储初始化必须逐个调用以防止死锁"""
         if self._storages_status == StoragesStatus.CREATED:
             for storage in (
                 self.full_docs,

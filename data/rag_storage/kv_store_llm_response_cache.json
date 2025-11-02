@@ -1490,5 +1490,185 @@
     "create_time": 1761826132,
     "update_time": 1761826132,
     "_id": "mix:keywords:8204261607153ffc42b14906ec78fff8"
+  },
+  "mix:keywords:0d24a750f5bf6ccaca4b2ab11b3e4e4a": {
+    "return": "{\"high_level_keywords\": [\"\\u5168\\u6b8b\\u5b9a\\u4e49\", \"\\u6b8b\\u75be\\u8ba4\\u5b9a\", \"\\u4fdd\\u9669\\u91ca\\u4e49\"], \"low_level_keywords\": [\"\\u5168\\u6b8b\", \"8\\u79cd\\u60c5\\u5f62\", \"\\u6c38\\u4e45\\u5b8c\\u5168\", \"\\u80a2\\u4f53\\u7f3a\\u5931\", \"\\u53cc\\u76ee\\u5931\\u660e\"]}",
+    "cache_type": "keywords",
+    "chunk_id": null,
+    "original_prompt": "全残的定义包括哪些情况?",
+    "queryparam": {
+      "mode": "mix",
+      "response_type": "Multiple Paragraphs",
+      "top_k": 40,
+      "chunk_top_k": 40,
+      "max_entity_tokens": 10000,
+      "max_relation_tokens": 10000,
+      "max_total_tokens": 40000,
+      "user_prompt": "",
+      "enable_rerank": true
+    },
+    "create_time": 1761901079,
+    "update_time": 1761901079,
+    "_id": "mix:keywords:0d24a750f5bf6ccaca4b2ab11b3e4e4a"
+  },
+  "hybrid:keywords:76c400fdcfcf4c9f41292d59b294d050": {
+    "return": "{\"high_level_keywords\": [\"\\u4fdd\\u9669\\u914d\\u7f6e\\u5efa\\u8bae\", \"\\u6295\\u4fdd\\u65b9\\u6848\", \"\\u9002\\u5408\\u4eba\\u7fa4\", \"\\u4eba\\u751f\\u9636\\u6bb5\\u89c4\\u5212\"], \"low_level_keywords\": [\"\\u91d1\\u878d\\u79d1\\u6280\", \"\\u5e94\\u5c4a\\u751f\", \"\\u5e74\\u8f7b\\u7fa4\\u4f53\", \"\\u521d\\u5165\\u804c\\u573a\", \"\\u804c\\u4e1a\\u7c7b\\u522b\"]}",
+    "cache_type": "keywords",
+    "chunk_id": null,
+    "original_prompt": "我是一名金融科技的应届生，请问我可以买哪些保险",
+    "queryparam": {
+      "mode": "hybrid",
+      "response_type": "Multiple Paragraphs",
+      "top_k": 40,
+      "chunk_top_k": 40,
+      "max_entity_tokens": 10000,
+      "max_relation_tokens": 10000,
+      "max_total_tokens": 40000,
+      "user_prompt": "",
+      "enable_rerank": true
+    },
+    "create_time": 1761901298,
+    "update_time": 1761901298,
+    "_id": "hybrid:keywords:76c400fdcfcf4c9f41292d59b294d050"
+  },
+  "mix:keywords:914bd8c84660c2819d476902e0e83b3a": {
+    "return": "{\"high_level_keywords\": [\"\\u4fdd\\u9669\\u4ea7\\u54c1\", \"\\u4ea7\\u54c1\\u67e5\\u8be2\", \"\\u6570\\u91cf\\u67e5\\u8be2\"], \"low_level_keywords\": [\"\\u6570\\u91cf\", \"\\u5168\\u90e8\"]}",
+    "cache_type": "keywords",
+    "chunk_id": null,
+    "original_prompt": "一共有多少保险产品",
+    "queryparam": {
+      "mode": "mix",
+      "response_type": "Multiple Paragraphs",
+      "top_k": 40,
+      "chunk_top_k": 40,
+      "max_entity_tokens": 10000,
+      "max_relation_tokens": 10000,
+      "max_total_tokens": 40000,
+      "user_prompt": "",
+      "enable_rerank": true
+    },
+    "create_time": 1762062192,
+    "update_time": 1762062192,
+    "_id": "mix:keywords:914bd8c84660c2819d476902e0e83b3a"
+  },
+  "mix:keywords:7352af180a7fd577fe23ae233d7a2b04": {
+    "return": "{\"high_level_keywords\": [\"\\u5bff\\u9669\", \"\\u4ea7\\u54c1\\u67e5\\u8be2\", \"\\u4ea7\\u54c1\\u63a8\\u8350\", \"\\u4ea7\\u54c1\\u79cd\\u7c7b\"], \"low_level_keywords\": []}",
+    "cache_type": "keywords",
+    "chunk_id": null,
+    "original_prompt": "还有别的寿险嘛",
+    "queryparam": {
+      "mode": "mix",
+      "response_type": "Multiple Paragraphs",
+      "top_k": 40,
+      "chunk_top_k": 40,
+      "max_entity_tokens": 10000,
+      "max_relation_tokens": 10000,
+      "max_total_tokens": 40000,
+      "user_prompt": "",
+      "enable_rerank": true
+    },
+    "create_time": 1762062276,
+    "update_time": 1762062276,
+    "_id": "mix:keywords:7352af180a7fd577fe23ae233d7a2b04"
+  },
+  "hybrid:keywords:0cd50763f1e84fc86d7f0772d66f537b": {
+    "return": "{\"high_level_keywords\": [\"\\u8c41\\u514d\\u4fdd\\u9669\\u8d39\", \"\\u89e6\\u53d1\\u6761\\u4ef6\", \"\\u9002\\u7528\\u8303\\u56f4\", \"\\u4fdd\\u9669\\u8d23\\u4efb\"], \"low_level_keywords\": [\"\\u6295\\u4fdd\\u4eba\", \"\\u88ab\\u4fdd\\u9669\\u4eba\", \"\\u91cd\\u5927\\u75be\\u75c5\", \"\\u5168\\u6b8b\", \"\\u8eab\\u6545\", \"\\u8f7b\\u75c7\", \"\\u4e2d\\u75c7\"]}",
+    "cache_type": "keywords",
+    "chunk_id": null,
+    "original_prompt": "什么情况公司豁免保费",
+    "queryparam": {
+      "mode": "hybrid",
+      "response_type": "Multiple Paragraphs",
+      "top_k": 40,
+      "chunk_top_k": 40,
+      "max_entity_tokens": 10000,
+      "max_relation_tokens": 10000,
+      "max_total_tokens": 40000,
+      "user_prompt": "",
+      "enable_rerank": true
+    },
+    "create_time": 1762062406,
+    "update_time": 1762062406,
+    "_id": "hybrid:keywords:0cd50763f1e84fc86d7f0772d66f537b"
+  },
+  "mix:keywords:5be9942907f0bef80b783230da5e89c9": {
+    "return": "{\"high_level_keywords\": [\"\\u4fdd\\u9669\\u4ea7\\u54c1\\u63a8\\u8350\", \"\\u6295\\u4fdd\\u8d44\\u683c\", \"\\u4ea7\\u54c1\\u9009\\u62e9\"], \"low_level_keywords\": [\"\\u5927\\u5b66\\u751f\", \"\\u6295\\u4fdd\", \"\\u4fdd\\u9669\\u4ea7\\u54c1\"]}",
+    "cache_type": "keywords",
+    "chunk_id": null,
+    "original_prompt": "我是一名大学生，请问我能购买哪些保险产品",
+    "queryparam": {
+      "mode": "mix",
+      "response_type": "Multiple Paragraphs",
+      "top_k": 40,
+      "chunk_top_k": 40,
+      "max_entity_tokens": 10000,
+      "max_relation_tokens": 10000,
+      "max_total_tokens": 40000,
+      "user_prompt": "",
+      "enable_rerank": true
+    },
+    "create_time": 1762062471,
+    "update_time": 1762062471,
+    "_id": "mix:keywords:5be9942907f0bef80b783230da5e89c9"
+  },
+  "mix:keywords:5afaf86120cd494deb05a97e522d1149": {
+    "return": "{\"high_level_keywords\": [\"\\u4ea7\\u54c1\\u63a8\\u8350\", \"\\u4ea7\\u54c1\\u9009\\u62e9\", \"\\u6027\\u4ef7\\u6bd4\", \"\\u9700\\u6c42\\u5206\\u6790\"], \"low_level_keywords\": [\"\\u4fdd\\u9669\\u4ea7\\u54c1\", \"\\u5212\\u7b97\", \"\\u4e2a\\u4eba\\u9700\\u6c42\"]}",
+    "cache_type": "keywords",
+    "chunk_id": null,
+    "original_prompt": "我想知道哪种保险产品对我来说最划算",
+    "queryparam": {
+      "mode": "mix",
+      "response_type": "Multiple Paragraphs",
+      "top_k": 40,
+      "chunk_top_k": 40,
+      "max_entity_tokens": 10000,
+      "max_relation_tokens": 10000,
+      "max_total_tokens": 40000,
+      "user_prompt": "",
+      "enable_rerank": true
+    },
+    "create_time": 1762062690,
+    "update_time": 1762062690,
+    "_id": "mix:keywords:5afaf86120cd494deb05a97e522d1149"
+  },
+  "mix:keywords:644a5795dcac928f2576df9a8bdf0835": {
+    "return": "{\"high_level_keywords\": [\"\\u4fdd\\u9669\\u4ea7\\u54c1\\u67e5\\u8be2\", \"\\u4ea7\\u54c1\\u5217\\u8868\", \"\\u4ea7\\u54c1\\u9002\\u7528\\u573a\\u666f\", \"\\u4ea7\\u54c1\\u5206\\u7c7b\"], \"low_level_keywords\": []}",
+    "cache_type": "keywords",
+    "chunk_id": null,
+    "original_prompt": "你的知识库中的保险产品一共有哪些？分别适用于什么场景",
+    "queryparam": {
+      "mode": "mix",
+      "response_type": "Multiple Paragraphs",
+      "top_k": 40,
+      "chunk_top_k": 40,
+      "max_entity_tokens": 10000,
+      "max_relation_tokens": 10000,
+      "max_total_tokens": 40000,
+      "user_prompt": "",
+      "enable_rerank": true
+    },
+    "create_time": 1762062826,
+    "update_time": 1762062826,
+    "_id": "mix:keywords:644a5795dcac928f2576df9a8bdf0835"
+  },
+  "global:keywords:e22186dbb23748c9f12d663d33de9617": {
+    "return": "{\"high_level_keywords\": [\"\\u4fdd\\u9669\\u63a8\\u8350\", \"\\u5c11\\u513f\\u4fdd\\u9669\", \"\\u6295\\u4fdd\\u5efa\\u8bae\"], \"low_level_keywords\": [\"3\\u4e2a\\u6708\", \"\\u5c0f\\u5b69\", \"\\u65b0\\u751f\\u513f\", \"\\u6295\\u4fdd\\u5e74\\u9f84\"]}",
+    "cache_type": "keywords",
+    "chunk_id": null,
+    "original_prompt": "请给一个3个月的小孩推荐一款保险",
+    "queryparam": {
+      "mode": "global",
+      "response_type": "Multiple Paragraphs",
+      "top_k": 40,
+      "chunk_top_k": 40,
+      "max_entity_tokens": 10000,
+      "max_relation_tokens": 10000,
+      "max_total_tokens": 40000,
+      "user_prompt": "",
+      "enable_rerank": true
+    },
+    "create_time": 1762062857,
+    "update_time": 1762062857,
+    "_id": "global:keywords:e22186dbb23748c9f12d663d33de9617"
   }
 }

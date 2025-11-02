@@ -1,5 +1,4 @@
 from typing import TypedDict, List, Dict, Any, Optional, Literal
-#新增Document导入
 from langchain_core.documents import Document
 from langchain_core.language_models import BaseChatModel
 
@@ -12,20 +11,17 @@ class IndexingState(TypedDict):
     status_message: str
 
 class QueryState(TypedDict):
-    thread_id: int
+    thread_id: str
     working_dir: str
     query: str
     llm: BaseChatModel
-    query_mode: Literal["naive", "local", "global", "hybrid"]
-    reranker: Optional[Any]  # RerankerModel 实例或 None
-    #检索到的文档列表 (粗排结果)
+    query_mode: Literal["naive", "local", "global", "hybrid", "mix"]
+    reranker: Optional[Any]
+    rerank_top_k: int
     retrieved_docs: Optional[List[Document]]
-    # 新增：检索到的实体和关系
     retrieved_entities: Optional[List[Dict[str, Any]]]
     retrieved_relationships: Optional[List[Dict[str, Any]]]
-    #精排后的最终文档列表
     final_docs: Optional[List[Document]]
     context: Dict[str, Any]
     answer: str
-    # 对话历史信息
-    chat_history: Optional[List[Dict[str, str]]] = None
+    chat_history: Optional[List[Dict[str, str]]]

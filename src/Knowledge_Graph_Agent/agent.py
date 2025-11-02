@@ -32,9 +32,18 @@ class RAGAgent:
         self.rerank_top_k = 20
 
     @classmethod
-    async def create(cls, working_dir: str = "data/rag_storage", rerank_config: dict = None):
+    async def create(cls, working_dir: str = "data/rag_storage", rerank_config: dict = None, storage_mode: str = "database"):
+        """
+        创建RAGAgent实例
+        
+        Args:
+            working_dir: 工作目录路径
+            rerank_config: 重排序配置
+            storage_mode: 存储模式，可选"memory"（内存管理）或"database"（数据库存储）
+        """
         instance = cls()
         instance.working_dir = working_dir
+        instance.storage_mode = storage_mode  # 存储存储模式
         os.makedirs(working_dir, exist_ok=True)
         
         # === 1. 获取 LangChain LLM 实例 ===
@@ -133,16 +142,32 @@ class RAGAgent:
                 logger.error(f"❌ 加载 Reranker 模型失败: {e}")
                 instance.reranker = None
         
-        # === 5. 创建 LightRAG 实例 ===(默认使用 PostgreSQL 存储，如果修改存储方式，修改这个初始化即可)
-        instance.rag = LightRAG( 
-            working_dir=working_dir,
-            embedding_func=embedding_func,
-            llm_model_func=llm_func,
-            kv_storage="PGKVStorage",
-            vector_storage="PGVectorStorage",
-            graph_storage="PGGraphStorage",
-            doc_status_storage="PGDocStatusStorage"
-        )
+        # === 5. 创建 LightRAG 实例 ===
+        # 根据storage_mode参数选择不同的存储方式
+        if storage_mode == "memory":
+            # 内存管理模式 - 使用本地JSON文件存储
+            logger.info("📝 使用内存管理模式 - 本地JSON文件存储")
+            instance.rag = LightRAG( 
+                working_dir=working_dir,
+                embedding_func=embedding_func,
+                llm_model_func=llm_func,
+                kv_storage="JsonKVStorage",
+                vector_storage="NanoVectorDBStorage",
+                graph_storage="NetworkXStorage",
+                doc_status_storage="JsonDocStatusStorage"
+            )
+        else:
+            # 数据库存储模式 - 使用PostgreSQL存储（默认）
+            logger.info("🗄️ 使用数据库存储模式 - PostgreSQL存储")
+            instance.rag = LightRAG( 
+                working_dir=working_dir,
+                embedding_func=embedding_func,
+                llm_model_func=llm_func,
+                kv_storage="PGKVStorage",
+                vector_storage="PGVectorStorage",
+                graph_storage="PGGraphStorage",
+                doc_status_storage="PGDocStatusStorage"
+            )
         
         # === 6. 初始化存储和流水线 ===
         await instance.rag.initialize_storages()
@@ -226,8 +251,9 @@ class RAGAgent:
         question: str, 
         mode: str = "mix", 
         enable_rerank: bool = True,
+        rerank_top_k: Optional[int] = None,
         chat_history: List[Dict] = None,
-        rerank_top_k: int = None
+        thread_id: str = None
     ):
         """通过 LangGraph 查询流程查询知识图谱
         
@@ -235,26 +261,29 @@ class RAGAgent:
             question: 查询问题
             mode: 查询模式 (naive, local, global, hybrid, mix)
             enable_rerank: 是否启用精排
+            rerank_top_k: 精排数量
             chat_history: 对话历史 [{"role": "user/assistant", "content": "..."}]
-            rerank_top_k: 精排后返回的文档数量（None 则使用默认配置）
+            thread_id: 会话标识（可选，用于会话管理）
         
         Returns:
             包含 context, answer, chat_history 的字典
         """
-        from .state import QueryState
-        
-        # 使用传入的 top_k 或默认值
-        top_k = rerank_top_k if rerank_top_k is not None else self.rerank_top_k
-        
-        # 构造初始查询状态
+        from src.Knowledge_Graph_Agent.state import QueryState
+
+        # 如果未提供 thread_id，生成一个临时 ID
+        if thread_id is None:
+            import uuid
+            thread_id = str(uuid.uuid4())
+
         initial_query_state: QueryState = {
+            "thread_id": thread_id,  # 传入会话标识
             "working_dir": self.working_dir,
             "query": question,
             "query_mode": mode,
-            "llm": self.langchain_llm,  # 传入 LLM 实例
+            "llm": self.langchain_llm,
             "reranker": self.reranker if enable_rerank else None,
-            "rerank_top_k": top_k,  # 传入 top_k 配置
-            "chat_history": chat_history or [],  # 传入对话历史
+            "rerank_top_k": self.rerank_top_k,
+            "chat_history": chat_history or [],
             "retrieved_docs": [],
             "retrieved_entities": [],
             "retrieved_relationships": [],
@@ -262,12 +291,18 @@ class RAGAgent:
             "context": {},
             "answer": ""
         }
-        
-        result = await self.querying_graph.ainvoke(initial_query_state)
-        
-        logger.info(f"🔍 查询流程完成 (mode={mode})")
-        
-        # 返回结果（包含更新后的对话历史）
+
+        # 通过 config 传递 thread_id（用于 LangGraph 内部追踪）
+        config = {"configurable": {"thread_id": thread_id}}
+
+        # ainvoke 是独立执行，状态不会跨调用保留
+        result = await self.querying_graph.ainvoke(
+            initial_query_state,
+            config=config  # 可用于检查点/持久化
+        )
+
+        logger.info(f"🔍 查询流程完成 (thread_id={thread_id[:8]}..., mode={mode})")
+
         return {
             "answer": result.get("answer", ""),
             "context": result.get("context", {}),

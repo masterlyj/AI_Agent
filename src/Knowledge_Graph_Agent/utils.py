@@ -1990,13 +1990,13 @@ def sanitize_text_for_encoding(text: str, replacement_char: str = "") -> str:
 
 
 def check_storage_env_vars(storage_name: str) -> None:
-    """Check if all required environment variables for storage implementation exist
+    """检查存储实现是否存在所有必需的环境变量
 
     Args:
-        storage_name: Storage implementation name
+        storage_name: 存储实现名称
 
     Raises:
-        ValueError: If required environment variables are missing
+        ValueError: 如果缺少必需的环境变量
     """
     from .kg import STORAGE_ENV_REQUIREMENTS
 

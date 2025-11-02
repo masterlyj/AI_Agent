@@ -3,7 +3,11 @@ import asyncio
 import json
 import os
 import base64
+import time
+import uuid
+import threading
 from datetime import datetime
+from collections import defaultdict
 from typing import Dict, Any, List
 from pathlib import Path
 from dotenv import load_dotenv
@@ -17,6 +21,9 @@ load_dotenv()
 # ===== 全局配置（从环境变量读取） =====
 WORKING_DIR = os.getenv("WORKING_DIR", "data/rag_storage")
 DOC_LIBRARY = os.getenv("DOC_LIBRARY", "data/inputs")
+
+# 存储模式状态
+current_storage_mode = "memory"
 
 # Rerank 配置（从环境变量读取）
 def get_rerank_config():
@@ -35,6 +42,14 @@ def get_rerank_config():
     }
 
 RERANK_CONFIG = get_rerank_config()
+
+# 全局会话存储
+user_sessions = defaultdict(lambda: {
+    "thread_id": str(uuid.uuid4()),
+    "chat_history": [],
+    "created_at": time.time(),
+    "last_active": time.time()
+})
 
 # ===== 自定义CSS样式 =====
 custom_css = """
@@ -182,21 +197,45 @@ custom_css = """
 agent_instance = None
 index_status = {"ready": False, "documents": [], "last_indexed": None}
 
-async def initialize_agent():
-    """异步初始化RAG Agent"""
+async def reinitialize_agent(storage_mode):
+    """重新初始化RAG Agent，使用新的存储模式"""
+    global current_storage_mode, agent_instance, index_status
+    
+    try:
+        # 清理当前实例
+        agent_instance = None
+        index_status = {"ready": False, "documents": [], "last_indexed": None}
+        
+        # 重新初始化
+        result = await initialize_agent(storage_mode)
+        current_storage_mode = storage_mode
+        
+        mode_desc = "数据库存储" if storage_mode == "database" else "内存管理"
+        return f"✅ 已切换到{mode_desc}模式，系统重新初始化完成"
+    except Exception as e:
+        logger.error(f"❌ 重新初始化Agent失败: {e}")
+        return f"❌ 重新初始化失败: {str(e)}"
+
+async def initialize_agent(storage_mode: str = "database"):
+    """异步初始化RAG Agent
+    
+    Args:
+        storage_mode: 存储模式，可选"memory"（内存管理）或"database"（数据库存储）
+    """
     global agent_instance
     try:
         logger.info("🔧 正在初始化RAG Agent...")
         agent_instance = await RAGAgent.create(
             working_dir=WORKING_DIR,
-            rerank_config=RERANK_CONFIG
+            rerank_config=RERANK_CONFIG,
+            storage_mode=storage_mode
         )
         if hasattr(agent_instance, 'reranker') and agent_instance.reranker:
             logger.info(f"✅ Reranker 已加载: {RERANK_CONFIG['model']}")
         else:
             logger.warning("⚠️ Reranker 未能加载，将跳过精排步骤")
-        logger.info("✅ RAG Agent初始化完成")
-        return "✅ 系统已就绪"
+        logger.info(f"✅ RAG Agent初始化完成，存储模式: {storage_mode}")
+        return f"✅ 系统已就绪，使用{storage_mode}存储模式"
     except Exception as e:
         logger.error(f"❌ 初始化失败: {e}")
         return f"❌ 初始化失败: {str(e)}"
@@ -239,18 +278,55 @@ async def index_documents_async(file_paths: List[str], progress=gr.Progress()):
         return f"❌ 索引失败: {str(e)}", {}
 
 # ===== 加载HTML模板 =====
-import base64, json
-
 # 全局模板缓存
 _html_templates = None
 
-def load_html_templates():
-    """加载HTML模板配置"""
+# ===== 加载HTML模板（已前后端分离：改为从 frontend/ 读取静态文件） =====
+_html_templates = None
+
+def reset_html_templates_cache():
+    """重置HTML模板缓存，强制重新加载文件"""
     global _html_templates
-    if _html_templates is None:
-        template_path = Path(__file__).parent / "html_templates.json"
-        with open(template_path, 'r', encoding='utf-8') as f:
-            _html_templates = json.load(f)
+    _html_templates = None
+
+def load_html_templates():
+    """加载HTML模板配置（来自 frontend/ 目录的静态文件，返回结构与原先保持一致）"""
+    global _html_templates
+    if _html_templates is not None:
+        return _html_templates
+
+    from pathlib import Path
+    base_dir = Path(__file__).resolve().parent / "frontend"
+    html_dir = base_dir / "html"
+    js_dir = base_dir / "js"
+
+    def read(p: Path) -> str:
+        try:
+            return p.read_text(encoding="utf-8")
+        except Exception as e:
+            raise FileNotFoundError(f"Missing template file: {p}. Error: {e}")
+
+    _html_templates = {
+        "knowledge_graph": {
+            "template": read(html_dir / "knowledge_graph.html"),
+            "script_template": read(js_dir / "knowledge_graph.js")
+        },
+        "document_card": {
+            "template": read(html_dir / "document_card.html")
+        },
+        "document_container": {
+            "template": read(html_dir / "document_container.html")
+        },
+        "empty_state": {
+            "no_documents": read(html_dir / "empty_state_no_documents.html"),
+            "no_context": read(html_dir / "empty_state_no_context.html"),
+            "cleared": read(html_dir / "empty_state_cleared.html"),
+            "loading": read(html_dir / "empty_state_loading.html")
+        },
+        "context_display": {
+            "raw_context_template": read(html_dir / "context_display_raw_context_template.html")
+        }
+    }
     return _html_templates
 
 # ===== 生成知识图谱网络可视化HTML =====
@@ -325,20 +401,6 @@ def create_documents_html(documents: List[Dict]) -> str:
     
     return html
 
-def generate_graph_callback(*args, **kwargs):
-    # 这里放你的实体/关系构造逻辑，示例用你之前给的 debug 数据
-    entities = [
-        {'entity_name': '全额退还保险费', 'entity_type': 'benefittype'},
-        {'entity_name': '未还款项', 'entity_type': 'concept'},
-        {'entity_name': '现金价值', 'entity_type': 'concept'}
-    ]
-    relationships = [
-        {'src_id': '未还款项', 'tgt_id': '现金价值', 'keywords': '扣除', 'weight': 2.0}
-    ]
-    iframe_html = create_knowledge_graph_html(entities, relationships, iframe_height=600)
-    # 注意：直接返回字符串或使用 update 都可以，但不要再对 iframe_html 做 json.dumps/html.escape
-    return gr.HTML.update(value=iframe_html)
-
 # ===== 查询函数,添加可视化输出 =====
 async def query_knowledge_async(
     question: str,
@@ -346,7 +408,8 @@ async def query_knowledge_async(
     show_context: bool,
     enable_rerank: bool,
     rerank_top_k: int,
-    chat_history: List
+    chat_history: List,
+    request: gr.Request
 ):
     """异步查询知识库"""
     if not agent_instance:
@@ -355,6 +418,17 @@ async def query_knowledge_async(
     if not question.strip():
         yield chat_history, {}, "", "", ""
         return
+    
+    # 获取用户唯一标识
+    session_id = request.session_hash
+
+    # 获取或创建用户会话
+    user_session = user_sessions[session_id]
+    thread_id = user_session["thread_id"]
+    session_chat_history = user_session["chat_history"]
+    
+    logger.info(f"📌 用户会话: session_id={session_id[:8]}..., thread_id={thread_id[:8]}...")
+    logger.info(f"📜 当前会话历史: {len(session_chat_history)} 轮对话")
     
     # 保存当前代理设置（此时可能为空）
     current_http_proxy = os.environ.get("HTTP_PROXY", "")
@@ -384,30 +458,39 @@ async def query_knowledge_async(
         loading_html = templates['empty_state']['loading']
         
         # 返回加载状态，然后执行查询
-        yield chat_history, {}, "", loading_html, ""
+        yield session_chat_history, {}, "", loading_html, ""
         
         # 执行查询
         result = await agent_instance.query(
             question=question,
             mode=query_mode,
             enable_rerank=enable_rerank,
-            rerank_top_k=rerank_top_k
+            rerank_top_k=rerank_top_k,
+            chat_history=session_chat_history,
+            thread_id=thread_id,
         )
+
         answer = result.get("answer", "无答案")
         context_data = result.get("context", {})
         raw_context = context_data.get("raw_context", "")
         entities = context_data.get("entities", [])
         relationships = context_data.get("relationships", [])
         documents = context_data.get("documents", [])
+        updated_chat_history = result.get("chat_history", [])
+
+        # 更新用户会话历史（存储在服务器端）
+        user_session["chat_history"] = updated_chat_history
+        user_session["last_active"] = time.time()
+
         kg_html = create_knowledge_graph_html(entities, relationships)
         docs_html = create_documents_html(documents)
         rerank_status = "✅ 已精排" if enable_rerank and hasattr(agent_instance, 'reranker') and agent_instance.reranker else "⚠️ 未精排"
         response_msg = f"**🤖 回答** ({query_mode} 模式 | {rerank_status})\n\n{answer}"
-        chat_history.append({
+        updated_chat_history.append({
             "role": "user",
             "content": question
         })
-        chat_history.append({
+        updated_chat_history.append({
             "role": "assistant",
             "content": response_msg
         })
@@ -418,22 +501,25 @@ async def query_knowledge_async(
             "文档片段": len(documents),
             "精排状态": rerank_status,
             "精排Top-K": rerank_top_k if enable_rerank else "N/A",
-            "上下文长度": len(raw_context)
+            "上下文长度": len(raw_context),
+            "会话ID": session_id[:8] + "...",
+            "线程ID": thread_id[:8] + "...",
+            "对话轮数": len(updated_chat_history) // 2
         }
         formatted_context = ""
         if show_context:
             formatted_context = format_context_display(raw_context)
         
         # 返回最终结果
-        yield chat_history, metrics, formatted_context, kg_html, docs_html
+        yield updated_chat_history, metrics, formatted_context, kg_html, docs_html
     except Exception as e:
         logger.error(f"查询失败: {e}")
         error_msg = f"❌ 查询出错: {str(e)}"
-        chat_history.append({
+        updated_chat_history.append({
             "role": "assistant",
             "content": error_msg
         })
-        yield chat_history, {}, "", "", ""
+        yield updated_chat_history, {}, "", "", ""
         return
     finally:
         # 恢复查询前的代理设置
@@ -531,6 +617,26 @@ def format_context_display(raw_context: str) -> str:
 
 def _create_context_html(entities: List[Dict], relationships: List[Dict]) -> str:
     """创建实体和关系的HTML显示"""
+    import random
+    import colorsys
+    
+    def generate_color_for_type(entity_type: str) -> str:
+        """为实体类型生成一致的颜色，支持无限种类型"""
+        # 使用实体类型的哈希值生成0-1之间的浮点数
+        hash_value = hash(entity_type) % 10000 / 10000.0
+        
+        # 使用HSV颜色空间生成饱和度高、亮度适中的颜色
+        # 色相根据哈希值变化，饱和度和亮度固定在合适范围
+        hue = hash_value
+        saturation = 0.7 + (hash_value * 0.3)  # 0.7-1.0之间，确保颜色鲜艳
+        value = 0.6 + (hash_value * 0.3)  # 0.6-0.9之间，确保不会太亮或太暗
+        
+        # 转换为RGB
+        r, g, b = colorsys.hsv_to_rgb(hue, saturation, value)
+        
+        # 转换为十六进制颜色代码
+        return f'#{int(r*255):02x}{int(g*255):02x}{int(b*255):02x}'
+    
     html = """
     <div style="font-family: 'Microsoft YaHei', sans-serif; padding: 16px; background: #f8fafc; border-radius: 8px;">
         <div style="display: flex; align-items: center; margin-bottom: 20px;">
@@ -560,13 +666,8 @@ def _create_context_html(entities: List[Dict], relationships: List[Dict]) -> str
             entity_type = entity.get('entity_type', entity.get('type', '未知类型'))
             description = entity.get('description', entity.get('desc', '无描述'))
             
-            type_color = '#3b82f6'
-            if '保险' in entity_type or 'Insurance' in entity_type:
-                type_color = '#10b981'
-            elif '疾病' in entity_type or 'Disease' in entity_type:
-                type_color = '#ef4444'
-            elif '时间' in entity_type or 'Time' in entity_type:
-                type_color = '#f59e0b'
+            # 为每个实体类型生成一致的颜色
+            type_color = generate_color_for_type(entity_type)
             
             html += f"""
                 <div style="background: white; padding: 12px; border-radius: 8px; border-left: 4px solid {type_color}; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
@@ -695,10 +796,39 @@ def get_available_documents():
         files.extend(Path(DOC_LIBRARY).glob(ext))
     return [str(f) for f in files]
 
-def clear_chat():
-    templates = load_html_templates()
-    cleared_html = templates['empty_state']['cleared']
-    return [], {}, "", cleared_html, cleared_html
+def clear_chat(request: gr.Request):
+    """清空当前用户的对话历史"""
+    session_id = request.session_hash
+    if session_id in user_sessions:
+        # 重新生成 thread_id 和清空历史
+        user_sessions[session_id] = {
+            "thread_id": str(uuid.uuid4()),
+            "chat_history": [],
+            "created_at": time.time(),
+            "last_active": time.time()
+        }
+        logger.info(f"🗑️ 已清空用户 {session_id[:8]}... 的会话")
+    return [], {}, "", "<p style='text-align:center; color:#999;'>已清空</p>", "<p style='text-align:center; color:#999;'>已清空</p>"
+
+def cleanup_inactive_sessions():
+    """定期清理 30 分钟未活动的会话"""
+    while True:
+        time.sleep(600)  # 每 10 分钟检查一次
+        current_time = time.time()
+        inactive_timeout = 1800  # 30 分钟
+        
+        inactive_sessions = [
+            sid for sid, data in list(user_sessions.items())
+            if current_time - data.get("last_active", current_time) > inactive_timeout
+        ]
+        
+        for sid in inactive_sessions:
+            del user_sessions[sid]
+            logger.info(f"🧹 清理不活跃会话: {sid[:8]}... (超过 30 分钟未活动)")
+
+# 启动清理线程
+cleanup_thread = threading.Thread(target=cleanup_inactive_sessions, daemon=True)
+cleanup_thread.start()
 
 # ===== Gradio界面构建 =====
 with gr.Blocks(
@@ -727,6 +857,20 @@ with gr.Blocks(
                     refresh_btn = gr.Button("🔍 查看已索引", scale=1)
                 index_output = gr.Textbox(label="索引状态", lines=2, interactive=False)
                 index_metrics = gr.JSON(label="索引统计", visible=True)
+                
+            with gr.Accordion("💾 存储配置", open=True):
+                storage_mode = gr.Radio(
+                    choices=[
+                        ("数据库存储 (推荐)", "database"),
+                        ("内存管理 (轻量)", "memory")
+                    ],
+                    value="database",
+                    label="存储模式",
+                    info="数据库存储适合生产环境，内存管理适合快速测试"
+                )
+                reinit_btn = gr.Button("🔄 应用存储模式", variant="secondary")
+                storage_status = gr.Textbox(label="存储状态", lines=1, interactive=False)
+                
             with gr.Accordion("⚙️ 检索配置", open=True):
                 query_mode = gr.Radio(
                     choices=[
@@ -823,7 +967,7 @@ with gr.Blocks(
         <p style="color: #64748b; font-size: 0.9em;">
             ⚡ 技术栈: LightRAG + LangGraph + Ollama Embedding (qwen3-embedding:0.6b) + MinerU PDF解析<br>
             📚 支持文档: 寿险条款、产品说明书、理赔指南等保险文档 (PDF自动解析,MD/TXT直接索引)<br>
-            🔒 数据存储: 本地向量数据库 + Neo4j知识图谱
+            💾 数据存储: 支持数据库存储和内存管理两种模式，可在配置面板中切换
         </p>
     </div>
     """)
@@ -833,6 +977,14 @@ with gr.Blocks(
         inputs=[file_input],
         outputs=[index_output, index_metrics]
     )
+    
+    # 重新初始化Agent事件
+    reinit_btn.click(
+        fn=reinitialize_agent,
+        inputs=[storage_mode],
+        outputs=[storage_status]
+    )
+    
     query_btn.click(
         fn=query_knowledge_async,
         inputs=[query_input, query_mode, show_context, enable_rerank_checkbox, rerank_top_k_slider, chatbot],
@@ -844,9 +996,7 @@ with gr.Blocks(
         fn=lambda: "",
         outputs=[query_input]
     )
-    btn = gr.Button("生成KG")
-    kg_out  = gr.HTML()
-    btn.click(fn=generate_graph_callback, inputs=[], outputs=[kg_out])
+    
     query_input.submit(
         fn=query_knowledge_async,
         inputs=[query_input, query_mode, show_context, enable_rerank_checkbox, rerank_top_k_slider, chatbot],
@@ -878,12 +1028,19 @@ async def startup():
     print("=" * 60)
     print("🚀 正在启动保险文档RAG检索系统...")
     print("=" * 60)
-    init_result = await initialize_agent()
+    
+    # 重置HTML模板缓存，确保使用最新的文件
+    reset_html_templates_cache()
+    print("✅ 已重置HTML模板缓存")
+    
+    # 使用默认存储模式初始化
+    init_result = await initialize_agent(current_storage_mode)
     print(f"初始化结果: {init_result}")
     if agent_instance:
         print("\n✅ Agent初始化成功")
         print(f"📂 工作目录: {WORKING_DIR}")
         print(f"📚 文档库: {DOC_LIBRARY}")
+        print(f"💾 存储模式: {current_storage_mode}")
         print("=" * 60)
     else:
         print("❌ Agent初始化失败")
