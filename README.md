@@ -141,9 +141,9 @@ pip install -e .
 
     请确保 Ollama 服务在 `http://localhost:11434` 端口（或您配置的任何端口）正常运行。
 
-### 5. PostgreSQL数据库安装
+### 5. PostgreSQL数据库安装(可选)
 
-本项目默认使用 PostgreSQL 作为数据库存储。您需要在本地安装并启动 PostgreSQL 服务。
+本项目默认使用 内存（memory） 存储。如果您需要使用 PostgreSQL 存储，请按照以下步骤配置。（以下所有配置生效后，将insurance_rag_gradio.py中的current_storage_mode设置为"postgresql"（在第26行））
 
 *   **备注**：windows用户建议在linux虚拟机中安装PostgreSQL，否则age扩展无法安装。mac用户应该可以在本地安装PostgreSQL（未测试过）。
 本系统PostgreSQL数据库详细配置请参考`env_template.txt`文件中的注释。
