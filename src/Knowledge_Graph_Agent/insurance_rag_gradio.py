@@ -418,55 +418,50 @@ async def query_knowledge_async(
     if not question.strip():
         yield chat_history, {}, "", "", ""
         return
-    
+
     # 获取用户唯一标识
     session_id = request.session_hash
-
-    # 获取或创建用户会话
     user_session = user_sessions[session_id]
     thread_id = user_session["thread_id"]
     session_chat_history = user_session["chat_history"]
-    
+
     logger.info(f"📌 用户会话: session_id={session_id[:8]}..., thread_id={thread_id[:8]}...")
-    logger.info(f"📜 当前会话历史: {len(session_chat_history)} 轮对话")
-    
-    # 保存当前代理设置（此时可能为空）
+    logger.info(f"📜 当前会话历史: {len(session_chat_history) // 2} 轮对话(共 {len(session_chat_history)} 条消息)")
+
+    # 保存当前代理设置
     current_http_proxy = os.environ.get("HTTP_PROXY", "")
     current_https_proxy = os.environ.get("HTTPS_PROXY", "")
     current_all_proxy = os.environ.get("ALL_PROXY", "")
-    
-    # 获取原始代理设置（如果存在）
+
+    # 恢复代理设置用于模型调用
     saved_http_proxy = os.environ.get("SAVED_HTTP_PROXY", "")
     saved_https_proxy = os.environ.get("SAVED_HTTPS_PROXY", "")
     saved_all_proxy = os.environ.get("SAVED_ALL_PROXY", "")
-    
-    # 恢复代理设置用于模型调用
+
     if saved_http_proxy:
         os.environ["HTTP_PROXY"] = saved_http_proxy
     if saved_https_proxy:
         os.environ["HTTPS_PROXY"] = saved_https_proxy
     if saved_all_proxy:
         os.environ["ALL_PROXY"] = saved_all_proxy
-    
-    logger.info(f"已恢复代理设置用于模型调用: HTTP_PROXY={saved_http_proxy}, HTTPS_PROXY={saved_https_proxy}, ALL_PROXY={saved_all_proxy}")
-    
+
     try:
         logger.info(f"🔍 查询: {question} (mode={query_mode}, rerank={'启用' if enable_rerank else '禁用'}, top_k={rerank_top_k})")
-        
+
         # 添加加载状态
         templates = load_html_templates()
         loading_html = templates['empty_state']['loading']
-        
-        # 返回加载状态，然后执行查询
+
+        # 返回加载状态
         yield session_chat_history, {}, "", loading_html, ""
-        
-        # 执行查询
+
+        # 执行查询 - agent会在内部处理对话历史
         result = await agent_instance.query(
             question=question,
             mode=query_mode,
             enable_rerank=enable_rerank,
             rerank_top_k=rerank_top_k,
-            chat_history=session_chat_history,
+            chat_history=session_chat_history,  # 传入服务器端的历史
             thread_id=thread_id,
         )
 
@@ -476,24 +471,19 @@ async def query_knowledge_async(
         entities = context_data.get("entities", [])
         relationships = context_data.get("relationships", [])
         documents = context_data.get("documents", [])
+
+        # 直接使用agent返回的更新后的历史(已包含当前对话)
         updated_chat_history = result.get("chat_history", [])
 
-        # 更新用户会话历史（存储在服务器端）
+        # 更新服务器端会话历史
         user_session["chat_history"] = updated_chat_history
         user_session["last_active"] = time.time()
 
+        # 生成可视化内容
         kg_html = create_knowledge_graph_html(entities, relationships)
         docs_html = create_documents_html(documents)
+
         rerank_status = "✅ 已精排" if enable_rerank and hasattr(agent_instance, 'reranker') and agent_instance.reranker else "⚠️ 未精排"
-        response_msg = f"**🤖 回答** ({query_mode} 模式 | {rerank_status})\n\n{answer}"
-        updated_chat_history.append({
-            "role": "user",
-            "content": question
-        })
-        updated_chat_history.append({
-            "role": "assistant",
-            "content": response_msg
-        })
         metrics = {
             "查询模式": query_mode,
             "实体数量": len(entities),
@@ -506,27 +496,32 @@ async def query_knowledge_async(
             "线程ID": thread_id[:8] + "...",
             "对话轮数": len(updated_chat_history) // 2
         }
+
         formatted_context = ""
         if show_context:
             formatted_context = format_context_display(raw_context)
-        
-        # 返回最终结果
+
+        # 返回最终结果 
         yield updated_chat_history, metrics, formatted_context, kg_html, docs_html
+
     except Exception as e:
         logger.error(f"查询失败: {e}")
         error_msg = f"❌ 查询出错: {str(e)}"
-        updated_chat_history.append({
-            "role": "assistant",
-            "content": error_msg
-        })
-        yield updated_chat_history, {}, "", "", ""
+
+        # 错误时也要正确更新历史
+        error_chat_history = session_chat_history + [
+            {"role": "user", "content": question},
+            {"role": "assistant", "content": error_msg}
+        ]
+        user_session["chat_history"] = error_chat_history
+
+        yield error_chat_history, {}, "", "", ""
         return
     finally:
         # 恢复查询前的代理设置
         os.environ["HTTP_PROXY"] = current_http_proxy
         os.environ["HTTPS_PROXY"] = current_https_proxy
         os.environ["ALL_PROXY"] = current_all_proxy
-        logger.info(f"已恢复查询前的代理设置: HTTP_PROXY={current_http_proxy}, HTTPS_PROXY={current_https_proxy}, ALL_PROXY={current_all_proxy}")
 
 def extract_metrics_from_context(raw_context: str, mode: str) -> Dict:
     """从上下文中提取检索指标，支持多种数据格式"""

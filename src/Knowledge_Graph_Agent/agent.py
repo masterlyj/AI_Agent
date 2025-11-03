@@ -282,7 +282,7 @@ class RAGAgent:
             "query_mode": mode,
             "llm": self.langchain_llm,
             "reranker": self.reranker if enable_rerank else None,
-            "rerank_top_k": self.rerank_top_k,
+            "rerank_top_k": rerank_top_k if rerank_top_k is not None else self.rerank_top_k,
             "chat_history": chat_history or [],
             "retrieved_docs": [],
             "retrieved_entities": [],

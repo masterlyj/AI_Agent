@@ -74,31 +74,6 @@ class WorkflowNodes:
             logger.info(f"   - 实体: {len(retrieved_entities)} 个")
             logger.info(f"   - 关系: {len(retrieved_relationships)} 条")
             
-            # # 打印实体信息
-            # if retrieved_entities:
-            #     logger.info("\n" + "=" * 60)
-            #     logger.info("📊 检索到的实体")
-            #     logger.info("=" * 60)
-            #     for idx, entity in enumerate(retrieved_entities[:5], 1):  # 只显示前5个
-            #         logger.info(f"  [{idx}] {entity.get('entity_name', '未知')}")
-            #         logger.info(f"      类型: {entity.get('entity_type', '未知')}")
-            #         logger.info(f"      描述: {entity.get('description', '无')[:100]}")
-            #     if len(retrieved_entities) > 5:
-            #         logger.info(f"  ... 及其他 {len(retrieved_entities) - 5} 个实体")
-            #     logger.info("=" * 60 + "\n")
-            
-            # # 打印关系信息
-            # if retrieved_relationships:
-            #     logger.info("\n" + "=" * 60)
-            #     logger.info("🔗 检索到的关系")
-            #     logger.info("=" * 60)
-            #     for idx, rel in enumerate(retrieved_relationships[:5], 1):  # 只显示前5条
-            #         logger.info(f"  [{idx}] {rel.get('src_id', '?')} → {rel.get('tgt_id', '?')}")
-            #         logger.info(f"      关系: {rel.get('description', '无')[:100]}")
-            #         logger.info(f"      权重: {rel.get('weight', 0):.2f}")
-            #     if len(retrieved_relationships) > 5:
-            #         logger.info(f"  ... 及其他 {len(retrieved_relationships) - 5} 条关系")
-            #     logger.info("=" * 60 + "\n")
             
             # 将原始文档列表和知识图谱信息放入 state，传递给 rerank 节点
             return {
@@ -121,19 +96,10 @@ class WorkflowNodes:
         """
         logger.info("--- 运行节点：rerank_context (精排) ---")
 
-        # # 🔧 详细调试日志
-        # logger.info(f"📦 精排节点接收到的 State 信息:")
-        # logger.info(f"   - State keys: {list(state.keys())}")
-        # logger.info(f"   - 'reranker' in state: {'reranker' in state}")
-        # logger.info(f"   - state.get('reranker'): {state.get('reranker')}")
-        # logger.info(f"   - type(state.get('reranker')): {type(state.get('reranker'))}")
-        # logger.info(f"   - 'retrieved_docs' in state: {'retrieved_docs' in state}")
-        # logger.info(f"   - retrieved_docs 数量: {len(state.get('retrieved_docs', []))}")
-
         reranker = state.get("reranker")
         docs_to_rerank = state.get("retrieved_docs", [])
 
-        # 🔧 增强判断逻辑
+        # 增强判断逻辑
         if reranker is None:
             logger.warning("⚠️ Reranker 未配置 (state['reranker'] is None)，跳过精排步骤。")
             return {"final_docs": docs_to_rerank}  # 直接将原始文档传递下去
@@ -158,26 +124,16 @@ class WorkflowNodes:
                 return {"final_docs": docs_to_rerank}
             
             reranked_docs = [docs_to_rerank[i] for i in rerank_ids]
-
-            # --- 打印排序结果 ---
-            logger.info("\n" + "=" * 60)
-            logger.info("🎯 Reranker 打分结果 (置信度从高到低)")
-            logger.info("=" * 60)
+            
             for idx, (doc, score) in enumerate(zip(reranked_docs, rerank_scores), 1):
                 # 将 rerank 分数添加到元数据中，方便追踪
                 doc.metadata['rerank_score'] = score
-                content_snippet = doc.page_content[:100].replace("\n", " ")
-                if len(doc.page_content) > 100:
-                    content_snippet += "..."
-                logger.info(f"  [{idx}] 分数: {score:.4f} | 来源: {doc.metadata.get('file_path', '未知')}")
-                logger.info(f"      内容: {content_snippet}")
-            logger.info("=" * 60 + "\n")
             
-            # 从 reranker 配置中获取 top_k，如果没有则默认为 20
-            top_k = getattr(reranker, 'rerank_top_k', 20)
+            # 从 state 中获取用户设置的 rerank_top_k，如果没有则从 reranker 配置中获取，默认为 20
+            top_k = state.get("rerank_top_k") or getattr(reranker, 'rerank_top_k', 20)
             final_docs = reranked_docs[:top_k]
             
-            logger.info(f"✅ 精排完成，选取 Top {len(final_docs)} 文档传递给生成节点。")
+            logger.info(f"✅ 精排完成，选取 Top {len(final_docs)} 文档传递给生成节点 (用户设置: {state.get('rerank_top_k', '未设置')})。")
             
             # 将精排后的最终文档列表放入 state
             return {"final_docs": final_docs}
@@ -260,7 +216,7 @@ class WorkflowNodes:
             logger.info(f"   - 实体: {len(retrieved_entities)} 个")
             logger.info(f"   - 关系: {len(retrieved_relationships)} 条")
             logger.info(f"   - 文档: {len(final_docs)} 个")
-            logger.info(f"   - 对话历史: {len(chat_history)} 轮")
+            logger.info(f"   - 对话历史: {len(chat_history)//2} 轮")
             
             messages = [{"role": "system", "content": system_prompt}]
             
@@ -288,7 +244,7 @@ class WorkflowNodes:
                 logger.error(f"❌ LLM 调用失败: {e}")
                 answer = f"生成答案时出错: {str(e)}"
             
-            # 🆕 更新对话历史
+            # 更新对话历史
             new_history = chat_history + [
                 {"role": "user", "content": query},
                 {"role": "assistant", "content": answer}
@@ -337,7 +293,7 @@ class WorkflowNodes:
         # 格式化实体
         if entities:
             kg_parts.append("## 🏷️ 相关实体\n")
-            for idx, entity in enumerate(entities[:10], 1):  # 限制前10个
+            for idx, entity in enumerate(entities, 1):
                 name = entity.get('entity_name', '未知')
                 type_ = entity.get('entity_type', '未知类型')
                 desc = entity.get('description', '无描述')
@@ -348,7 +304,7 @@ class WorkflowNodes:
         # 格式化关系
         if relationships:
             kg_parts.append("## 🔗 实体关系\n")
-            for idx, rel in enumerate(relationships[:10], 1):  # 限制前10条
+            for idx, rel in enumerate(relationships, 1):
                 src = rel.get('src_id', '?')
                 tgt = rel.get('tgt_id', '?')
                 desc = rel.get('description', '无描述')
