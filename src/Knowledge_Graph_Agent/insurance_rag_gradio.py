@@ -412,7 +412,7 @@ async def query_knowledge_async(
     chat_history: List,
     request: gr.Request
 ):
-    """异步查询知识库"""
+    """异步查询知识库（支持流式输出）"""
     if not agent_instance:
         yield chat_history, {}, "", "", ""
         return
@@ -453,60 +453,152 @@ async def query_knowledge_async(
         templates = load_html_templates()
         loading_html = templates['empty_state']['loading']
 
-        # 返回加载状态
-        yield session_chat_history, {}, "", loading_html, ""
+        # 先添加用户消息到历史
+        display_chat_history = session_chat_history + [{"role": "user", "content": question}]
+        yield display_chat_history, {}, "", loading_html, ""
 
-        # 执行查询 - agent会在内部处理对话历史
-        result = await agent_instance.query(
+        # 使用流式查询
+        context_data = {}
+        entities = []
+        relationships = []
+        documents = []
+        raw_context = ""
+        accumulated_answer = ""
+        
+        async for chunk in agent_instance.query_stream(
             question=question,
             mode=query_mode,
             enable_rerank=enable_rerank,
             rerank_top_k=rerank_top_k,
-            chat_history=session_chat_history,  # 传入服务器端的历史
+            chat_history=session_chat_history,
             thread_id=thread_id,
-        )
-
-        answer = result.get("answer", "无答案")
-        context_data = result.get("context", {})
-        raw_context = context_data.get("raw_context", "")
-        entities = context_data.get("entities", [])
-        relationships = context_data.get("relationships", [])
-        documents = context_data.get("documents", [])
-
-        # 直接使用agent返回的更新后的历史(已包含当前对话)
-        updated_chat_history = result.get("chat_history", [])
-
-        # 更新服务器端会话历史
-        user_session["chat_history"] = updated_chat_history
-        user_session["last_active"] = time.time()
-
-        # 生成可视化内容
-        kg_html = create_knowledge_graph_html(entities, relationships)
-        docs_html = create_documents_html(documents)
-
-        rerank_status = "✅ 已精排" if enable_rerank and hasattr(agent_instance, 'reranker') and agent_instance.reranker else "⚠️ 未精排"
-        metrics = {
-            "查询模式": query_mode,
-            "实体数量": len(entities),
-            "关系数量": len(relationships),
-            "文档片段": len(documents),
-            "精排状态": rerank_status,
-            "精排Top-K": rerank_top_k if enable_rerank else "N/A",
-            "上下文长度": len(raw_context),
-            "会话ID": session_id[:8] + "...",
-            "线程ID": thread_id[:8] + "...",
-            "对话轮数": len(updated_chat_history) // 2
-        }
-
-        formatted_context = ""
-        if show_context:
-            formatted_context = format_context_display(raw_context)
-
-        # 返回最终结果 
-        yield updated_chat_history, metrics, formatted_context, kg_html, docs_html
+        ):
+            chunk_type = chunk.get("type")
+            
+            if chunk_type == "status":
+                # 显示状态更新
+                status_msg = chunk.get("content", "")
+                logger.info(f"📊 状态: {status_msg}")
+                # 可以选择在界面上显示状态（这里暂时跳过）
+                
+            elif chunk_type == "context":
+                # 接收上下文数据
+                context_data = chunk.get("context", {})
+                raw_context = context_data.get("raw_context", "")
+                entities = context_data.get("entities", [])
+                relationships = context_data.get("relationships", [])
+                documents = context_data.get("documents", [])
+                
+                # 生成可视化内容
+                kg_html = create_knowledge_graph_html(entities, relationships)
+                docs_html = create_documents_html(documents)
+                
+                # 更新指标
+                rerank_status = "✅ 已精排" if enable_rerank and hasattr(agent_instance, 'reranker') and agent_instance.reranker else "⚠️ 未精排"
+                metrics = {
+                    "查询模式": query_mode,
+                    "实体数量": len(entities),
+                    "关系数量": len(relationships),
+                    "文档片段": len(documents),
+                    "精排状态": rerank_status,
+                    "精排Top-K": rerank_top_k if enable_rerank else "N/A",
+                    "上下文长度": len(raw_context),
+                    "会话ID": session_id[:8] + "...",
+                    "线程ID": thread_id[:8] + "...",
+                    "对话轮数": (len(session_chat_history) + 2) // 2
+                }
+                
+                formatted_context = ""
+                if show_context:
+                    formatted_context = format_context_display(raw_context)
+                
+                # 显示可视化内容（此时答案还在生成中）
+                current_chat = display_chat_history + [{"role": "assistant", "content": ""}]
+                yield current_chat, metrics, formatted_context, kg_html, docs_html
+                
+            elif chunk_type == "answer_chunk":
+                # 流式接收答案片段
+                content = chunk.get("content", "")
+                accumulated_answer += content
+                
+                # 实时更新聊天历史显示
+                current_chat = display_chat_history + [{"role": "assistant", "content": accumulated_answer}]
+                
+                rerank_status = "✅ 已精排" if enable_rerank and hasattr(agent_instance, 'reranker') and agent_instance.reranker else "⚠️ 未精排"
+                metrics = {
+                    "查询模式": query_mode,
+                    "实体数量": len(entities),
+                    "关系数量": len(relationships),
+                    "文档片段": len(documents),
+                    "精排状态": rerank_status,
+                    "精排Top-K": rerank_top_k if enable_rerank else "N/A",
+                    "上下文长度": len(raw_context),
+                    "会话ID": session_id[:8] + "...",
+                    "线程ID": thread_id[:8] + "...",
+                    "对话轮数": (len(session_chat_history) + 2) // 2
+                }
+                
+                formatted_context = ""
+                if show_context:
+                    formatted_context = format_context_display(raw_context)
+                
+                kg_html = create_knowledge_graph_html(entities, relationships) if entities or relationships else loading_html
+                docs_html = create_documents_html(documents) if documents else loading_html
+                
+                yield current_chat, metrics, formatted_context, kg_html, docs_html
+                
+            elif chunk_type == "complete":
+                # 查询完成
+                final_answer = chunk.get("answer", accumulated_answer)
+                updated_chat_history = chunk.get("chat_history", [])
+                context_data = chunk.get("context", context_data)
+                
+                # 更新服务器端会话历史
+                user_session["chat_history"] = updated_chat_history
+                user_session["last_active"] = time.time()
+                
+                # 最终更新
+                rerank_status = "✅ 已精排" if enable_rerank and hasattr(agent_instance, 'reranker') and agent_instance.reranker else "⚠️ 未精排"
+                metrics = {
+                    "查询模式": query_mode,
+                    "实体数量": len(entities),
+                    "关系数量": len(relationships),
+                    "文档片段": len(documents),
+                    "精排状态": rerank_status,
+                    "精排Top-K": rerank_top_k if enable_rerank else "N/A",
+                    "上下文长度": len(raw_context),
+                    "会话ID": session_id[:8] + "...",
+                    "线程ID": thread_id[:8] + "...",
+                    "对话轮数": len(updated_chat_history) // 2
+                }
+                
+                formatted_context = ""
+                if show_context:
+                    formatted_context = format_context_display(raw_context)
+                
+                kg_html = create_knowledge_graph_html(entities, relationships)
+                docs_html = create_documents_html(documents)
+                
+                yield updated_chat_history, metrics, formatted_context, kg_html, docs_html
+                
+            elif chunk_type == "error":
+                # 处理错误
+                error_msg = chunk.get("content", "未知错误")
+                logger.error(f"流式查询出错: {error_msg}")
+                
+                error_chat_history = session_chat_history + [
+                    {"role": "user", "content": question},
+                    {"role": "assistant", "content": f"❌ {error_msg}"}
+                ]
+                user_session["chat_history"] = error_chat_history
+                
+                yield error_chat_history, {}, "", "", ""
+                return
 
     except Exception as e:
         logger.error(f"查询失败: {e}")
+        import traceback
+        logger.error(traceback.format_exc())
         error_msg = f"❌ 查询出错: {str(e)}"
 
         # 错误时也要正确更新历史

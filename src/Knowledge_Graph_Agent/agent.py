@@ -308,6 +308,130 @@ class RAGAgent:
             "context": result.get("context", {}),
             "chat_history": result.get("chat_history", [])
         }
+    
+    async def query_stream(
+        self, 
+        question: str, 
+        mode: str = "mix", 
+        enable_rerank: bool = True,
+        rerank_top_k: Optional[int] = None,
+        chat_history: List[Dict] = None,
+        thread_id: str = None
+    ):
+        """通过流式输出查询知识图谱（异步生成器）
+        
+        Args:
+            question: 查询问题
+            mode: 查询模式 (naive, local, global, hybrid, mix)
+            enable_rerank: 是否启用精排
+            rerank_top_k: 精排数量
+            chat_history: 对话历史 [{"role": "user/assistant", "content": "..."}]
+            thread_id: 会话标识（可选，用于会话管理）
+        
+        Yields:
+            包含流式更新的字典
+        """
+        from src.Knowledge_Graph_Agent.state import QueryState
+
+        # 如果未提供 thread_id，生成一个临时 ID
+        if thread_id is None:
+            import uuid
+            thread_id = str(uuid.uuid4())
+
+        logger.info(f"🔍 开始流式查询 (thread_id={thread_id[:8]}..., mode={mode})")
+        
+        # 准备初始状态
+        initial_query_state: QueryState = {
+            "thread_id": thread_id,
+            "working_dir": self.working_dir,
+            "query": question,
+            "query_mode": mode,
+            "llm": self.langchain_llm,
+            "reranker": self.reranker if enable_rerank else None,
+            "rerank_top_k": rerank_top_k if rerank_top_k is not None else self.rerank_top_k,
+            "chat_history": chat_history or [],
+            "retrieved_docs": [],
+            "retrieved_entities": [],
+            "retrieved_relationships": [],
+            "final_docs": [],
+            "context": {},
+            "answer": ""
+        }
+
+        try:
+            # 步骤1: 执行检索和精排
+            yield {"type": "status", "content": "正在检索相关文档..."}
+            
+            # 执行检索
+            retrieve_result = await self.nodes.retrieve_context(initial_query_state)
+            initial_query_state.update(retrieve_result)
+            
+            yield {"type": "status", "content": f"检索到 {len(retrieve_result.get('retrieved_docs', []))} 个文档"}
+            
+            # 执行精排
+            if initial_query_state.get("reranker"):
+                yield {"type": "status", "content": "正在对文档进行精排..."}
+                rerank_result = await self.nodes.rerank_context(initial_query_state)
+                initial_query_state.update(rerank_result)
+                yield {"type": "status", "content": f"精排完成，选取 Top {len(rerank_result.get('final_docs', []))} 文档"}
+            else:
+                # 如果没有reranker，直接使用检索的文档
+                initial_query_state["final_docs"] = retrieve_result.get("retrieved_docs", [])
+            
+            # 步骤2: 流式生成答案
+            yield {"type": "status", "content": "正在生成答案..."}
+            
+            context_data = None
+            full_answer = ""
+            
+            async for chunk in self.nodes.generate_answer_stream(initial_query_state):
+                chunk_type = chunk.get("type")
+                
+                if chunk_type == "context":
+                    # 保存上下文数据
+                    context_data = chunk.get("context")
+                    yield {
+                        "type": "context",
+                        "context": context_data
+                    }
+                elif chunk_type == "answer_chunk":
+                    content = chunk.get("content", "")
+                    is_done = chunk.get("done", False)
+                    
+                    if not is_done:
+                        full_answer += content
+                        yield {
+                            "type": "answer_chunk",
+                            "content": content
+                        }
+                    else:
+                        # 答案生成完成
+                        if "full_answer" in chunk:
+                            full_answer = chunk["full_answer"]
+                        
+                        # 更新对话历史
+                        new_chat_history = (chat_history or []) + [
+                            {"role": "user", "content": question},
+                            {"role": "assistant", "content": full_answer}
+                        ]
+                        
+                        yield {
+                            "type": "complete",
+                            "answer": full_answer,
+                            "context": context_data or {},
+                            "chat_history": new_chat_history
+                        }
+                        
+                        logger.info(f"✅ 流式查询完成 (thread_id={thread_id[:8]}...)")
+                        
+        except Exception as e:
+            logger.error(f"❌ 流式查询失败: {e}")
+            import traceback
+            logger.error(traceback.format_exc())
+            yield {
+                "type": "error",
+                "content": f"查询出错: {str(e)}"
+            }
 
 
 # --- Main ---
