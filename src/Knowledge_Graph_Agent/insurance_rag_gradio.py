@@ -6,6 +6,7 @@ import base64
 import time
 import uuid
 import threading
+import html
 from datetime import datetime
 from collections import defaultdict
 from typing import Dict, Any, List
@@ -608,7 +609,7 @@ def format_context_display(raw_context: str) -> str:
     raw_template = templates['context_display']['raw_context_template']
     return (raw_template
            .replace('{{char_count}}', str(len(raw_context)))
-           .replace('{{content}}', raw_context))
+           .replace('{{content}}', html.escape(raw_context)))
 
 def _create_context_html(entities: List[Dict], relationships: List[Dict]) -> str:
     """创建实体和关系的HTML显示"""
@@ -942,7 +943,7 @@ with gr.Blocks(
                         value="<p style='text-align:center; color:#999;'>执行查询后将显示文档详情</p>"
                     )
                 with gr.Tab("📝 原始上下文"):
-                    context_display = gr.Markdown(
+                    context_display = gr.HTML(
                         label="原始上下文",
                         value="执行查询后将显示原始上下文"
                     )

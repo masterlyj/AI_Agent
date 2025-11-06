@@ -8,15 +8,15 @@ PROMPTS: dict[str, Any] = {}
 PROMPTS["DEFAULT_TUPLE_DELIMITER"] = "<|#|>"
 PROMPTS["DEFAULT_COMPLETION_DELIMITER"] = "<|COMPLETE|>"
 
-PROMPTS["entity_extraction_system_prompt"] = """---角色说明---
-你是一名知识图谱专家，负责从输入文本中抽取实体和关系。
+PROMPTS["text_extraction_system_prompt"] = """---角色说明---
+你是一名保险领域知识图谱专家，专门负责从保险文档中抽取实体和关系，构建保险知识图谱。
 
 ---操作指南---
 1.  **实体抽取与输出：**
-    *   **识别：** 识别输入文本中明确定义且有意义的实体。
+    *   **识别：** 识别输入文本中明确定义且有意义的保险相关实体。
     *   **实体信息：** 针对每个被识别的实体，提取以下信息：
-        *   `entity_name`：实体名称。若实体名称不区分大小写，请将每个重要词汇首字母大写（标题式大小写），并在整个抽取过程中保持**命名一致性**。
-        *   `entity_type`：将实体归类为以下类型之一：{entity_types}。若不属于这些类型中的任何一种，不要添加新类别，请标记为 `Other`。
+        *   `entity_name`：实体名称，在整个抽取过程中需要保持**命名一致性**。
+        *   `entity_type`：将实体归类为以下类型之一：{entity_types}。若不属于这些类型中的任何一种，不要添加新类别，请标记为 `其他`。
         *   `entity_description`：仅根据输入文本，简明、全面地描述实体的属性和活动。
     *   **实体输出格式：** 每个实体共输出4个字段，使用 `{tuple_delimiter}` 分隔，同一行为一条实体。第一个字段必须是字面字符串 `entity`。
         *   格式：`entity{tuple_delimiter}entity_name{tuple_delimiter}entity_type{tuple_delimiter}entity_description`
@@ -24,37 +24,48 @@ PROMPTS["entity_extraction_system_prompt"] = """---角色说明---
 2.  **关系抽取与输出：**
     *   **识别：** 识别已抽取实体之间直接、明确且有意义的关系。
     *   **N元关系拆分：** 若一句话涉及超过两个实体的关系（即N元关系），请将其拆分为多个二元（两个实体之间的）关系分别描述。
-        *   **举例：** 若文本为“Alice、Bob 与 Carol 共同参与了 Project X”，请抽取如“Alice 与 Project X 合作”、“Bob 与 Project X 合作”、“Carol 与 Project X 合作”，或者“Alice 与 Bob 合作”，根据最合理的二元关系理解输出。
+        *   **举例：** 若文本为"投保人、被保险人与受益人共同参与保险合同"，请抽取如"投保人与保险合同签订"、"被保险人与保险合同关联"、"受益人与保险合同关联"，根据最合理的二元关系理解输出。
     *   **关系信息：** 对于每个二元关系，提取以下字段：
-        *   `source_entity`：关系的起始实体，命名需与实体抽取部分**保持一致**。若名称不区分大小写，按标题式大小写输出。
-        *   `target_entity`：关系的目标实体，命名需与实体抽取部分**保持一致**。若名称不区分大小写，按标题式大小写输出。
+        *   `source_entity`：关系的起始实体，命名需与实体抽取部分**保持一致**。
+        *   `target_entity`：关系的目标实体，命名需与实体抽取部分**保持一致**。
         *   `relationship_keywords`：一个或多个用于概括关系本质、主题或概念的关键词。多个关键词请用中文逗号 `,` 分隔。**请勿用 `{tuple_delimiter}` 分隔关键词。**
         *   `relationship_description`：简明说明该二元关系本质，为实体间的关联提供明确理由。
     *   **关系输出格式：** 每个关系共输出5个字段，使用 `{tuple_delimiter}` 分隔，同一行为一条关系。第一个字段必须是字面字符串 `relation`。
         *   格式：`relation{tuple_delimiter}source_entity{tuple_delimiter}target_entity{tuple_delimiter}relationship_keywords{tuple_delimiter}relationship_description`
 
-3.  **分隔符使用规范：**
-    *   `{tuple_delimiter}` 是一个完整且不可被填充的分隔标记，仅作为字段分隔符来使用。
-    *   **错误示例：** `entity{tuple_delimiter}Tokyo<|location|>Tokyo is the capital of Japan.`
-    *   **正确示例：** `entity{tuple_delimiter}Tokyo{tuple_delimiter}location{tuple_delimiter}Tokyo is the capital of Japan.`
+3.  **保险领域实体类型识别：**
+    *   **保险产品：** 保险公司设计和销售的具体保险合同名称、类型及其简称。
+    *   **保险条款：** 识别条款编号、条款标题及条款内容要点。
+    *   **保险概念：** 保险领域特有的专业术语或核心概念（如犹豫期、宽限期、现金价值、免责期、等待期、保险利益等）。
+    *   **保险责任：** 保险合同约定应赔付的具体保障项目或内容。
+    *   **数据：** 字段组合而成的保费，具体的费率因子、给付比例等量化数值。
+    *   **期限：** 所有与时间长度、周期或特定时间点相关的描述。
+    *   **角色：** 识别投保人、被保险人、受益人等角色。
+    *   **机构：** 涉及保险业务的公司、团体或医疗机构。
+    *   **疾病：** 作为保险责任或免责依据的医学病症名称。
 
-4.  **关系方向与去重：**
+4.  **分隔符使用规范：**
+    *   `{tuple_delimiter}` 是一个完整且不可被填充的分隔标记，仅作为字段分隔符来使用。
+    *   **错误示例：** `entity{tuple_delimiter}投保人<|角色|>投保人是与保险公司签订合同并支付保费的人。`
+    *   **正确示例：** `entity{tuple_delimiter}投保人{tuple_delimiter}角色{tuple_delimiter}投保人是与保险公司签订合同并支付保费的人。`
+
+5.  **关系方向与去重：**
     *   所有关系默认为**无向关系**（除非明确指定有向）。交换源实体和目标实体的顺序不会被视为新关系。
     *   请避免输出重复关系。
 
-5.  **输出顺序与优先级：**
+6.  **输出顺序与优先级：**
     *   先输出所有抽取的实体，后输出所有关系。
     *   在关系列表中，将**与输入文本核心意义最相关**的关系优先输出。
 
-6.  **客观与上下文要求：**
+7.  **客观与上下文要求：**
     *   所有实体名称及描述须使用**第三人称**书写。
-    *   必须明确指出主体或客体；**避免使用**如“本文”、“本公司”、“我们”、“你”、“他/她”等指代性人称。
+    *   必须明确指出主体或客体；**避免使用**如“本文”、“本公司”、“我们”、“你”、“他/她”等指代性人称，应替换为具体的实体名称（如"投保人"、"保险公司"等）。
 
-7.  **语言与专有名词：**
+8.  **语言与专有术语：**
     *   整个输出（实体名称、关键词、描述）必须使用 `{language}`。
-    *   专有名词（如人名、地名、组织名等）如果没有公认翻译或翻译会造成歧义，请保留原文。
+    *   专有术语如果文中没有特别的描述，请保留原文。
 
-8.  **输出终止标志：** 所有实体与关系输出完毕且完全满足以上要求后，最后一行仅输出字面字符串 `{completion_delimiter}` 作为终止信号。
+9.  **输出终止标志：** 所有实体与关系输出完毕且完全满足以上要求后，最后一行仅输出字面字符串 `{completion_delimiter}` 作为终止信号。
 
 ---示例---
 {examples}
@@ -68,70 +79,95 @@ Text:
 ```
 """
 
-PROMPTS["entity_extraction_user_prompt"] = """---Task---
-Extract comprehensive insurance-specific entities and relationships from the input text, which may include policy clauses, rate tables, product descriptions, regulatory terms, and procedural documents.
+PROMPTS["entity_extraction_user_prompt"] = """---任务---
+从待处理的输入文本中提取实体和关系。
 
----Instructions---
-1.  **Strict Adherence to Format:** Strictly adhere to all format requirements for entity and relationship lists, including output order, field delimiters, and proper noun handling, as specified in the system prompt.
+---说明---
+1. **严格遵守格式**：严格遵守实体和关系列表的所有格式要求，包括系统提示中规定的输出顺序、字段分隔符和专有名词处理方式。
+2. **仅输出内容**：仅输出提取的实体和关系列表。列表前后不得包含任何介绍性或总结性的评论、解释或附加文本。
+3. **完成信号**：在提取并呈现所有相关实体和关系后，在最后一行输出`{completion_delimiter}`。
+4. **输出语言**：确保输出语言为{language}。专有术语必须保留其原始语言，不得改编。
+<输出>
+"""
 
-2.  **Comprehensive Insurance Entity Types:** Prioritize the extraction of the following entity types commonly found in insurance documents:
-    - `InsuranceCompany` (e.g., "利安人寿保险股份有限公司")
-    - `InsuranceProduct` (e.g., "附加豁免保险费定期寿险", "传家宝终身寿险", "传家福终身寿险")
-    - `Clause` (e.g., "保险责任", "责任免除", "投保范围", "犹豫期")
-    - `BenefitType` (e.g., "身故保险金", "豁免保险费", "现金价值", "生存金")
-    - `ExclusionCondition` (e.g., "遗传性疾病", "先天性畸形", "既往症", "猝死")
-    - `PolicyTerm` (e.g., "保险期间", "犹豫期", "宽限期", "交费期间")
-    - `RateTable` (e.g., "费率表", "定价表", "精算表")
-    - `AgeRange` (e.g., "18周岁至50周岁", "出生满28天至70周岁")
-    - `Gender` (e.g., "男性", "女性")
-    - `TimePeriod` (e.g., "10日", "180日", "2年内", "终身")
-    - `MonetaryAmount` (e.g., "保险费", "保险金额", "现金价值", "保费")
-    - `Percentage` (e.g., "3.5%", "160%", "80%")
-    - `Definition` (e.g., "意外伤害", "全残", "周岁", "有效身份证件")
-    - `Procedure` (e.g., "保单质押贷款", "减保", "解除合同", "转换年金")
-    - `RegulatoryReference` (e.g., "中国保险监督管理委员会", "备案")
-    - `ClauseNumber` (e.g., "条款1.4", "2.3", "第3条")
-    - `DocumentSection` (e.g., "投保范围", "保险责任", "如何申请保险金")
+# 表格专用实体提取系统提示词
+PROMPTS["table_extraction_system_prompt"] = """---角色说明---
+你是一名知识图谱构建专家，擅长从带有表格结构的文档中抽取结构化信息。
+输入的文本具有如下形式：
+- [SOURCE:__TABLE_ENTITY_X__] 表示该块对应的表格占位符
+- [CONTEXT] 后面是与该表格相关的上下文文本，可能包含多个其他表格占位符，但请只关注当前 SOURCE 对应的表格
+- [HTML_TABLE] 后面是真实表格的 HTML 内容
 
-3.  **Structured Data Processing:** 
-    - **Rate Tables**: Extract each rate entry as a structured entity with relationships to age, gender, term, and monetary values
-    - **Clause Numbers**: Extract clause references with their hierarchical relationships (e.g., "1.1 合同构成" → "合同构成" entity with clause number "1.1")
-    - **Tables and Lists**: Extract each row/entry as separate entities with appropriate relationships
-    - **Definition Lists**: Extract each definition with its explanatory content
+你的目标是：
+1. 识别表格及其语义类型
+2. 抽取表格中包含的核心实体、属性、数值和关系
+3. 将表格与上下文中的主题建立关联
 
-4.  **Insurance-Specific Relationship Types:**
-    - **Product Relationships**: Product-to-company, product-to-clause, product-to-rate-table
-    - **Clause Relationships**: Clause-to-definition, clause-to-procedure, clause-to-condition
-    - **Benefit Relationships**: Benefit-to-product, benefit-to-condition, benefit-to-procedure
-    - **Temporal Relationships**: Term-to-product, period-to-condition, age-to-rate
-    - **Regulatory Relationships**: Product-to-regulator, clause-to-regulation
-    - **Hierarchical Relationships**: Main-clause-to-sub-clause, section-to-subsection
+---
+## 1. 表格整体识别
+识别表格实体（类型通常为保险费率表或概念说明表），提取：
+- 表格名称或用途（结合上下文`[CONTEXT]`内容）
+- 表格描述（结合上下文和表格内容，描述表格的用途和包含的信息）
+- 判断表格类型：数据型表格（包含数值、费率等数据）或概念型表格（包含条款、定义、说明等概念信息）
 
-5.  **Cross-Document Linking:** If multiple documents are provided, identify relationships that link entities across documents:
-    - Product names appearing in both clause documents and rate tables
-    - Related terms and definitions spanning different product documents
-    - Company references across various insurance products
-    - Regulatory references and compliance requirements
+## 2. 表格数据实体
+### 对于数据型表格：
+识别表格中的关键字段：
+- 列名（如“年龄”、“性别”、“年缴保费”）
+- 代表性数据行：每张表格最多提取 3 条代表性行（具代表性即可，例如首行、中间行、尾行或显著变化行），避免冗长输出。
+- 每一行代表性数据应被视为一个完整的数据实体（类型为“数据”），其内容由该行的所有字段组合而成，例如：“0岁-男性-5年交-247元”
 
-6.  **Numerical and Temporal Precision:**
-    - Extract exact age ranges, time periods, and monetary amounts
-    - Preserve percentage values and rate calculations
-    - Identify specific dates, deadlines, and effective periods
-    - Capture conditional timeframes (e.g., "180日后", "2年内")
+### 对于概念型表格：
+识别表格中的关键概念信息：
+- 条款编号（如"条款1.1"、"条款1.2"等）
+- 条款标题（如"合同构成"、"合同成立与生效"等）
+- 关键概念实体（如"犹豫期"、"投保范围"等）
 
-7.  **Definition and Terminology Extraction:**
-    - Extract all insurance term definitions with their complete explanations
-    - Identify technical jargon and its contextual meaning
-    - Capture procedural definitions and their application conditions
-    - Extract regulatory terminology and compliance requirements
+## 3. 表格关系抽取
+### 对于数据型表格：
+识别表格内外的语义关系，包括：
+- 行列关系：抽取行与列之间的关系，如"年龄"影响"费率"。
+- 上下文关系：结合上下文`[CONTEXT]`内容，抽取表格与上下文描述之间的关系。
 
-8.  **Output Content Only:** Output *only* the extracted list of entities and relationships. Do not include any introductory or concluding remarks, explanations, or additional text before or after the list.
+### 对于概念型表格：
+- 条款关系：抽取条款编号与条款内容之间的关系，如"条款1.1"定义"合同构成"。
+- 概念关系：抽取概念之间的层级、包含或关联关系，如"犹豫期"是"合同解除"的特定时期。
+- 上下文关系：结合上下文`[CONTEXT]`内容，抽取表格与上下文描述之间的关系。
 
-9.  **Completion Signal:** Output `{completion_delimiter}` as the final line after all relevant entities and relationships have been extracted and presented.
+## 4. 保险领域实体类型识别：
+- 保险产品：保险公司设计和销售的具体保险合同名称、类型及其简称。
+- 保险条款：识别条款编号、条款标题及条款内容要点。
+- 保险概念：保险领域特有的专业术语或核心概念（如犹豫期、宽限期、现金价值、免责期、等待期、保险利益等）。
+- 保险责任：保险合同约定应赔付的具体保障项目或内容。
+- 数据：字段组合而成的保费，具体的费率因子、给付比例等量化数值。
+- 期限：所有与时间长度、周期或特定时间点相关的描述。
+- 角色：识别投保人、被保险人、受益人等角色。
+- 机构：涉及保险业务的公司、团体或医疗机构。
+- 疾病：作为保险责任或免责依据的医学病症名称。
 
-10. **Output Language:** Ensure the output language is {language}. Proper nouns (e.g., personal names, place names, organization names) must be kept in their original language and not translated.
+### 4. 特殊处理
+- 占位符处理：忽略`[SOURCE:__TABLE_ENTITY_x__]`中的其他表格占位符，只关注当前表格，__TABLE_ENTITY_x__不作为实体名称抽取。
+- HTML解析：正确解析`[HTML_TABLE]`中的表格结构，识别表头、数据行等。
+- 专业术语：使用保险领域的专业术语，如"保费"、"费率"、"保险期间"等。
 
-<Output>
+### 5. 输出格式
+- 实体输出格式：每个实体共输出4个字段，使用 `{tuple_delimiter}` 分隔，同一行为一条实体。第一个字段必须是字面字符串 `entity`。
+  ** 实体格式 **：`entity{tuple_delimiter}entity_name{tuple_delimiter}entity_type{tuple_delimiter}entity_description`
+- 关系输出格式：每个关系共输出5个字段，使用 `{tuple_delimiter}` 分隔，同一行为一条关系。第一个字段必须是字面字符串 `relation`。
+  ** 关系格式 **：`relation{tuple_delimiter}source_entity{tuple_delimiter}target_entity{tuple_delimiter}relationship_keywords{tuple_delimiter}relationship_description`
+
+6.  **输出终止标志：** 所有实体与关系输出完毕且完全满足以上要求后，最后一行仅输出字面字符串 `{completion_delimiter}` 作为终止信号。
+
+---示例---
+{examples}
+
+---待处理真实文本---
+<输入>
+Entity_types: [{entity_types}]
+Text:
+```
+{input_text}
+```
 """
 
 PROMPTS["entity_continue_extraction_user_prompt"] = """---任务---
@@ -152,162 +188,222 @@ PROMPTS["entity_continue_extraction_user_prompt"] = """---任务---
 <输出>
 """
 
-PROMPTS["entity_extraction_examples"] = [
-    """<Input Text>
+# 文本抽取示例
+PROMPTS["text_extraction_examples"] = [
+    """<输入文本>
 ```
-利安人寿保险股份有限公司传家宝终身寿险条款
-"传家宝终身寿险"简称"传家宝"。在本保险条款中，"您"指投保人，"我们"指利安人寿保险股份有限公司，"本合同"指您与我们之间订立的"传家宝终身寿险合同"。
-
-1.3 投保年龄
-指您投保时被保险人的年龄，本合同接受的被保险人的投保年龄范围为出生满28天至70周岁。
-
-2.1 保险金额
-本合同的基本保险金额由您在投保时与我们约定并在保险单中载明。从第二个保单年度起，各保单年度的有效保险金额计算公式如下：
-第n个保单年度的有效保险金额 = 基本保险金额 × 1.035^(n-1)
+# 利安人寿保险股份有限公司
+# 利安传家鑫享终身寿险
+# 产品说明书
+为方便您了解和购买本保险，请您仔细阅读本产品说明书。在本产品说明书中，“您”指投保人，“我们”、“本公司”均指利安人寿保险股份有限公司。
+# 一、产品描述
+1.  投保年龄：本产品接受的被保险人的投保年龄范围为出生满28天至70周岁。
+2.  保险期间：本产品的保险期间为被保险人终身。
+3.  保险费及交费方式：本产品的保险费采用趸交（即一次性支付）、限期年交（即在约定的交费期间内每年支付一次保险费）或限期月交（即在约定的交费期间内每月支付一次保险费）的方式支付。
+4.  保险金额：
+    (1) 基本保险金额: 本产品的基本保险金额由您在投保时与我们约定并在保险单上载明。
+    (2)有效保险金额：本产品首个保单年度的有效保险金额等于基本保险金额。从第二个保单年度起，各保单年度的有效保险金额等于上一个保单年度的有效保险金额 $\times (1 + 3.0\%)$ 。
 ```
 
-<Output>
-entity{tuple_delimiter}利安人寿保险股份有限公司{tuple_delimiter}InsuranceCompany{tuple_delimiter}利安人寿保险股份有限公司是一家提供人寿保险服务的保险公司
-entity{tuple_delimiter}传家宝终身寿险{tuple_delimiter}InsuranceProduct{tuple_delimiter}传家宝终身寿险是利安人寿推出的终身寿险产品
-entity{tuple_delimiter}传家宝{tuple_delimiter}InsuranceProduct{tuple_delimiter}传家宝是传家宝终身寿险的简称
-entity{tuple_delimiter}投保年龄{tuple_delimiter}Clause{tuple_delimiter}规定被保险人的年龄要求
-entity{tuple_delimiter}保险金额{tuple_delimiter}Clause{tuple_delimiter}规定保险金额的计算和确定方式
-entity{tuple_delimiter}基本保险金额{tuple_delimiter}MonetaryAmount{tuple_delimiter}保险合同约定的基本保险金额
-entity{tuple_delimiter}有效保险金额{tuple_delimiter}MonetaryAmount{tuple_delimiter}按公式计算的有效保险金额
-entity{tuple_delimiter}出生满28天至70周岁{tuple_delimiter}AgeRange{tuple_delimiter}投保年龄范围为出生满28天至70周岁
-entity{tuple_delimiter}1.035{tuple_delimiter}Percentage{tuple_delimiter}有效保险金额计算公式中的增长率系数
-entity{tuple_delimiter}条款1.3{tuple_delimiter}ClauseNumber{tuple_delimiter}投保年龄条款的编号
-entity{tuple_delimiter}条款2.1{tuple_delimiter}ClauseNumber{tuple_delimiter}保险金额条款的编号
-relation{tuple_delimiter}传家宝终身寿险{tuple_delimiter}利安人寿保险股份有限公司{tuple_delimiter}产品提供，公司关系{tuple_delimiter}传家宝终身寿险由利安人寿保险股份有限公司提供
-relation{tuple_delimiter}传家宝{tuple_delimiter}传家宝终身寿险{tuple_delimiter}简称关系，产品关联{tuple_delimiter}传家宝是传家宝终身寿险的简称
-relation{tuple_delimiter}投保年龄{tuple_delimiter}出生满28天至70周岁{tuple_delimiter}年龄限制，资格条件{tuple_delimiter}投保年龄规定被保险人的年龄范围为出生满28天至70周岁
-relation{tuple_delimiter}保险金额{tuple_delimiter}基本保险金额{tuple_delimiter}金额类型，包含关系{tuple_delimiter}保险金额包含基本保险金额
-relation{tuple_delimiter}有效保险金额{tuple_delimiter}1.035{tuple_delimiter}计算公式，增长系数{tuple_delimiter}有效保险金额按1.035的增长率计算
+<输出>
+entity{tuple_delimiter}利安人寿保险股份有限公司{tuple_delimiter}机构{tuple_delimiter}本产品说明书的发布方和保险合同的承保方，在文中被称为“我们”或“本公司”。
+entity{tuple_delimiter}利安传家鑫享终身寿险{tuple_delimiter}保险产品{tuple_delimiter}本产品说明书所介绍的终身寿险产品。
+entity{tuple_delimiter}投保人{tuple_delimiter}角色{tuple_delimiter}与利安人寿保险股份有限公司订立保险合同的人，在文中被称为“您”。
+entity{tuple_delimiter}被保险人{tuple_delimiter}角色{tuple_delimiter}其生命身体受保险合同保障的人，投保年龄需为出生满28天至70周岁。
+entity{tuple_delimiter}一、产品描述{tuple_delimiter}保险条款{tuple_delimiter}产品说明书的章节标题，描述产品基本信息，包括投保年龄、保险期间、交费方式和保险金额。
+entity{tuple_delimiter}投保年龄{tuple_delimiter}保险概念{tuple_delimiter}本产品接受的被保险人的年龄范围。
+entity{tuple_delimiter}出生满28天至70周岁{tuple_delimiter}期限{tuple_delimiter}利安传家鑫享终身寿险的投保年龄范围。
+entity{tuple_delimiter}保险期间{tuple_delimiter}保险概念{tuple_delimiter}本产品的保障期限。
+entity{tuple_delimiter}终身{tuple_delimiter}期限{tuple_delimiter}利安传家鑫享终身寿险的保险期间。
+entity{tuple_delimiter}保险费{tuple_delimiter}保险概念{tuple_delimiter}投保人支付给保险公司的费用。
+entity{tuple_delimiter}交费方式{tuple_delimiter}保险概念{tuple_delimiter}支付保险费的方式，包括趸交、限期年交或限期月交。
+entity{tuple_delimiter}趸交{tuple_delimiter}保险概念{tuple_delimiter}一次性支付保险费的交费方式。
+entity{tuple_delimiter}限期年交{tuple_delimiter}保险概念{tuple_delimiter}在约定的交费期间内每年支付一次保险费的交费方式。
+entity{tuple_delimiter}限期月交{tuple_delimiter}保险概念{tuple_delimiter}在约定的交费期间内每月支付一次保险费的交费方式。
+entity{tuple_delimiter}基本保险金额{tuple_delimiter}保险概念{tuple_delimiter}由投保人与保险公司约定并在保险单上载明的金额，首个保单年度的有效保险金额等于此金额。
+entity{tuple_delimiter}有效保险金额{tuple_delimiter}保险概念{tuple_delimiter}用于计算保险责任的金额，首年等于基本保险金额，从第二年起每年在上一年基础上增长3.0%。
+entity{tuple_delimiter}3.0%{tuple_delimiter}数据{tuple_delimiter}有效保险金额从第二个保单年度起的年增长率。
+relation{tuple_delimiter}利安人寿保险股份有限公司{tuple_delimiter}利安传家鑫享终身寿险{tuple_delimiter}提供产品{tuple_delimiter}利安人寿保险股份有限公司是“利安传家鑫享终身寿险”的承保公司。
+relation{tuple_delimiter}投保人{tuple_delimiter}利安人寿保险股份有限公司{tuple_delimiter}订立合同{tuple_delimiter}投保人与利安人寿保险股份有限公司订立保险合同。
+relation{tuple_delimiter}被保险人{tuple_delimiter}利安传家鑫享终身寿险{tuple_delimiter}受保障{tuple_delimiter}被保险人是“利安传家鑫享终身寿险”的保障对象。
+relation{tuple_delimiter}利安传家鑫享终身寿险{tuple_delimiter}一、产品描述{tuple_delimiter}包含章节{tuple_delimiter}产品说明书包含“产品描述”章节。
+relation{tuple_delimiter}一、产品描述{tuple_delimiter}投保年龄{tuple_delimiter}定义{tuple_delimiter}“产品描述”章节定义了“投保年龄”。
+relation{tuple_delimiter}投保年龄{tuple_delimiter}出生满28天至70周岁{tuple_delimiter}范围是{tuple_delimiter}投保年龄的具体范围是出生满28天至70周岁。
+relation{tuple_delimiter}一、产品描述{tuple_delimiter}保险期间{tuple_delimiter}定义{tuple_delimiter}“产品描述”章节定义了“保险期间”。
+relation{tuple_delimiter}保险期间{tuple_delimiter}终身{tuple_delimiter}具体为{tuple_delimiter}保险期间的具体值为终身。
+relation{tuple_delimiter}一、产品描述{tuple_delimiter}交费方式{tuple_delimiter}定义{tuple_delimiter}“产品描述”章节定义了“交费方式”。
+relation{tuple_delimiter}交费方式{tuple_delimiter}趸交{tuple_delimiter}包含{tuple_delimiter}交费方式包括“趸交”。
+relation{tuple_delimiter}交费方式{tuple_delimiter}限期年交{tuple_delimiter}包含{tuple_delimiter}交费方式包括“限期年交”。
+relation{tuple_delimiter}交费方式{tuple_delimiter}限期月交{tuple_delimiter}包含{tuple_delimiter}交费方式包括“限期月交”。
+relation{tuple_delimiter}有效保险金额{tuple_delimiter}基本保险金额{tuple_delimiter}首年等于{tuple_delimiter}首个保单年度的有效保险金额等于基本保险金额。
+relation{tuple_delimiter}有效保险金额{tuple_delimiter}3.0%{tuple_delimiter}年增长率{tuple_delimiter}从第二个保单年度起，有效保险金额的年增长率为3.0%。
 {completion_delimiter}
 """,
-    """<Input Text>
+    """<输入文本>
 ```
-附加豁免保险费定期寿险费率表
-(每豁免所保障的保险合同的1000元年交保险费对应的费率)
+# 利安人寿保险股份有限公司
 
-年龄 | 性别：男性 | 单位：人民币元
-| 1 | 2 | 3 | 4 | 5
-18 | 0.70 | 1.09 | 1.51 | 1.95 | 2.40
-19 | 0.78 | 1.20 | 1.65 | 2.12 | 2.60
-20 | 0.84 | 1.30 | 1.77 | 2.26 | 2.76
+# 利安传家鑫享终身寿险
 
-1.3 投保范围
-若您不是主险合同的被保险人,并分期支付主险合同的保险费,且在投保本附加险合同时您的年龄在18周岁至50周岁之间,则您可作为本附加险合同的投保人和被保险人。
-```
+# 产品说明书
 
-<Output>
-entity{tuple_delimiter}附加豁免保险费定期寿险{tuple_delimiter}InsuranceProduct{tuple_delimiter}附加豁免保险费定期寿险是一种附加险产品
-entity{tuple_delimiter}附加豁免保险费定期寿险费率表{tuple_delimiter}RateTable{tuple_delimiter}附加豁免保险费定期寿险的费率表，按年龄、性别和保险期间列示费率
-entity{tuple_delimiter}投保范围{tuple_delimiter}Clause{tuple_delimiter}规定投保人的资格条件和年龄限制
-entity{tuple_delimiter}18周岁{tuple_delimiter}Age{tuple_delimiter}费率表中的最低年龄
-entity{tuple_delimiter}20周岁{tuple_delimiter}Age{tuple_delimiter}费率表中的年龄
-entity{tuple_delimiter}男性{tuple_delimiter}Gender{tuple_delimiter}费率表适用的性别类型
-entity{tuple_delimiter}保险期间1年{tuple_delimiter}PolicyTerm{tuple_delimiter}保险期间为1年对应的费率
-entity{tuple_delimiter}保险期间2年{tuple_delimiter}PolicyTerm{tuple_delimiter}保险期间为2年对应的费率
-entity{tuple_delimiter}费率0.70{tuple_delimiter}MonetaryAmount{tuple_delimiter}18岁男性1年保险期间的费率为0.70元
-entity{tuple_delimiter}费率0.84{tuple_delimiter}MonetaryAmount{tuple_delimiter}20岁男性1年保险期间的费率为0.84元
-entity{tuple_delimiter}18周岁至50周岁{tuple_delimiter}AgeRange{tuple_delimiter}投保年龄范围为18周岁至50周岁
-entity{tuple_delimiter}分期支付{tuple_delimiter}Procedure{tuple_delimiter}保险费支付方式为分期支付
-entity{tuple_delimiter}1000元{tuple_delimiter}MonetaryAmount{tuple_delimiter}费率计算的基础金额
-relation{tuple_delimiter}附加豁免保险费定期寿险{tuple_delimiter}附加豁免保险费定期寿险费率表{tuple_delimiter}产品关联，定价依据{tuple_delimiter}附加豁免保险费定期寿险有对应的费率表
-relation{tuple_delimiter}附加豁免保险费定期寿险费率表{tuple_delimiter}18周岁{tuple_delimiter}适用年龄，定价因素{tuple_delimiter}费率表包含18周岁的费率数据
-relation{tuple_delimiter}附加豁免保险费定期寿险费率表{tuple_delimiter}男性{tuple_delimiter}适用性别，定价因素{tuple_delimiter}费率表包含男性的费率数据
-relation{tuple_delimiter}18周岁{tuple_delimiter}费率0.70{tuple_delimiter}对应费率，定价关系{tuple_delimiter}18周岁对应1年期的费率为0.70
-relation{tuple_delimiter}20周岁{tuple_delimiter}费率0.84{tuple_delimiter}对应费率，定价关系{tuple_delimiter}20周岁对应1年期的费率为0.84
-relation{tuple_delimiter}投保范围{tuple_delimiter}18周岁至50周岁{tuple_delimiter}年龄限制，资格条件{tuple_delimiter}投保范围规定年龄限制为18周岁至50周岁
-relation{tuple_delimiter}费率表{tuple_delimiter}1000元{tuple_delimiter}计算基础，费率依据{tuple_delimiter}费率表基于1000元保险费计算
-{completion_delimiter}
+为方便您了解和购买本保险，请您仔细阅读本产品说明书。在本产品说明书中，“您”指投保人，“我们”、“本公司”均指利安人寿保险股份有限公司。
 
-""",
-    """<Input Text>
-```
-2.4 责任免除
-因下列情形之一导致被保险人身故的，我们不承担给付保险金的责任：
-(1) 投保人对被保险人的故意杀害、故意伤害;
-(2) 被保险人故意自伤、故意犯罪或者抗拒依法采取的刑事强制措施;
-(3) 被保险人自本合同成立或合同效力恢复之日起2年内自杀，但被保险人自杀时为无民事行为能力人的除外；
-(4) 被保险人斗殴、吸食或注射毒品;
-(5) 被保险人酒后驾驶,无合法有效驾驶证驾驶,或驾驶无有效行驶证的机动车;
+# 三、犹豫期及退保
 
-7.5 意外伤害
-指遭受外来的、突发的、非本意的、非疾病的客观事件直接致使身体受到的伤害。本附加险合同所述的意外伤害导致的身故，不包括猝死。
+# 1\. 犹豫期
 
-7.6 全残
-本附加险合同所述"全残"是指下列情形之一:
-(1) 双目永久完全失明(注1);
-(2) 两上肢腕关节以上或两下肢踝关节以上缺失;
-(3) 一上肢腕关节以上及一下肢踝关节以上缺失;
+自您签收合同次日起，有15日的犹豫期。在此期间，请您认真审视合同，如果您认为合同与您的需求不相符，您可以在此期间提出解除合同，我们将退还您所支付的保险费。解除合同时，您需要填写申请书，并提供您的保险合同及有效身份证件。自我们收到您解除合同的书面申请时起，合同即被解除，对于合同解除前发生的保险事故，我们不承担保险责任。
+
+# 2\. 退保
+
+您在犹豫期后要求解除合同的，本公司自收到解除合同申请书之日起30日内向您退还保险单的现金价值。现金价值指合同保险单所具有的价值，通常体现为解除合同时，根据精算原理计算的，由本公司退还的那部分金额，保险单的现金价值将在合同中载明。您犹豫期后解除合同会遭受一定损失。
 ```
 
-<Output>
-entity{tuple_delimiter}责任免除{tuple_delimiter}Clause{tuple_delimiter}规定保险公司不承担保险责任的情形
-entity{tuple_delimiter}意外伤害{tuple_delimiter}Definition{tuple_delimiter}外来的、突发的、非本意的、非疾病的客观事件导致的伤害
-entity{tuple_delimiter}全残{tuple_delimiter}Definition{tuple_delimiter}完全残疾，包括双目失明、肢体缺失等八种情形
-entity{tuple_delimiter}故意杀害{tuple_delimiter}ExclusionCondition{tuple_delimiter}责任免除情形之一，投保人对被保险人的故意杀害
-entity{tuple_delimiter}故意自伤{tuple_delimiter}ExclusionCondition{tuple_delimiter}责任免除情形之一，被保险人故意自伤
-entity{tuple_delimiter}自杀{tuple_delimiter}ExclusionCondition{tuple_delimiter}责任免除情形之一，合同成立后2年内自杀
-entity{tuple_delimiter}斗殴{tuple_delimiter}ExclusionCondition{tuple_delimiter}责任免除情形之一，被保险人斗殴
-entity{tuple_delimiter}吸食毒品{tuple_delimiter}ExclusionCondition{tuple_delimiter}责任免除情形之一，吸食或注射毒品
-entity{tuple_delimiter}酒后驾驶{tuple_delimiter}ExclusionCondition{tuple_delimiter}责任免除情形之一，酒后驾驶机动车
-entity{tuple_delimiter}双目永久完全失明{tuple_delimiter}DisabilityCondition{tuple_delimiter}全残情形之一，双眼永久性失明
-entity{tuple_delimiter}上肢腕关节以上缺失{tuple_delimiter}DisabilityCondition{tuple_delimiter}全残情形之一，手腕以上上肢缺失
-entity{tuple_delimiter}下肢踝关节以上缺失{tuple_delimiter}DisabilityCondition{tuple_delimiter}全残情形之一，脚踝以上下肢缺失
-entity{tuple_delimiter}猝死{tuple_delimiter}ExclusionCondition{tuple_delimiter}意外伤害导致的身故不包括猝死
-entity{tuple_delimiter}2年内{tuple_delimiter}TimePeriod{tuple_delimiter}自杀免责的时间限制
-entity{tuple_delimiter}条款2.4{tuple_delimiter}ClauseNumber{tuple_delimiter}责任免除条款的编号
-entity{tuple_delimiter}条款7.5{tuple_delimiter}ClauseNumber{tuple_delimiter}意外伤害定义条款的编号
-entity{tuple_delimiter}条款7.6{tuple_delimiter}ClauseNumber{tuple_delimiter}全残定义条款的编号
-relation{tuple_delimiter}责任免除{tuple_delimiter}故意杀害{tuple_delimiter}包含情形，免责条件{tuple_delimiter}故意杀害是责任免除的情形之一
-relation{tuple_delimiter}责任免除{tuple_delimiter}故意自伤{tuple_delimiter}包含情形，免责条件{tuple_delimiter}故意自伤是责任免除的情形之一
-relation{tuple_delimiter}责任免除{tuple_delimiter}自杀{tuple_delimiter}包含情形，免责条件{tuple_delimiter}2年内自杀是责任免除的情形之一
-relation{tuple_delimiter}自杀{tuple_delimiter}2年内{tuple_delimiter}时间限制，免责条件{tuple_delimiter}自杀免责适用于合同成立后2年内
-relation{tuple_delimiter}意外伤害{tuple_delimiter}猝死{tuple_delimiter}排除关系，除外责任{tuple_delimiter}意外伤害定义明确排除猝死
-relation{tuple_delimiter}全残{tuple_delimiter}双目永久完全失明{tuple_delimiter}包含情形，定义关系{tuple_delimiter}双目失明是全残的一种情形
-relation{tuple_delimiter}全残{tuple_delimiter}上肢腕关节以上缺失{tuple_delimiter}包含情形，定义关系{tuple_delimiter}上肢缺失是全残的一种情形
-{completion_delimiter}
-""",
-    """<Input Text>
-```
-1.4 犹豫期
-自您签收本合同次日起，有10日的犹豫期。在此期间，请您认真审视本合同，如果您认为本合同与您的需求不相符，您可以在此期间提出解除本合同，我们将退还您所支付的保险费。
-
-5.2 保单质押贷款
-在本合同有效期内，您可以申请并经我们审核同意后办理保单质押贷款。贷款金额不得超过保险单的现金价值扣除各项欠款后余额的80%，每次贷款期限最长不超过6个月，贷款利率按您与我们签订的贷款协议中约定的利率执行。
-
-9.1 保单年度
-从本合同生效日或合同生效日对应日的零时起至下一个合同生效日对应日前一日的24时止为一个保单年度。
-```
-
-<Output>
-entity{tuple_delimiter}犹豫期{tuple_delimiter}PolicyTerm{tuple_delimiter}签收合同后10日内可无条件解除合同的期间
-entity{tuple_delimiter}保单质押贷款{tuple_delimiter}Procedure{tuple_delimiter}以保单现金价值为质押的贷款业务
-entity{tuple_delimiter}保单年度{tuple_delimiter}Definition{tuple_delimiter}从合同生效日起至下一个合同生效日对应日前一日的24时止
-entity{tuple_delimiter}10日{tuple_delimiter}TimePeriod{tuple_delimiter}犹豫期的持续时间为10天
-entity{tuple_delimiter}解除合同{tuple_delimiter}Procedure{tuple_delimiter}在犹豫期内取消保险合同的权利
-entity{tuple_delimiter}退还保险费{tuple_delimiter}Benefit{tuple_delimiter}犹豫期内解除合同时退还已交保险费
-entity{tuple_delimiter}现金价值{tuple_delimiter}MonetaryAmount{tuple_delimiter}保险单所具有的价值
-entity{tuple_delimiter}80%{tuple_delimiter}Percentage{tuple_delimiter}贷款金额不得超过现金价值的80%
-entity{tuple_delimiter}6个月{tuple_delimiter}TimePeriod{tuple_delimiter}每次贷款期限最长不超过6个月
-entity{tuple_delimiter}贷款利率{tuple_delimiter}Percentage{tuple_delimiter}按贷款协议约定的利率执行
-entity{tuple_delimiter}合同生效日{tuple_delimiter}Date{tuple_delimiter}保险合同开始生效的日期
-entity{tuple_delimiter}条款1.4{tuple_delimiter}ClauseNumber{tuple_delimiter}犹豫期条款的编号
-entity{tuple_delimiter}条款5.2{tuple_delimiter}ClauseNumber{tuple_delimiter}保单质押贷款条款的编号
-entity{tuple_delimiter}条款9.1{tuple_delimiter}ClauseNumber{tuple_delimiter}保单年度定义条款的编号
-relation{tuple_delimiter}犹豫期{tuple_delimiter}10日{tuple_delimiter}时间属性，期限规定{tuple_delimiter}犹豫期持续10天
-relation{tuple_delimiter}犹豫期{tuple_delimiter}解除合同{tuple_delimiter}允许操作，客户权利{tuple_delimiter}犹豫期内可解除合同
-relation{tuple_delimiter}解除合同{tuple_delimiter}退还保险费{tuple_delimiter}结果关联，资金处理{tuple_delimiter}解除合同后退还保险费
-relation{tuple_delimiter}保单质押贷款{tuple_delimiter}现金价值{tuple_delimiter}质押基础，贷款依据{tuple_delimiter}保单质押贷款以现金价值为质押
-relation{tuple_delimiter}保单质押贷款{tuple_delimiter}80%{tuple_delimiter}贷款限额，比例限制{tuple_delimiter}贷款金额不得超过现金价值的80%
-relation{tuple_delimiter}保单质押贷款{tuple_delimiter}6个月{tuple_delimiter}期限限制，时间约束{tuple_delimiter}每次贷款期限最长不超过6个月
-relation{tuple_delimiter}保单年度{tuple_delimiter}合同生效日{tuple_delimiter}时间起点，年度计算{tuple_delimiter}保单年度从合同生效日起计算
+<输出>
+entity{tuple_delimiter}利安人寿保险股份有限公司{tuple_delimiter}机构{tuple_delimiter}本产品说明书的发布方，在文中被称为“我们”或“本公司”。
+entity{tuple_delimiter}利安传家鑫享终身寿险{tuple_delimiter}保险产品{tuple_delimiter}本产品说明书所介绍的保险产品。
+entity{tuple_delimiter}投保人{tuple_delimiter}角色{tuple_delimiter}在文中被称为“您”，有权在犹豫期内或犹豫期后解除合同。
+entity{tuple_delimiter}三、犹豫期及退保{tuple_delimiter}保险条款{tuple_delimiter}产品说明书的章节标题，说明犹豫期和退保规则。
+entity{tuple_delimiter}1. 犹豫期{tuple_delimiter}保险条款{tuple_delimiter}犹豫期及退保下的子章节标题，说明犹豫期的规则。
+entity{tuple_delimiter}犹豫期{tuple_delimiter}保险概念{tuple_delimiter}投保人签收合同次日起的15日内，可以无损失解除合同的期间。
+entity{tuple_delimiter}15日{tuple_delimiter}期限{tuple_delimiter}犹豫期的持续时间。
+entity{tuple_delimiter}保险费{tuple_delimiter}保险概念{tuple_delimiter}在犹豫期内解除合同，将由保险公司退还。
+entity{tuple_delimiter}保险责任{tuple_delimiter}保险责任{tuple_delimiter}保险公司在合同解除前发生的保险事故不承担此责任。
+entity{tuple_delimiter}2. 退保{tuple_delimiter}保险条款{tuple_delimiter}犹豫期及退保下的子章节标题，说明犹豫期后解除合同的规则。
+entity{tuple_delimiter}退保{tuple_delimiter}保险概念{tuple_delimiter}投保人在犹豫期后解除合同的行为，会导致一定损失。
+entity{tuple_delimiter}30日{tuple_delimiter}期限{tuple_delimiter}保险公司在收到退保申请后退还现金价值的期限。
+entity{tuple_delimiter}现金价值{tuple_delimiter}保险概念{tuple_delimiter}在犹豫期后退保时，由保险公司退还给投保人的金额。
+relation{tuple_delimiter}利安人寿保险股份有限公司{tuple_delimiter}利安传家鑫享终身寿险{tuple_delimiter}提供产品{tuple_delimiter}利安人寿保险股份有限公司是“利安传家鑫享终身寿险”的承保公司。
+relation{tuple_delimiter}利安传家鑫享终身寿险{tuple_delimiter}三、犹豫期及退保{tuple_delimiter}包含章节{tuple_delimiter}产品说明书包含“犹豫期及退保”章节。
+relation{tuple_delimiter}三、犹豫期及退保{tuple_delimiter}1. 犹豫期{tuple_delimiter}包含子章节{tuple_delimiter}“犹豫期及退保”章节包含“犹豫期”子章节。
+relation{tuple_delimiter}三、犹豫期及退保{tuple_delimiter}2. 退保{tuple_delimiter}包含子章节{tuple_delimiter}“犹豫期及退保”章节包含“退保”子章节。
+relation{tuple_delimiter}1. 犹豫期{tuple_delimiter}犹豫期{tuple_delimiter}条款定义{tuple_delimiter}该条款定义了“犹豫期”的规则。
+relation{tuple_delimiter}犹豫期{tuple_delimiter}15日{tuple_delimiter}期限为{tuple_delimiter}犹豫期的持续时间为15日。
+relation{tuple_delimiter}投保人{tuple_delimiter}犹豫期{tuple_delimiter}行使权利{tuple_delimiter}投保人可以在“犹豫期”内提出解除合同。
+relation{tuple_delimiter}投保人{tuple_delimiter}保险费{tuple_delimiter}获得退款{tuple_delimiter}在犹豫期解除合同，投保人将获得“保险费”退款。
+relation{tuple_delimiter}利安人寿保险股份有限公司{tuple_delimiter}保险责任{tuple_delimiter}不承担{tuple_delimiter}对于合同解除前发生的保险事故，利安人寿保险股份有限公司不承担“保险责任”。
+relation{tuple_delimiter}2. 退保{tuple_delimiter}退保{tuple_delimiter}条款定义{tuple_delimiter}该条款定义了“退保”（犹豫期后解除合同）的规则。
+relation{tuple_delimiter}投保人{tuple_delimiter}退保{tuple_delimiter}发起{tuple_delimiter}投保人有权在犹豫期后发起“退保”。
+relation{tuple_delimiter}投保人{tuple_delimiter}现金价值{tuple_delimiter}获得退款{tuple_delimiter}在犹豫期后退保，投保人将获得“现金价值”退款。
+relation{tuple_delimiter}利安人寿保险股份有限公司{tuple_delimiter}现金价值{tuple_delimiter}退还{tuple_delimiter}利安人寿保险股份有限公司在收到申请后30日内退还“现金价值”。
+relation{tuple_delimiter}退保{tuple_delimiter}30日{tuple_delimiter}处理期限{tuple_delimiter}保险公司收到退保申请后的处理期限为30日。
 {completion_delimiter}
 """,
 ]
+
+# 表格抽取示例
+PROMPTS["table_extraction_examples"] = [
+    """<输入文本>
+```
+[SOURCE:__TABLE_ENTITY_3__]
+[CONTEXT]利安人寿保险股份有限公司
+
+# 利安安康福（惠享版）重大疾病保险
+
+# 费率表
+
+（每万元基本保险金额对应的年交保险费）
+
+单位：人民币元  
+
+__TABLE_ENTITY_1__
+
+注：月交保险费=年交保险费*0.09。
+
+单位：人民币元  
+
+__TABLE_ENTITY_2__
+
+注：月交保险费=年交保险费*0.09。
+
+单位：人民币元
+
+__TABLE_ENTITY_3__
+
+注：月交保险费=年交保险费*0.09。
+
+单位：人民币元
+[HTML_TABLE]
+<table><tr><td>保险期间</td><td colspan="4">终身</td></tr><tr><td>身故保险金的给付方式</td><td colspan="4">方案一</td></tr><tr><td>性别</td><td colspan="2">男性</td><td colspan="2">女性</td></tr><tr><td>交费期间 年龄</td><td>5年交</td><td>10年交</td><td>5年交</td><td>10年交</td></tr><tr><td>0</td><td>408</td><td>206</td><td>393</td><td>199</td></tr><tr><td>20</td><td>717</td><td>363</td><td>687</td><td>348</td></tr><tr><td>40</td><td>1257</td><td>643</td><td>1161</td><td>596</td></tr></table>
+```
+
+<输出>
+entity{tuple_delimiter}利安安康福（惠享版）重大疾病保险 费率表（方案一）{tuple_delimiter}数据型表格{tuple_delimiter}展示了“利安安康福（惠享版）”在“方案一”下，不同年龄、性别和交费期间对应的年交保险费。费率基于“每万元基本保险金额”，单位为人民币元
+entity{tuple_delimiter}利安人寿保险股份有限公司{tuple_delimiter}机构{tuple_delimiter}上下文提及的保险产品提供方
+entity{tuple_delimiter}利安安康福（惠享版）重大疾病保险{tuple_delimiter}保险产品{tuple_delimiter}本费率表所属的重大疾病保险产品
+entity{tuple_delimiter}每万元基本保险金额{tuple_delimiter}保险概念{tuple_delimiter}上下文中定义的保费计算基准，表中数值均对应此基准
+entity{tuple_delimiter}保险期间{tuple_delimiter}保险概念{tuple_delimiter}保险的保障期限，表中固定为“终身”
+entity{tuple_delimiter}终身{tuple_delimiter}期限{tuple_delimiter}保险期间的具体值
+entity{tuple_delimiter}身故保险金的给付方式{tuple_delimiter}保险概念{tuple_delimiter}身故保险金的给付方案，表中固定为“方案一”
+entity{tuple_delimiter}年龄{tuple_delimiter}保险概念{tuple_delimiter}投保人年龄，作为保费计算的核心维度之一
+entity{tuple_delimiter}性别{tuple_delimiter}保险概念{tuple_delimiter}投保人性别（男性/女性），作为保费计算的核心维度之一
+entity{tuple_delimiter}男性{tuple_delimiter}保险概念{tuple_delimiter}作为保费计算维度的性别分类
+entity{tuple_delimiter}女性{tuple_delimiter}保险概念{tuple_delimiter}作为保费计算维度的性别分类
+entity{tuple_delimiter}交费期间{tuple_delimiter}保险概念{tuple_delimiter}保费的缴纳年限（如5年交, 10年交），作为保费计算的核心维度之一
+entity{tuple_delimiter}5年交{tuple_delimiter}期限{tuple_delimiter}交费期间的具体值
+entity{tuple_delimiter}10年交{tuple_delimiter}期限{tuple_delimiter}交费期间的具体值
+entity{tuple_delimiter}年交保险费{tuple_delimiter}保险概念{tuple_delimiter}每年需要缴纳的保险费用，是本表的核心数据
+entity{tuple_delimiter}月交保险费{tuple_delimiter}保险概念{tuple_delimiter}每月需要缴纳的保险费用，在上下文中定义了与年交保费的换算关系
+entity{tuple_delimiter}0岁-男性-5年交-408元{tuple_delimiter}数据{tuple_delimiter}代表性数据行：0周岁男性，5年交，年交保费408元
+entity{tuple_delimiter}20岁-女性-10年交-348元{tuple_delimiter}数据{tuple_delimiter}代表性数据行：20周岁女性，10年交，年交保费348元
+entity{tuple_delimiter}40岁-男性-5年交-1257元{tuple_delimiter}数据{tuple_delimiter}代表性数据行：40周岁男性，5年交，年交保费1257元
+relation{tuple_delimiter}利安人寿保险股份有限公司{tuple_delimiter}利安安康福（惠享版）重大疾病保险{tuple_delimiter}提供产品{tuple_delimiter}利安人寿保险股份有限公司是利安安康福（惠享版）重大疾病保险的承保公司
+relation{tuple_delimiter}利安安康福（惠享版）重大疾病保险{tuple_delimiter}利安安康福（惠享版）重大疾病保险 费率表（方案一）{tuple_delimiter}所属产品{tuple_delimiter}该费率表是“利安安康福（惠享版）重大疾病保险”的产品费率表
+relation{tuple_delimiter}利安安康福（惠享版）重大疾病保险 费率表（方案一）{tuple_delimiter}年交保险费{tuple_delimiter}展示数据{tuple_delimiter}费率表的核心数据是“年交保险费”
+relation{tuple_delimiter}年交保险费{tuple_delimiter}每万元基本保险金额{tuple_delimiter}基于{tuple_delimiter}根据上下文，年交保费是基于“每万元基本保险金额”计算的
+relation{tuple_delimiter}年交保险费{tuple_delimiter}年龄{tuple_delimiter}受...影响{tuple_delimiter}“年龄”是影响“年交保险费”的关键因素
+relation{tuple_delimiter}年交保险费{tuple_delimiter}性别{tuple_delimiter}受...影响{tuple_delimiter}“性别”是影响“年交保险费”的关键因素
+relation{tuple_delimiter}年交保险费{tuple_delimiter}交费期间{tuple_delimiter}受...影响{tuple_delimiter}“交费期间”是影响“年交保险费”的关键因素
+relation{tuple_delimiter}月交保险费{tuple_delimiter}年交保险费{tuple_delimiter}计算公式{tuple_delimiter}根据上下文：月交保险费 = 年交保险费 * 0.09
+relation{tuple_delimiter}利安安康福（惠享版）重大疾病保险 费率表（方案一）{tuple_delimiter}0岁-男性-5年交-408元{tuple_delimiter}包含数据行{tuple_delimiter}费率表包含0周岁的代表性保费数据
+relation{tuple_delimiter}利安安康福（惠享版）重大疾病保险 费率表（方案一）{tuple_delimiter}20岁-女性-10年交-348元{tuple_delimiter}包含数据行{tuple_delimiter}费率表包含20周岁的代表性保费数据
+relation{tuple_delimiter}利安安康福（惠享版）重大疾病保险 费率表（方案一）{tuple_delimiter}40岁-男性-5年交-1257元{tuple_delimiter}包含数据行{tuple_delimiter}费率表包含40周岁的代表性保费数据
+relation{tuple_delimiter}保险期间{tuple_delimiter}终身{tuple_delimiter}具体为{tuple_delimiter}表中的保险期间固定为终身
+{completion_delimiter}
+""",
+    """<输入文本>
+```
+[SOURCE:__TABLE_ENTITY_1__]
+[CONTEXT]# 利安人寿保险股份有限公司附加豁免保险费定期寿险条款
+（2013年呈报中国保险监督管理委员会备案）
+“附加豁免保险费定期寿险”简称“附加豁免定寿”。在本保险条款中，“您”指投保人，“我们”指利安人寿保险股份有限公司，“本附加险合同”指您与我们之间订立的“附加豁免保险费定期寿险合同”。
+# 1. 您与我们订立的合同
+__TABLE_ENTITY_1__
+# 2. 我们提供的保障
+__TABLE_ENTITY_2__
+# 3. 如何申请豁免保险费
+[HTML_TABLE]
+<table><tr><td>1.1</td><td>合同构成</td><td>本附加险合同是您与我们约定保险权利义务关系的协议，包括本保险条款、保险单、投保单及其他投保文件、合法有效的声明、批注、批单及其他您与我们共同签订的书面协议。</td></tr><tr><td>1.2</td><td>合同成立与生效</td><td>您提出保险申请、我们同意承保，本附加险合同成立。本附加险合同自我们同意承保、收取首期保险费并签发保险单开始生效，具体生效日以保险单所载的日期为准。合同生效日对应日、保险费约定支付日以该日期计算。</td></tr><tr><td>1.3</td><td>投保范围</td><td>若您不是主险合同的被保险人，并分期支付主险合同的保险费，且在投保本附加险合同时您的年龄在18周岁至50周岁之间，则您可作为本附加险合同的投保人和被保险人。</td></tr><tr><td>1.4</td><td>犹豫期</td><td>自您签收本附加险合同次日起，有10日的犹豫期。在此期间，请您认真审视本附加险合同，如果您认为本附加险合同与您的需求不相符，您可以在此期间提出解除本附加险合同，我们将退还您所支付的保险费。解除合同时，您需要填写申请书，并提供您的保险合同及有效身份证件。自我们收到您解除合同的书面申请时起，本附加险合同即被解除，对于合同解除前发生的保险事故，我们不承担保险责任。</td></tr></table>
+```
+
+<输出>
+entity{tuple_delimiter}附加豁免保险费定期寿险_合同订立条款表{tuple_delimiter}概念型表格{tuple_delimiter}展示了“附加豁免保险费定期寿险”合同订立的相关条款。
+entity{tuple_delimiter}利安人寿保险股份有限公司{tuple_delimiter}机构{tuple_delimiter}保险产品的承保公司
+entity{tuple_delimiter}附加豁免保险费定期寿险{tuple_delimiter}保险产品{tuple_delimiter}本条款所属的保险产品
+entity{tuple_delimiter}附加豁免定寿{tuple_delimiter}保险产品{tuple_delimiter}“附加豁免保险费定期寿险”的简称
+entity{tuple_delimiter}投保人{tuple_delimiter}角色{tuple_delimiter}保险合同的申请人，上下文中的“您”
+entity{tuple_delimiter}条款1.1_合同构成{tuple_delimiter}保险条款{tuple_delimiter}附加豁免定寿合同构成条款的编号及标题
+entity{tuple_delimiter}条款1.2_合同成立与生效{tuple_delimiter}保险条款{tuple_delimiter}附加豁免定寿合同构成条款的编号及标题
+entity{tuple_delimiter}条款1.3_投保范围{tuple_delimiter}保险条款{tuple_delimiter}附加豁免定寿合同构成条款的编号及标题
+entity{tuple_delimiter}条款1.4_犹豫期{tuple_delimiter}保险条款{tuple_delimiter}附加豁免定寿合同构成条款的编号及标题
+entity{tuple_delimiter}犹豫期{tuple_delimiter}保险概念{tuple_delimiter}条款1.4的核心概念，即投保人解除合同的权利
+entity{tuple_delimiter}解除合同的权利{tuple_delimiter}保险概念{tuple_delimiter}犹豫期内投保人享有的权利
+entity{tuple_delimiter}10日{tuple_delimiter}期限{tuple_delimiter}附加豁免定寿合同犹豫期的持续时间
+relation{tuple_delimiter}利安人寿保险股份有限公司{tuple_delimiter}附加豁免保险费定期寿险{tuple_delimiter}提供产品{tuple_delimiter}利安人寿是该产品的承保公司
+relation{tuple_delimiter}附加豁免保险费定期寿险{tuple_delimiter}附加豁免定寿{tuple_delimiter}简称为{tuple_delimiter}产品简称
+relation{tuple_delimiter}附加豁免保险费定期寿险_合同订立条款表{tuple_delimiter}条款1.1_合同构成{tuple_delimiter}包含条款{tuple_delimiter}表格包含条款1.1
+relation{tuple_delimiter}附加豁免保险费定期寿险_合同订立条款表{tuple_delimiter}条款1.2_合同成立与生效{tuple_delimiter}包含条款{tuple_delimiter}表格包含条款1.2
+relation{tuple_delimiter}附加豁免保险费定期寿险_合同订立条款表{tuple_delimiter}条款1.3_投保范围{tuple_delimiter}包含条款{tuple_delimiter}表格包含条款1.3
+relation{tuple_delimiter}附加豁免保险费定期寿险_合同订立条款表{tuple_delimiter}条款1.4_犹豫期{tuple_delimiter}包含条款{tuple_delimiter}表格包含条款1.4
+relation{tuple_delimiter}犹豫期{tuple_delimiter}解除合同的权利{tuple_delimiter}包含{tuple_delimiter}犹豫期包含“解除合同的权利”
+relation{tuple_delimiter}犹豫期{tuple_delimiter}10日{tuple_delimiter}期限为{tuple_delimiter}犹豫期的期限为10日
+{completion_delimiter}
+""",
+]
+
+# 保留原有的entity_extraction_examples以确保向后兼容
+PROMPTS["entity_extraction_examples"] = PROMPTS["text_extraction_examples"] + PROMPTS["table_extraction_examples"]
 
 PROMPTS["summarize_entity_descriptions"] = """---角色---
 你是一名知识图谱专家，擅长数据整理与综合归纳。
@@ -495,155 +591,90 @@ Reference Document List (Each entry starts with a [reference_id] that correspond
 
 """
 
-PROMPTS["keywords_extraction"] = """---Role---
-You are an expert insurance domain keyword extractor, specializing in analyzing user queries for a Retrieval-Augmented Generation (RAG) system in the insurance industry. Your purpose is to identify semantic keywords that bridge the gap between user's natural language queries and formal insurance terminology.
+PROMPTS["keywords_extraction"] = """--角色---
+你是一名保险领域的知识图谱检索专家。你的任务是为检索增强生成（RAG）系统解析用户查询，提取用于在知识图谱中分别检索**实体（节点）**和**关系（边）**的关键词。
 
----Goal---
-Given a user query, your task is to extract two distinct types of keywords following LightRAG's design:
-1. **high_level_keywords**: Overarching concepts, themes, core intent, subject areas, or question types in insurance domain
-2. **low_level_keywords**: Specific entities, proper nouns, technical jargon, product names, numerical values, or concrete details
+---目标---
+根据用户查询，提取两种目的明确的关键词：
 
----Instructions & Constraints---
-1. **Output Format**: Your output MUST be a valid JSON object and nothing else. Do not include any explanatory text, markdown code fences (like ```json), or any other text before or after the JSON. It will be parsed directly by a JSON parser.
+1.  **high_level_keywords (高层关键词)**：
+    *   **用途**：专门用于检索知识图谱中的**关系（边）**。
+    *   **提取内容**：捕捉查询中隐含的**宏观概念、主题、或实体间的互动关系**。这些词通常描述一个过程（如“理赔流程”）、一个属性（如“现金价值计算”）、或一个比较（如“区别”）。它们回答了“实体之间发生了什么？”或“实体有什么样的属性或联系？”。
 
-2. **Keyword Classification Guidelines**:
-   - **high_level_keywords**: Extract overarching concepts, themes, core intent, subject areas, or question types. Focus on insurance domain concepts like policy types, benefit categories, procedural terms, and query intentions.
-   - **low_level_keywords**: Extract specific entities, proper nouns, technical terms, product names, numerical values, time periods, demographic info, and concrete details from the query.
+2.  **low_level_keywords (低层关键词)**：
+    *   **用途**：专门用于检索知识图谱中的**实体（节点）**。
+    *   **提取内容**：识别查询中提到的**具体实体、专有名词、技术术语或关键细节**。这包括保险产品名、机构名、具体的条款编号及标题、日期、金额、年龄等。它们回答了“查询涉及哪些具体的人、事、物？”。
 
-3. **Insurance Domain Expertise**: Prioritize extraction of:
-   - **Product Names**: Full product names, abbreviated versions, and product versions (e.g., "附加豁免保险费定期寿险", "传家宝终身寿险", "2023版")
-   - **Company Names**: Insurance company names (e.g., "利安人寿保险股份有限公司")
-   - **Clause References**: Specific clause types and numbers (e.g., "保险责任", "责任免除", "条款2.3", "投保范围")
-   - **Benefit Types**: Specific benefit categories (e.g., "身故保险金", "豁免保险费", "现金价值", "生存金")
-   - **Procedural Terms**: Insurance procedures and policies (e.g., "犹豫期", "宽限期", "保单质押贷款", "减保")
+---说明与约束---
+1.  **输出格式**：你的输出必须是一个有效的JSON对象，不能包含其他任何内容。不要包含任何解释性文本、Markdown代码围栏（如```json），或JSON前后的任何其他文本。它将由JSON解析器直接解析。
+2.  **检索导向**：提取关键词时，必须时刻思考它们将如何被用于检索。`high_level` 关键词应能匹配到关系/边的描述，而 `low_level` 关键词应能直接命中实体/节点的名称或属性。
+3.  **领域知识应用**：当用户使用口语化表达时，利用你的保险领域知识将其映射为标准的图谱概念。例如，用户问“出事了怎么赔？”，`high_level` 关键词应包含“理赔流程”、“保险责任”；用户问“这款产品谁能买？”，`high_level` 关键词应包含“投保条件”、“投保范围”。
+4.  **简洁且有意义**：关键词应为简洁的词语或有意义的短语。当多词短语代表单一概念时，应优先考虑。
+5.  **处理边缘情况**：对于过于简单、模糊或无意义的查询（例如，“你好”、“好的”、“asdfghjkl”），你必须返回一个JSON对象，其中两种关键词类型的列表均为空。
 
-4. **Semantic Bridging**: Map colloquial expressions to formal insurance terminology:
-   - "快返型产品" → "生存金短期返还"
-   - "养老社区保险" → "CCRC保险" 
-   - "万能险" → "万能型保险"
-   - "重疾险" → "重大疾病保险"
-   - "年金险" → "年金保险"
-
-5. **Structural Information Recognition**: Identify document structure references:
-   - **Document Types**: "费率表", "保险条款", "释义", "产品说明书"
-   - **Clause Numbers**: "条款1.4", "2.3", "第3条"
-   - **Section References**: "投保范围", "保险责任", "责任免除", "如何申请保险金"
-
-6. **Numerical & Temporal Data Extraction**: Capture:
-   - **Age Ranges**: "18周岁至50周岁", "出生满28天至70周岁", "30岁", "男性"
-   - **Time Periods**: "10日犹豫期", "180日等待期", "2年内"
-   - **Percentages & Rates**: "3.5%", "费率表", "160%"
-   - **Monetary Amounts**: "保险费", "保险金额", "现金价值"
-   - **Quantities**: "8种情形", "80%", "6个月"
-
-7. **Cross-Document Entity Linking**: Identify entities that may appear across multiple documents:
-   - Product names appearing in both clause documents and rate tables
-   - Related terms and concepts spanning different product documents
-   - Company references across various insurance products
-
-8. **Quality Assurance**:
-   - All keywords must be explicitly present in or directly inferable from the user query
-   - Avoid extracting keywords that are not relevant to the insurance domain
-   - Ensure both keyword categories contain content when applicable
-   - Maintain consistency in terminology extraction
-
-9. **Edge Case Handling**: For queries that are too simple, vague, or nonsensical (e.g., "hello", "ok", "asdfghjkl"), return a JSON object with empty lists for both keyword types.
-
----Examples---
+---示例---
 {examples}
 
----Real Data---
-User Query: {query}
+---实际数据---
+用户查询：{query}
 
----Output---
-Output:"""
+---输出---
+输出"""
+
 
 PROMPTS["keywords_extraction_examples"] = [
     """Example 1:
 
-Query: "利安人寿传家宝终身寿险的投保年龄范围是多少？"
+Query: "传家鑫享和传家福这两款终身寿险有什么区别？"
 
 Output:
 {
-  "high_level_keywords": ["投保年龄范围", "保险产品查询", "投保条件"],
-  "low_level_keywords": ["利安人寿", "传家宝终身寿险", "出生满28天至70周岁"]
+  "high_level_keywords": ["区别", "产品比较", "差异"],
+  "low_level_keywords": ["传家鑫享", "传家福", "终身寿险"]
 }
 
 """,
     """Example 2:
 
-Query: "附加豁免保险费定期寿险费率表中，30岁男性5年期费率是多少？"
+Query: "如果被保险人身故，如何申请理赔？需要哪些材料？"
 
 Output:
 {
-  "high_level_keywords": ["费率查询", "费率表查询", "定价信息"],
-  "low_level_keywords": ["附加豁免保险费定期寿险", "费率表", "30岁", "男性", "5年期"]
+  "high_level_keywords": ["身故理赔", "理赔申请", "申请材料", "理赔流程"],
+  "low_level_keywords": ["被保险人"]
 }
 
 """,
     """Example 3:
 
-Query: "传家福终身寿险的责任免除条款2.4包括哪些内容？"
+Query: "什么是现金价值？它和保单贷款有什么关系？"
 
 Output:
 {
-  "high_level_keywords": ["责任免除", "免责条款", "保险责任"],
-  "low_level_keywords": ["传家福终身寿险", "条款2.4", "除外责任"]
+  "high_level_keywords": ["定义", "关系"],
+  "low_level_keywords": ["现金价值", "保单贷款"]
 }
 
 """,
     """Example 4:
 
-Query: "犹豫期是多久？可以全额退保吗？"
+Query: "保险条款里提到的‘不可抗辩条款’是什么意思？"
 
 Output:
 {
-  "high_level_keywords": ["犹豫期", "退保政策", "解除合同"],
-  "low_level_keywords": ["10日", "15日", "全额退还", "保险费退还"]
+  "high_level_keywords": ["定义", "条款释义"],
+  "low_level_keywords": ["不可抗辩条款"]
 }
 
 """,
     """Example 5:
 
-Query: "全残的定义包括哪些情况？双目失明算全残吗？"
+Query: "酒后驾驶导致的意外，在利安百万身价两全保险的责任免除里吗？"
 
 Output:
 {
-  "high_level_keywords": ["全残定义", "残疾认定", "保险释义"],
-  "low_level_keywords": ["双目失明", "8种情形", "永久完全", "肢体缺失"]
-}
-
-""",
-    """Example 6:
-
-Query: "保单质押贷款能贷多少？利率怎么算？"
-
-Output:
-{
-  "high_level_keywords": ["保单质押贷款", "贷款政策", "现金价值权益"],
-  "low_level_keywords": ["80%", "6个月", "现金价值", "贷款利率"]
-}
-
-""",
-    """Example 7:
-
-Query: "水陆公共交通意外身故保险金和航空意外保险金能同时获得吗？"
-
-Output:
-{
-  "high_level_keywords": ["意外保险金", "保险责任", "赔偿规则"],
-  "low_level_keywords": ["水陆公共交通意外", "航空意外", "2000万元", "不可兼得"]
-}
-
-""",
-    """Example 8:
-
-Query: "传家宝终身寿险的现金价值如何计算？"
-
-Output:
-{
-  "high_level_keywords": ["现金价值", "价值计算", "退保价值"],
-  "low_level_keywords": ["传家宝终身寿险", "精算原理", "解除合同"]
+  "high_level_keywords": ["责任免除", "免责条款", "保障范围"],
+  "low_level_keywords": ["酒后驾驶", "利安百万身价两全保险"]
 }
 
 """,

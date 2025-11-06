@@ -1,6 +1,7 @@
 from __future__ import annotations
 from functools import partial
 
+import re
 import asyncio
 import json
 import json_repair
@@ -116,6 +117,41 @@ def chunking_by_token_size(
                 }
             )
     return results
+
+_TABLE_RE = re.compile(r'(<table.*?>.*?</table>)', re.IGNORECASE | re.DOTALL)
+
+def extract_tables_with_placeholders(content: str) -> tuple[str, list[dict]]:
+    """
+    从文本中提取所有<table>...</table>片段，以唯一占位符替换，并返回：
+    - simplified_text: 替换表格后的文本
+    - tables: 列表，包含 {"id": 占位符, "html": 表格HTML, "span": (start, end)}
+    """
+    tables = []
+    def _repl(m):
+        idx = len(tables) + 1
+        pid = f"__TABLE_ENTITY_{idx}__"
+        tables.append({"id": pid, "html": m.group(1), "span": m.span()})
+        return pid
+    simplified = _TABLE_RE.sub(_repl, content)
+    return simplified, tables
+
+def build_table_context_around(
+    simplified: str,
+    placeholder: str,
+    tokenizer: "Tokenizer",
+    window_tokens: int = 100
+) -> str:
+    """
+    从已替换为占位符的精简文本中，围绕占位符抽取一段上下文窗口（近似按字符窗口，便于工程落地）。
+    """
+    pos = simplified.find(placeholder)
+    if pos < 0:
+        return ""
+    # 经验近似：字符窗口≈token窗口*5（可按模型特性调整）
+    char_window = window_tokens * 5
+    start = max(0, pos - char_window)
+    end = min(len(simplified), pos + char_window)
+    return simplified[start:end]
 
 
 async def _handle_entity_relation_summary(
@@ -1301,7 +1337,7 @@ async def _merge_nodes_then_upsert(
     pipeline_status_lock=None,
     llm_response_cache: BaseKVStorage | None = None,
 ):
-    """Get existing nodes from knowledge graph use name,if exists, merge data, else create, then upsert."""
+    """从知识图谱中根据名称获取现有节点，若存在则合并数据，若不存在则创建节点，然后执行更新插入操作。"""
     already_entity_types = []
     already_source_ids = []
     already_description = []
@@ -2031,9 +2067,6 @@ async def extract_entities(
         "entity_types", DEFAULT_ENTITY_TYPES
     )
 
-    # 拼接样例数据
-    examples = "\n".join(PROMPTS["entity_extraction_examples"])
-
     # 构造样例上下文
     example_context_base = dict(
         tuple_delimiter=PROMPTS["DEFAULT_TUPLE_DELIMITER"],
@@ -2041,15 +2074,12 @@ async def extract_entities(
         entity_types=", ".join(entity_types),
         language=language,
     )
-    # 使用样例格式化上下文
-    examples = examples.format(**example_context_base)
 
     # 构造主prompt上下文
     context_base = dict(
         tuple_delimiter=PROMPTS["DEFAULT_TUPLE_DELIMITER"],
         completion_delimiter=PROMPTS["DEFAULT_COMPLETION_DELIMITER"],
         entity_types=",".join(entity_types),
-        examples=examples,
         language=language,
     )
 
@@ -2075,16 +2105,39 @@ async def extract_entities(
         # 初始化缓存键收集，便于后续批量更新
         cache_keys_collector = []
 
+        # 根据chunk内容自动选择合适的提示词和样例，使用正则表达式检测表格特征
+        table_pattern = r'<table\b[^>]*>.*?</table\s*>'
+        is_table_content = bool(re.search(table_pattern, content, re.IGNORECASE | re.MULTILINE))
+        
+        # 根据内容类型选择合适的系统提示词和样例
+        if is_table_content:
+            system_prompt_key = "table_extraction_system_prompt"
+            examples_key = "table_extraction_examples"
+            logger.info(f"检测到表格内容，使用表格专用提示词: {system_prompt_key}")
+        else:
+            system_prompt_key = "text_extraction_system_prompt"
+            examples_key = "text_extraction_examples"
+            logger.info(f"检测到文本内容，使用文本实体抽取提示词: {system_prompt_key}")
+        
+        # 获取并格式化样例
+        examples_list = PROMPTS.get(examples_key, [])
+        if not examples_list:
+            logger.warning(f"未找到样例: {examples_key}，使用空样例")
+            examples = ""
+        else:
+            examples = "\n".join(examples_list)
+            # 格式化样例
+            examples = examples.format(**example_context_base)
+        
+        # 构造带有examples的完整上下文
+        full_context = {**context_base, "input_text": content, "examples": examples}
+        
         # 构造实体抽取的prompt
-        entity_extraction_system_prompt = PROMPTS[
-            "entity_extraction_system_prompt"
-        ].format(**{**context_base, "input_text": content})
-        entity_extraction_user_prompt = PROMPTS["entity_extraction_user_prompt"].format(
-            **{**context_base, "input_text": content}
-        )
+        entity_extraction_system_prompt = PROMPTS[system_prompt_key].format(**full_context)
+        entity_extraction_user_prompt = PROMPTS["entity_extraction_user_prompt"].format(**full_context)
         entity_continue_extraction_user_prompt = PROMPTS[
             "entity_continue_extraction_user_prompt"
-        ].format(**{**context_base, "input_text": content})
+        ].format(**full_context)
 
         # 首次抽取，使用缓存
         final_result, timestamp = await use_llm_func_with_cache(

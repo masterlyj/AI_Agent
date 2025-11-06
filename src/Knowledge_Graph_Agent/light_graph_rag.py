@@ -1522,6 +1522,45 @@ class LightRAG:
                             abolition_date = match_product_abolition_date(content)
                             
                             # 按原则切分文档为chunks
+                            # 1) 提取表格并占位，得到精简文本
+                            from src.Knowledge_Graph_Agent.operate import extract_tables_with_placeholders, build_table_context_around
+                            
+                            simplified_content, extracted_tables = extract_tables_with_placeholders(content)
+                            
+                            # 2) 对"精简文本"进行原有分块（文本chunk）
+                            text_dp_list = self.chunking_func(
+                                self.tokenizer,
+                                simplified_content,
+                                split_by_character,
+                                split_by_character_only,
+                                self.chunk_overlap_token_size,
+                                self.chunk_token_size,
+                            )
+                            
+                            # 3) 为每个表格生成"表格专属chunk"，注入上下文窗口
+                            table_dp_list = []
+                            for tbl in extracted_tables:
+                                tbl_id = tbl["id"]
+                                tbl_html = tbl["html"]
+                                ctx_text = build_table_context_around(
+                                    simplified_content, tbl_id, self.tokenizer, window_tokens=400
+                                )
+                                # 复合内容：上下文 + 占位符 + HTML 表格
+                                table_chunk_text = f"[SOURCE:{tbl_id}]\n[CONTEXT]\n{ctx_text}\n[HTML_TABLE]\n{tbl_html}"
+                                tokens = len(self.tokenizer.encode(table_chunk_text))
+                                table_dp_list.append(
+                                    {
+                                        "tokens": tokens,
+                                        "content": table_chunk_text.strip(),
+                                        "chunk_order_index": len(text_dp_list) + len(table_dp_list),  # 追加在文本chunk之后（简单安全）
+                                        "chunk_type": "表格",
+                                        "table_placeholder": tbl_id,
+                                    }
+                                )
+                            
+                            # 4) 合并为统一的 chunk 列表（文本 + 表格）
+                            merged_dp_list = list(text_dp_list) + table_dp_list
+                            
                             chunks: dict[str, Any] = {
                                 compute_mdhash_id(dp["content"], prefix="chunk-"): {
                                     **dp,
@@ -1530,14 +1569,7 @@ class LightRAG:
                                     "llm_cache_list": [],  # 初始化llm缓存
                                     "abolition_date": abolition_date,  # 添加产品废止日期
                                 }
-                                for dp in self.chunking_func(
-                                    self.tokenizer,
-                                    content,
-                                    split_by_character,
-                                    split_by_character_only,
-                                    self.chunk_overlap_token_size,
-                                    self.chunk_token_size,
-                                )
+                                for dp in merged_dp_list
                             }
 
                             if not chunks:

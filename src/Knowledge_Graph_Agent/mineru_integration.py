@@ -11,12 +11,8 @@ from pathlib import Path
 from typing import List, Dict, Any, Optional
 import logging
 
-# 导入现有的MinerU处理器
-import sys
-sys.path.append(str(Path(__file__).parent.parent.parent))
-from mineru_analysis import MineruProcessor
-
-from .utils import logger
+from src.Knowledge_Graph_Agent.mineru_analysis import MineruProcessor
+from src.Knowledge_Graph_Agent.utils import logger
 
 class MinerUIntegration:
     """
@@ -24,7 +20,7 @@ class MinerUIntegration:
     负责处理PDF文件的解析和转换为Markdown格式
     """
     
-    def __init__(self, api_key: str, output_dir: str = "data/outputs"):
+    def __init__(self, api_key: str, output_dir: str = "data/inputs"):
         """
         初始化MinerU集成处理器
         

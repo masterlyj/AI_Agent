@@ -1,7 +1,7 @@
 """
-LightRAG 配置常量集中定义
+Light_Graph_RAG 配置常量集中定义
 
-本模块集中定义了 LightRAG 系统在不同部分使用的默认配置常量。
+本模块集中定义了 Light_Graph_RAG 系统在不同部分使用的默认配置常量。
 通过集中配置，确保各部分一致性和便于维护。
 
 重要说明：
@@ -33,19 +33,7 @@ DEFAULT_SUMMARY_LENGTH_RECOMMENDED = 600  # 推荐的 LLM 输出摘要字数（�
 DEFAULT_SUMMARY_CONTEXT_SIZE = 12000    # 总结时传给 LLM 的最大上下文 token 数
 
 # 如果 .env 未指定 ENTITY_TYPES 时的默认实体类型
-DEFAULT_ENTITY_TYPES = [
-    "Person",
-    "Creature",
-    "Organization",
-    "Location",
-    "Event",
-    "Concept",
-    "Method",
-    "Content",
-    "Data",
-    "Artifact",
-    "NaturalObject",
-]
+DEFAULT_ENTITY_TYPES = ["保险产品", "保险条款", "保险概念", "保险责任", "数据", "期限", "角色", "机构", "疾病", "事件", "数据型表格", "概念型表格"]
 
 # 知识图谱字段分隔符
 GRAPH_FIELD_SEP = "<SEP>"

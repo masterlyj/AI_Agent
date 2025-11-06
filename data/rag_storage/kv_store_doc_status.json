@@ -1,99 +1,119 @@
 {
-  "111002_tk.md": {
+  "111002_flbe.md": {
     "status": "processed",
-    "chunks_count": 5,
+    "chunks_count": 3,
     "chunks_list": [
-      "chunk-489329d3a4a922679a86ea0f89adbd06",
-      "chunk-c5a3dcec68e87ba8c6040bdda3741204",
-      "chunk-34c0c39857834fbade2eb7fa431b5855",
-      "chunk-55bda2f435d8a6bb608246c00a962b6f",
-      "chunk-df497509d008ae5c9487a82ccec5d65b"
+      "chunk-24de0cd83aa3435b56f4abc81886580c",
+      "chunk-924ef5215771c0a3f38daf82baf91f51",
+      "chunk-376f1feaad51728ad88d64a7913fa8c4"
     ],
-    "content_summary": "# 利安人寿保险股份有限公司附加豁免保险费定期寿险条款\n\n# 阅读指引\n\n本阅读指引有助于您理解条款，对本附加险合同内容的解释以条款为准。\n\n![](https://cdn-mineru.openxlab.org.cn/result/2025-09-28/976439a6-32a4-4d48-9e61-e9ed52eb7229/a326b00c8d634617d532f4e05a5f2cca2f988f65e05513e58f104a1affcff81b.jpg)\n\n# 您拥有的重要权益\n\n签收...",
-    "content_length": 7650,
-    "created_at": "2025-10-12T07:19:35.421803+00:00",
-    "updated_at": "2025-10-12T07:36:10.069614+00:00",
-    "file_path": "D:\\Codes\\my_project\\AI_Agent\\data\\inputs\\111002_tk.md",
-    "track_id": "insert_20251012_151935_17fcc954",
+    "content_summary": "# 利安人寿保险股份有限公司附加豁免保险费定期寿险费率表\n\n(每豁免所保障的保险合同的 1000 元年交保险费对应的费率)\n\n性别：男性  \n单位：人民币元  \n\n<table><tr><td rowspan=\"2\">年龄</td><td colspan=\"28\">保险期间</td><td></td></tr><tr><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td>...",
+    "content_length": 27136,
+    "created_at": "2025-11-05T15:38:58.871070+00:00",
+    "updated_at": "2025-11-05T15:40:43.255001+00:00",
+    "file_path": "D:\\Codes\\my_project\\AI_Agent\\data\\inputs\\111002_flbe.md",
+    "track_id": "insert_20251105_233858_66f3d177",
     "metadata": {
-      "processing_start_time": 1760254283,
-      "processing_end_time": 1760254570
+      "processing_start_time": 1762357138,
+      "processing_end_time": 1762357243
     }
   },
-  "111003_tk.md": {
+  "111002_tk.md": {
     "status": "processed",
     "chunks_count": 7,
     "chunks_list": [
-      "chunk-d85279812f2d24c66a7c6a950cf9c3ff",
-      "chunk-1032d36602e9b5f9d17cb8dc0bb0545b",
-      "chunk-9711ce8b36fae5fb4d0da4cc345a5b81",
-      "chunk-6aeafefd52656224c01b7587c6f96eac",
-      "chunk-57b15c9c2e976a5f17cf53960108a69d",
-      "chunk-f7faf62d3f6a0a3950f6865877caa934",
-      "chunk-7255f45b85ab05215c8d3ced5b004e4a"
+      "chunk-41e904ad33b0352381201d6c79628de7",
+      "chunk-f9acd18b0a65c6744ec38e6ad6dbf80b",
+      "chunk-edad6c8b596795c034c80eb96292ff02",
+      "chunk-a62c9f14e47288eacbbac6cb5c266b7a",
+      "chunk-230d09187cbcbc6b27ec8e38a2f23b92",
+      "chunk-dc3f1f3636a796b3aa1adfa4f768ec1a",
+      "chunk-5ed2020492906423e3727ec6c41bb9ac"
     ],
-    "content_summary": "# 利安人寿保险股份有限公司 传家宝终身寿险条款\n\n# 阅读指引\n\n本阅读指引有助于您理解条款，对本合同内容的解释以条款为准。\n\n![](https://cdn-mineru.openxlab.org.cn/result/2025-10-09/d44385be-2eba-4bf0-90ef-6bfab789c1d8/103ec9afa202271b081e4a06c619acf76dbc0af8d9aab6de9eea4799a123d374.jpg)\n\n# 您拥有的重要权益\n\n签收本合同次日起...",
-    "content_length": 9961,
-    "created_at": "2025-10-13T13:15:32.178222+00:00",
-    "updated_at": "2025-10-13T13:25:50.818228+00:00",
-    "file_path": "C:\\Users\\罗亚骏\\AppData\\Local\\Temp\\gradio\\b954337edb01672487d8ed6c0d57c18664f8209f6709ad4e4f9af3f345f75eca\\111003_tk.md",
-    "track_id": "insert_20251013_211532_7563e3f4",
+    "content_summary": "# 利安人寿保险股份有限公司附加豁免保险费定期寿险条款\n\n# 阅读指引\n\n本阅读指引有助于您理解条款，对本附加险合同内容的解释以条款为准。\n\n![](images/a326b00c8d634617d532f4e05a5f2cca2f988f65e05513e58f104a1affcff81b.jpg)\n\n# 您拥有的重要权益\n\n签收本附加险合同次日起10日（即犹豫期）内您若要求退保，我们全额退还保险费  \n本附加险合同提供的保障在保险责任条款中列明 2.2  \n您有退保的权利 5.1\n\n![](...",
+    "content_length": 7314,
+    "created_at": "2025-11-05T15:38:58.871070+00:00",
+    "updated_at": "2025-11-05T15:43:39.293979+00:00",
+    "file_path": "D:\\Codes\\my_project\\AI_Agent\\data\\inputs\\111002_tk.md",
+    "track_id": "insert_20251105_233858_66f3d177",
     "metadata": {
-      "processing_start_time": 1760361332,
-      "processing_end_time": 1760361950
+      "processing_start_time": 1762357138,
+      "processing_end_time": 1762357419
     }
   },
-  "111005_tk.md": {
+  "111010_tk.md": {
     "status": "processed",
-    "chunks_count": 9,
+    "chunks_count": 12,
     "chunks_list": [
-      "chunk-e999db6e32d477ed4dcda8ba66e401ba",
-      "chunk-fc445def0341a1410c983aa0ebb444e1",
-      "chunk-8373d6e7a829016bd3ce5dfab89c082e",
-      "chunk-81f2fe1bbcf18fc40edc7632356edfef",
-      "chunk-2ac70f56b0a63558d2ef30b9a515f228",
-      "chunk-8b3daf65fd9493dd2205736022b25a81",
-      "chunk-c31c9d7c108d7d8ecedfb97271f19f3f",
-      "chunk-cb129cecfb0c0676ff850ffee1332edf",
-      "chunk-2ad4ae27a07f6bbd501e741d75560867"
-    ],
-    "content_summary": "# 利安人寿保险股份有限公司传家福终身寿险条款\n\n阅读指引\n\n本阅读指引有助于您理解条款，对本合同内容的解释以条款为准。\n\n![](https://cdn-mineru.openxlab.org.cn/result/2025-10-09/381a4542-3773-4e8c-83bc-ec838690420d/9829c0668f2f6d16b260b2006d97b9e5917e6d4d6c2321b9f8f576a1b2508bda.jpg)\n\n# 您拥有的重要权益\n\n签收本合同次日起15日...",
-    "content_length": 13784,
-    "created_at": "2025-10-13T13:15:32.178222+00:00",
-    "updated_at": "2025-10-13T13:27:57.381015+00:00",
-    "file_path": "C:\\Users\\罗亚骏\\AppData\\Local\\Temp\\gradio\\561641d91eed8898aac879b468761a28b041111850d5c8ac8804035f85c51521\\111005_tk.md",
-    "track_id": "insert_20251013_211532_7563e3f4",
-    "metadata": {
-      "processing_start_time": 1760361332,
-      "processing_end_time": 1760362077
-    }
-  },
-  "tk.md": {
-    "status": "processing",
-    "chunks_count": 10,
-    "chunks_list": [
-      "chunk-ea3f6da912dbf90bb0e29e3b447063d7",
-      "chunk-24fccdc948f657c6ea54ac8eb2caa85c",
-      "chunk-22d93fc311e8c206d2936afc9345079b",
-      "chunk-5212a2deea83adbdc89951b633c4b226",
-      "chunk-87fd6ebff1f72daa9e409226330b69a2",
-      "chunk-0c73d980e7787f1b1127330bfedb55b2",
-      "chunk-066a9520d018d1b477198b19545bab07",
-      "chunk-bd316ec876730105d8a7ecfbbe2a63f7",
-      "chunk-87c8c4d7176b17ab8d1e1de10f4418ec",
-      "chunk-fa2e3bfc6c18be5c5855720f116d9c15"
+      "chunk-684d8e389a3e92afad586ede8608024b",
+      "chunk-f628c67791c3ce36d78cddbae26923ce",
+      "chunk-4d0b2c724a270fc57051bcfa9c8cf239",
+      "chunk-2dac82ffde082e0bd1269be07071d2a7",
+      "chunk-e43a140b4971945a3811ae2cc6ac1ea3",
+      "chunk-2cc4ce10cbaf157b5452f30d73c1883e",
+      "chunk-891ebcdcbc8e30da700c45bda7146e98",
+      "chunk-dbab76898c2a7049fafde86dad34a751",
+      "chunk-a4d2ba99a0c32b8dae4802a20d9140da",
+      "chunk-1d8463bdc84d7b42ad6ab8ec21707207",
+      "chunk-b1abea5cf32e1548cd07beaaa493db17",
+      "chunk-6cac26a38f8bca355a309ec13331a373"
     ],
     "content_summary": "# 利安人寿保险股份有限公司利安传家鑫享终身寿险条款\n\n# 阅读指引\n\n本阅读指引有助于您理解条款，对本合同内容的解释以条款为准。\n\n![](images/73427d1a8f7863572ddcdc343428a10c9b4149e13e4a7f9848e101312ac632bd.jpg)\n\n# 您拥有的重要权益\n\n签收本合同次日起15日（即犹豫期）内您若要求退保，我们全额退还保险费  \n本合同提供的保障在保险责任条款中列明 2.3  \n您有按本合同约定申请保单质押贷款的权利 6.2  \n您...",
     "content_length": 15433,
-    "created_at": "2025-10-29T13:54:19.850619+00:00",
-    "updated_at": "2025-10-29T13:54:19.890303+00:00",
-    "file_path": "/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/tk.md",
-    "track_id": "insert_20251029_215419_d463074a",
+    "created_at": "2025-11-06T06:25:38.194358+00:00",
+    "updated_at": "2025-11-06T06:37:50.441627+00:00",
+    "file_path": "D:\\Codes\\my_project\\AI_Agent\\data\\inputs\\111010_tk.md",
+    "track_id": "insert_20251106_142538_6a4e9303",
     "metadata": {
-      "processing_start_time": 1761746059
+      "processing_start_time": 1762410338,
+      "processing_end_time": 1762411070
     }
   },
-  "mc.md": {
+  "111010_sms.md": {
+    "status": "processed",
+    "chunks_count": 6,
+    "chunks_list": [
+      "chunk-8a452aabb5faed83e256b0b6552625ec",
+      "chunk-bd7f9fc755549e48c49c66fe3da1e034",
+      "chunk-db1ebe1000d73f1f03f5747af1e3ef34",
+      "chunk-9d20e52adcd23dc4ed6f5644766bdbb5",
+      "chunk-0fdbde4619ab826ce716b93ba089e852",
+      "chunk-88f4f6450cd6c4f5741f3d2a724b9833"
+    ],
+    "content_summary": "# 利安人寿保险股份有限公司\n\n# 利安传家鑫享终身寿险\n\n# 产品说明书\n\n谨致\n\n__________先生/女士\n\n保险顾问：\n\n联系电话：\n\n日期：\n\n# 重要声明：\n\n本产品说明书所载资料，包括投保示例部分，仅供投保人理解保险条款时参考，各项内容均以保险条款约定为准。\n\n# 利安人寿保险股份有限公司\n\n# 利安传家鑫享终身寿险\n\n# 产品说明书\n\n为方便您了解和购买本保险，请您仔细阅读本产品说明书。在本产品说明书中，“您”指投保人，“我们”、“本公司”均指利安人寿保险股份有限公司。\n\n#...",
+    "content_length": 9346,
+    "created_at": "2025-11-06T06:25:38.194358+00:00",
+    "updated_at": "2025-11-06T06:33:25.769096+00:00",
+    "file_path": "D:\\Codes\\my_project\\AI_Agent\\data\\inputs\\111010_sms.md",
+    "track_id": "insert_20251106_142538_6a4e9303",
+    "metadata": {
+      "processing_start_time": 1762410338,
+      "processing_end_time": 1762410805
+    }
+  },
+  "111013_sms.md": {
+    "status": "processed",
+    "chunks_count": 6,
+    "chunks_list": [
+      "chunk-fe43ca177df986ef30024f15e08bca11",
+      "chunk-1b1e7cf8395f698609564628ff50ff5f",
+      "chunk-5d29f1c0c1f71856b3a0e4521acbb837",
+      "chunk-8d92e4c3a53101aa8728cb153eeb39a9",
+      "chunk-3aca02aa787261652c55950018d16b19",
+      "chunk-f99bd5565ff5c6cf402c3e5c889218fb"
+    ],
+    "content_summary": "# 利安人寿保险股份有限公司\n\n# 利安利利爱家守护定期寿险\n\n# 产品说明书\n\n谨致\n\n__________先生/女士\n\n保险顾问：\n\n联系电话：\n\n日期：\n\n# 重要声明：\n\n本产品说明书所载资料，包括投保示例部分，仅供投保人理解保险条款时参考，各项内容均以保险条款约定为准。\n\n# 利安人寿保险股份有限公司\n\n# 利安利利爱家守护定期寿险\n\n# 产品说明书\n\n为方便您了解和购买本保险，请您仔细阅读本产品说明书。在本产品说明书中，“您”指投保人，“我们”、“本公司”均指利安人寿保险股份有限公司...",
+    "content_length": 15183,
+    "created_at": "2025-11-06T06:25:38.194358+00:00",
+    "updated_at": "2025-11-06T06:38:37.092118+00:00",
+    "file_path": "D:\\Codes\\my_project\\AI_Agent\\data\\inputs\\111013_sms.md",
+    "track_id": "insert_20251106_142538_6a4e9303",
+    "metadata": {
+      "processing_start_time": 1762410805,
+      "processing_end_time": 1762411117
+    }
+  },
+  "111010_mc.md": {
     "status": "processed",
     "chunks_count": 1,
     "chunks_list": [
@@ -101,44 +121,387 @@
     ],
     "content_summary": "# 利安人寿保险股份有限公司免除保险人责任条款说明利安传家鑫享终身寿险\n\n# 尊敬的客户：\n\n您好！感谢您选择利安人寿《利安传家鑫享终身寿险》，为维护您的合法权益，请您认真阅读保险条款，其中关于免除保险人责任的内容已在条款中加阴影描述，请您重点关注并阅读。\n\n因下列情形之一导致被保险人身故或全残的，我们不承担给付保险金的责任：\n\n(1)投保人对被保险人的故意杀害、故意伤害；  \n(2)被保险人故意自伤、故意犯罪或者抗拒依法采取的刑事强制措施；  \n(3)被保险人自本合同成立或本合同效力恢复之日起...",
     "content_length": 677,
-    "created_at": "2025-10-29T13:54:19.850655+00:00",
-    "updated_at": "2025-10-29T13:56:35.892278+00:00",
-    "file_path": "/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/mc.md",
-    "track_id": "insert_20251029_215419_d463074a",
+    "created_at": "2025-11-06T06:25:38.193103+00:00",
+    "updated_at": "2025-11-06T06:40:47.766928+00:00",
+    "file_path": "D:\\Codes\\my_project\\AI_Agent\\data\\inputs\\111010_mc.md",
+    "track_id": "insert_20251106_142538_6a4e9303",
     "metadata": {
-      "processing_start_time": 1761746059,
-      "processing_end_time": 1761746195
+      "processing_start_time": 1762411071,
+      "processing_end_time": 1762411247
     }
   },
-  "sms.md": {
-    "status": "processing",
-    "chunks_count": 6,
+  "111013_tk.md": {
+    "status": "processed",
+    "chunks_count": 9,
     "chunks_list": [
-      "chunk-1685be5cdac9bfb8d29a978da6e2502c",
-      "chunk-6bc687f93a9d2e4bc10a7094fb026a7c",
-      "chunk-d05176126f0e68a6f3bdc2faae7cc422",
-      "chunk-e2bd47f5bcdd53ca97d61438e645c56c",
-      "chunk-13ec89158909f323fe4f184a067930c8",
-      "chunk-8a9062f11745d00b4d35ed27f63cfca6"
+      "chunk-170163b90d5b9eecf253c5bc1a8c63d5",
+      "chunk-4b13d1d97bbbb6207970016bdd040800",
+      "chunk-7b2e393f2836e913ee0939f4dd6e29ae",
+      "chunk-ccda7933bb5b5850f34d5c4ab6f5c114",
+      "chunk-cb3726c2fccc340dd9b2e1a4534cbbc9",
+      "chunk-a54730b38a6c7cea6c9a104da2ef0fbd",
+      "chunk-c4039eab5e97b7d783f21b06eac02bba",
+      "chunk-9b651ed7a14beeec2af4077cd6e2af2a",
+      "chunk-30621a9aecfbcf95a383b0aece6b6f43"
     ],
-    "content_summary": "# 利安人寿保险股份有限公司\n\n# 利安传家鑫享终身寿险\n\n# 产品说明书\n\n谨致\n\n__________先生/女士\n\n保险顾问：\n\n联系电话：\n\n日期：\n\n# 重要声明：\n\n本产品说明书所载资料，包括投保示例部分，仅供投保人理解保险条款时参考，各项内容均以保险条款约定为准。\n\n# 利安人寿保险股份有限公司\n\n# 利安传家鑫享终身寿险\n\n# 产品说明书\n\n为方便您了解和购买本保险，请您仔细阅读本产品说明书。在本产品说明书中，“您”指投保人，“我们”、“本公司”均指利安人寿保险股份有限公司。\n\n#...",
-    "content_length": 9346,
-    "created_at": "2025-10-29T13:54:19.850650+00:00",
-    "updated_at": "2025-10-29T13:56:36.319285+00:00",
-    "file_path": "/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/sms.md",
-    "track_id": "insert_20251029_215419_d463074a",
+    "content_summary": "# 利安人寿保险股份有限公司利安利利爱家守护定期寿险条款\n\n# 阅读指引\n\n本阅读指引有助于您理解条款，对本合同内容的解释以条款为准。\n\n![](images/3cbec464473146f4b7af61a65324bf229a6dd3f4cd7c9c82c3008c89f87676e7.jpg)\n\n# 您拥有的重要权益\n\n签收本合同之日起15日（即犹豫期）内您若要求退保，我们全额退还保险费  \n本合同提供的保障在保险责任条款中列明 2.3  \n您有退保的权利 7.1\n\n![](images/5...",
+    "content_length": 16581,
+    "created_at": "2025-11-06T06:25:38.194358+00:00",
+    "updated_at": "2025-11-06T06:46:15.235104+00:00",
+    "file_path": "D:\\Codes\\my_project\\AI_Agent\\data\\inputs\\111013_tk.md",
+    "track_id": "insert_20251106_142538_6a4e9303",
     "metadata": {
-      "processing_start_time": 1761746196
+      "processing_start_time": 1762411117,
+      "processing_end_time": 1762411575
     }
   },
-  "flbe.md": {
-    "status": "pending",
+  "111005_tk.md": {
+    "status": "processed",
+    "chunks_count": 13,
+    "chunks_list": [
+      "chunk-5b4b6ded0d8cc3aa1949427fa53ec50f",
+      "chunk-9a6518e53a099bfaf19715337ac10a97",
+      "chunk-500bc383fb777b01d62a7d18f97fcf0e",
+      "chunk-5ae4a509de633a448e671cf75ad116fb",
+      "chunk-9f21e2de06faa0773bdb034be386e16f",
+      "chunk-1db95c0b7622ca2e295485914ad0dead",
+      "chunk-1c8288b69f4cc961dc9f3133b79a9a0e",
+      "chunk-281c78747c663fcc8b961923c176629a",
+      "chunk-4b842a970143ed53311f4d78701b3cea",
+      "chunk-8e66822cdf9db0c7d12285149750b528",
+      "chunk-e765cc7629771d2cc3d1ad7f1475f170",
+      "chunk-8c4243534bfc3543e1ec4071ca832b87",
+      "chunk-562ff387914b24bceea54123e49cb971"
+    ],
+    "content_summary": "# 利安人寿保险股份有限公司传家福终身寿险条款\n\n阅读指引\n\n本阅读指引有助于您理解条款，对本合同内容的解释以条款为准。\n\n![](images/9829c0668f2f6d16b260b2006d97b9e5917e6d4d6c2321b9f8f576a1b2508bda.jpg)\n\n# 您拥有的重要权益\n\n签收本合同次日起15日（即犹豫期）内您若要求退保，我们全额退还保险费  \n本合同提供的保障在保险责任条款中列明 2.3  \n您有按本合同约定申请保单质押贷款的权利 5.2  \n您有退保的权...",
+    "content_length": 13501,
+    "created_at": "2025-11-06T06:25:38.193103+00:00",
+    "updated_at": "2025-11-06T06:49:32.384190+00:00",
+    "file_path": "D:\\Codes\\my_project\\AI_Agent\\data\\inputs\\111005_tk.md",
+    "track_id": "insert_20251106_142538_6a4e9303",
+    "metadata": {
+      "processing_start_time": 1762411247,
+      "processing_end_time": 1762411772
+    }
+  },
+  "112012_mc.md": {
+    "status": "processed",
+    "chunks_count": 1,
+    "chunks_list": [
+      "chunk-e0dd4335d5d6a3c4544db50b4949d33e"
+    ],
+    "content_summary": "# 利安人寿保险股份有限公司免除保险人责任条款说明利安利尊稳赢（臻享版）两全保险\n\n尊敬的客户：\n\n您好！感谢您选择利安人寿《利安利尊稳赢（臻享版）两全保险》，为维护您的合法权益，请您认真阅读保险条款，其中关于免除保险人责任的内容已在条款中加阴影描述，请您重点关注并阅读。\n\n因下列情形之一导致被保险人身故的，我们不承担给付保险金的责任：\n\n(1)投保人对被保险人的故意杀害、故意伤害；  \n(2)被保险人故意自伤、故意犯罪或者抗拒依法采取的刑事强制措施；  \n(3)被保险人自本合同成立或本合同效力...",
+    "content_length": 605,
+    "created_at": "2025-11-06T06:25:38.194358+00:00",
+    "updated_at": "2025-11-06T06:49:37.747894+00:00",
+    "file_path": "D:\\Codes\\my_project\\AI_Agent\\data\\inputs\\112012_mc.md",
+    "track_id": "insert_20251106_142538_6a4e9303",
+    "metadata": {
+      "processing_start_time": 1762411575,
+      "processing_end_time": 1762411777
+    }
+  },
+  "111014_sms.md": {
+    "status": "processed",
+    "chunks_count": 7,
+    "chunks_list": [
+      "chunk-793c759f4c342d5fa7ab7f6c958ec89c",
+      "chunk-ab360d8a08c6bd8883a110f6f4be5486",
+      "chunk-e1b580bb5b98ae24d7d8fe2713e80e91",
+      "chunk-cd46d6e3734042645285ae8a12748983",
+      "chunk-69a2d5cc3335bea2188b89ae481431ee",
+      "chunk-564db6e175472b0f50b66ec394fccb9d",
+      "chunk-85343b98ab644a52809adc2304796b5b"
+    ],
+    "content_summary": "# 利安人寿保险股份有限公司\n\n# 利安利利传家壹号终身寿险\n\n# 产品说明书\n\n谨致\n\n__________先生/女士\n\n保险顾问：\n\n联系电话：\n\n日期：\n\n# 重要声明：\n\n本产品说明书所载资料，包括投保示例部分，仅供投保人理解保险条款时参考，各项内容均以保险条款约定为准。\n\n# 利安人寿保险股份有限公司\n\n# 利安利利传家壹号终身寿险\n\n# 产品说明书\n\n为方便您了解和购买本保险，请您仔细阅读本产品说明书。在本产品说明书中，“您”指投保人，“我们”、“本公司”均指利安人寿保险股份有限公司...",
+    "content_length": 8759,
+    "created_at": "2025-11-06T06:25:38.194358+00:00",
+    "updated_at": "2025-11-06T06:57:43.082984+00:00",
+    "file_path": "D:\\Codes\\my_project\\AI_Agent\\data\\inputs\\111014_sms.md",
+    "track_id": "insert_20251106_142538_6a4e9303",
+    "metadata": {
+      "processing_start_time": 1762411772,
+      "processing_end_time": 1762412263
+    }
+  },
+  "111003_tk.md": {
+    "status": "processed",
+    "chunks_count": 10,
+    "chunks_list": [
+      "chunk-4accc33828a5f835c76f011735452af3",
+      "chunk-774c72f9b511256dcad4d002364b8ce2",
+      "chunk-02a4c6b064598ff04b25658221cfd619",
+      "chunk-7759548035e8760538b186226dcede19",
+      "chunk-6d78e1a3b735ecbc71e17249dc420b28",
+      "chunk-c9405055e948560f2f89f166459cac18",
+      "chunk-9f781b5fb3d3bc7c318b5c5573403866",
+      "chunk-258f4a295657d0cd8b45c6c054dbddb1",
+      "chunk-1045732a09d3d81caf2873b1d2372711",
+      "chunk-46f7576d72ec930b1a521a8f6891427c"
+    ],
+    "content_summary": "# 利安人寿保险股份有限公司传家宝终身寿险条款\n\n# 阅读指引\n\n本阅读指引有助于您理解条款，对本合同内容的解释以条款为准。\n\n![](images/312de238a5c1030408e7ad3aaf0563169a01eb00995b84e4f2fa0cd01bd911e6.jpg)\n\n# 您拥有的重要权益\n\n签收本合同次日起犹豫期内您若要求退保，我们全额退还保险费 1.4  \n本合同提供的保障在保险责任条款中列明 2.3  \n您或受益人有转换年金的权利 3.7  \n您有按本合同约定申请保单...",
+    "content_length": 9554,
+    "created_at": "2025-11-06T06:25:38.193103+00:00",
+    "updated_at": "2025-11-06T07:00:55.368621+00:00",
+    "file_path": "D:\\Codes\\my_project\\AI_Agent\\data\\inputs\\111003_tk.md",
+    "track_id": "insert_20251106_142538_6a4e9303",
+    "metadata": {
+      "processing_start_time": 1762411778,
+      "processing_end_time": 1762412455
+    }
+  },
+  "112012_sms.md": {
+    "status": "processed",
+    "chunks_count": 7,
+    "chunks_list": [
+      "chunk-2627f960d7d58e65a7ea3810cdd0496e",
+      "chunk-f637ce56c7e83fb8b523085da61b8dbd",
+      "chunk-176cb1040baf90e4ff96e431361595f4",
+      "chunk-9b0db250c3e4cb8fc904e3c3b4654741",
+      "chunk-bc5744bca0a1ec69424f85b2ca48a43b",
+      "chunk-7a3d067a23bb3ab6965211b67545d202",
+      "chunk-07cc2713c8ef71b6db5668c16c3c9ae0"
+    ],
+    "content_summary": "# 利安人寿保险股份有限公司\n\n# 利安利尊稳赢（臻享版）两全保险\n\n# 产品说明书\n\n谨致\n\n__________先生/女士\n\n保险顾问：\n\n联系电话：\n\n日期：\n\n# 重要声明：\n\n本产品说明书所载资料，包括投保示例部分，仅供投保人理解保险条款时参考，各项内容均以保险条款约定为准。\n\n# 利安人寿保险股份有限公司\n\n# 利安利尊稳赢（臻享版）两全保险\n\n# 产品说明书\n\n为方便您了解和购买本保险，请您仔细阅读本产品说明书。在本产品说明书中，“您”指投保人，“我们”、“本公司”均指利安人寿保险...",
+    "content_length": 11356,
+    "created_at": "2025-11-06T06:25:38.194358+00:00",
+    "updated_at": "2025-11-06T07:03:34.928639+00:00",
+    "file_path": "D:\\Codes\\my_project\\AI_Agent\\data\\inputs\\112012_sms.md",
+    "track_id": "insert_20251106_142538_6a4e9303",
+    "metadata": {
+      "processing_start_time": 1762412263,
+      "processing_end_time": 1762412614
+    }
+  },
+  "112013_sms.md": {
+    "status": "processed",
+    "chunks_count": 4,
+    "chunks_list": [
+      "chunk-4b0388d79962ee063b1050eae9ffa18d",
+      "chunk-c0373ffbdbe156fb9a369a226dda819f",
+      "chunk-9c99bfc0dd8f0fc348e8dcbe758bc353",
+      "chunk-9790e8e063352af0102db92ce9f0a1ce"
+    ],
+    "content_summary": "# 利安人寿保险股份有限公司\n\n# 利安利利爱家守护两全保险\n\n# 产品说明书\n\n谨致\n\n__________先生/女士\n\n保险顾问：\n\n联系电话：\n\n日期：\n\n# 重要声明：\n\n本产品说明书所载资料，包括投保示例部分，仅供投保人理解保险条款时参考，各项内容均以保险条款约定为准。\n\n# 利安人寿保险股份有限公司\n\n# 利安利利爱家守护两全保险\n\n# 产品说明书\n\n为方便您了解和购买本保险，请您仔细阅读本产品说明书。在本产品说明书中，“您”指投保人，“我们”、“本公司”均指利安人寿保险股份有限公司...",
+    "content_length": 5700,
+    "created_at": "2025-11-06T06:25:38.194358+00:00",
+    "updated_at": "2025-11-06T07:04:28.772751+00:00",
+    "file_path": "D:\\Codes\\my_project\\AI_Agent\\data\\inputs\\112013_sms.md",
+    "track_id": "insert_20251106_142538_6a4e9303",
+    "metadata": {
+      "processing_start_time": 1762412455,
+      "processing_end_time": 1762412668
+    }
+  },
+  "111014_flbe.md": {
+    "status": "processed",
+    "chunks_count": 2,
+    "chunks_list": [
+      "chunk-6be7ff31b604e000be86e3d67e6118c2",
+      "chunk-a89f4cd3c42ceff66a9663289458fdca"
+    ],
+    "content_summary": "# 利安人寿保险股份有限公司\n\n# 利安利利传家壹号终身寿险\n\n# 基本保险金额表\n\n（每1000元趸交或年交保险费）\n\n单位：人民币元  \n\n<table><tr><td rowspan=\"2\">年龄</td><td colspan=\"6\">男性</td><td colspan=\"6\">女性</td></tr><tr><td>趸交</td><td>3年交</td><td>6年交</td><td>10年交</td><td>15年交</td><td>20年交</td><td>趸交</td><td>...",
+    "content_length": 13338,
+    "created_at": "2025-11-06T06:25:38.194358+00:00",
+    "updated_at": "2025-11-06T07:04:41.280292+00:00",
+    "file_path": "D:\\Codes\\my_project\\AI_Agent\\data\\inputs\\111014_flbe.md",
+    "track_id": "insert_20251106_142538_6a4e9303",
+    "metadata": {
+      "processing_start_time": 1762412615,
+      "processing_end_time": 1762412681
+    }
+  },
+  "111003_flbe.md": {
+    "status": "processed",
+    "chunks_count": 3,
+    "chunks_list": [
+      "chunk-85d45d79a25dd3ff8fea2bd9f4dca8a0",
+      "chunk-85c803607d7792470d5d4583d712d290",
+      "chunk-87397eb131d293142d6303a54cf257d9"
+    ],
+    "content_summary": "# 利安人寿保险股份有限公司\n\n# 传家宝终身寿险\n\n# 费率表\n\n（每10000元基本保险金额）\n\n单位：人民币元  \n\n<table><tr><td rowspan=\"2\">年龄</td><td colspan=\"7\">男性</td></tr><tr><td>趸交</td><td>3年交</td><td>5年交</td><td>10年交</td><td>15年交</td><td>20年交</td><td>30年交</td></tr><tr><td>0</td><td>11864</td><t...",
+    "content_length": 15371,
+    "created_at": "2025-11-06T06:25:38.193103+00:00",
+    "updated_at": "2025-11-06T07:06:33.656949+00:00",
+    "file_path": "D:\\Codes\\my_project\\AI_Agent\\data\\inputs\\111003_flbe.md",
+    "track_id": "insert_20251106_142538_6a4e9303",
+    "metadata": {
+      "processing_start_time": 1762412668,
+      "processing_end_time": 1762412793
+    }
+  },
+  "111014_tk.md": {
+    "status": "processed",
+    "chunks_count": 9,
+    "chunks_list": [
+      "chunk-327925f4d68afe4ea67081fdc1de7ff0",
+      "chunk-32a014a2a6c401f311d26a3d0a55a1d0",
+      "chunk-eeb3edca1c33d8e50cdf1dd61e1e064b",
+      "chunk-09dc988bfbfe7ff580fc6504c7c7cc98",
+      "chunk-344c047cfb3dae269141519a8622a811",
+      "chunk-469ecdc21b5edd459af5bccc98137a5a",
+      "chunk-099bfe36edfab8b60a3a867145a0f0e6",
+      "chunk-a9046027c6ab3f03654a6bc503c034f0",
+      "chunk-53454b595c9bc5b10234c51e6390d37a"
+    ],
+    "content_summary": "# 利安人寿保险股份有限公司利安利利传家壹号终身寿险条款\n\n# 阅读指引\n\n本阅读指引有助于您理解条款，对本合同内容的解释以条款为准。\n\n![](images/b95373c8df2d8d22ecb22f9159764f081cffca836b75a73417e7b7a49daef1c0.jpg)\n\n# 您拥有的重要权益\n\n签收本合同之日起15日（即犹豫期）内您若要求退保，我们全额退还保险费  \n本合同提供的保障在保险责任条款中列明 2.4  \n您有按本合同约定申请保单贷款的权利 6.2  \n您...",
+    "content_length": 13675,
+    "created_at": "2025-11-06T06:25:38.194358+00:00",
+    "updated_at": "2025-11-06T07:10:59.768719+00:00",
+    "file_path": "D:\\Codes\\my_project\\AI_Agent\\data\\inputs\\111014_tk.md",
+    "track_id": "insert_20251106_142538_6a4e9303",
+    "metadata": {
+      "processing_start_time": 1762412681,
+      "processing_end_time": 1762413059
+    }
+  },
+  "112013_flbe.md": {
+    "status": "processed",
+    "chunks_count": 2,
+    "chunks_list": [
+      "chunk-2129a1caec1532f3531f1816a7d3f64f",
+      "chunk-b952d154e897e9fad1e0b9213e3a27a7"
+    ],
+    "content_summary": "# 利安人寿保险股份有限公司\n\n# 利安利利爱家守护两全保险\n\n# 费率表\n\n（每万元基本保险金额对应的年交保险费）\n\n单位：人民币元  \n\n<table><tr><td rowspan=\"2\">年龄</td><td colspan=\"5\">男性</td><td colspan=\"5\">女性</td></tr><tr><td>5年交</td><td>10年交</td><td>14年交</td><td>19年交</td><td>29年交</td><td>5年交</td><td>10年交</td><...",
+    "content_length": 9044,
+    "created_at": "2025-11-06T06:25:38.194358+00:00",
+    "updated_at": "2025-11-06T07:08:47.210964+00:00",
+    "file_path": "D:\\Codes\\my_project\\AI_Agent\\data\\inputs\\112013_flbe.md",
+    "track_id": "insert_20251106_142538_6a4e9303",
+    "metadata": {
+      "processing_start_time": 1762412793,
+      "processing_end_time": 1762412927
+    }
+  },
+  "112012_flbe.md": {
+    "status": "processed",
+    "chunks_count": 2,
+    "chunks_list": [
+      "chunk-fd08ca51a283fef0a6f37b8cc2a2eb0e",
+      "chunk-788a2ca1589bdf5b7697c929fe179bdd"
+    ],
+    "content_summary": "# 利安人寿保险股份有限公司\n\n# 利安利尊稳赢（臻享版）两全保险\n\n# 基本保险金额表\n\n（每1000元年交保险费）\n\n单位：人民币元  \n\n<table><tr><td rowspan=\"2\">年龄</td><td colspan=\"2\">男性</td><td colspan=\"2\">女性</td></tr><tr><td>5年交</td><td>10年交</td><td>5年交</td><td>10年交</td></tr><tr><td>0</td><td>9005</td><td>167...",
+    "content_length": 5478,
+    "created_at": "2025-11-06T06:25:38.194358+00:00",
+    "updated_at": "2025-11-06T07:10:15.946618+00:00",
+    "file_path": "D:\\Codes\\my_project\\AI_Agent\\data\\inputs\\112012_flbe.md",
+    "track_id": "insert_20251106_142538_6a4e9303",
+    "metadata": {
+      "processing_start_time": 1762412927,
+      "processing_end_time": 1762413015
+    }
+  },
+  "111005_flbe.md": {
+    "status": "processed",
+    "chunks_count": 2,
+    "chunks_list": [
+      "chunk-c27aba4473480269550465778173c76c",
+      "chunk-841113020b264c104b713b978353fff8"
+    ],
+    "content_summary": "# 利安人寿保险股份有限公司\n\n# 传家福终身寿险\n\n# 基本保险金额表\n\n（每1000元保险费）\n\n单位：人民币元  \n\n<table><tr><td rowspan=\"2\">年龄</td><td colspan=\"4\">男性</td><td colspan=\"4\">女性</td></tr><tr><td>趸交</td><td>3年交</td><td>5年交</td><td>10年交</td><td>趸交</td><td>3年交</td><td>5年交</td><td>10年交</td></t...",
+    "content_length": 8752,
+    "created_at": "2025-11-06T06:25:38.193103+00:00",
+    "updated_at": "2025-11-06T07:12:08.983204+00:00",
+    "file_path": "D:\\Codes\\my_project\\AI_Agent\\data\\inputs\\111005_flbe.md",
+    "track_id": "insert_20251106_142538_6a4e9303",
+    "metadata": {
+      "processing_start_time": 1762413016,
+      "processing_end_time": 1762413128
+    }
+  },
+  "111013_flbe.md": {
+    "status": "processed",
+    "chunks_count": 12,
+    "chunks_list": [
+      "chunk-07db7bc62ed48e59cdbc0d4baac2dbcb",
+      "chunk-50ebcd300d66b6142b1ebfd4659557ae",
+      "chunk-7aaaf04183464315c0fd56c0f92a1ecf",
+      "chunk-ff418883e0ce34c6800913785a0d8b54",
+      "chunk-4e5c13be25459110cf49aa140d91206c",
+      "chunk-bd0b14425fc137ef4641e19c8374fe77",
+      "chunk-5426e1103b10ae5ea4d5ffdf2a68c604",
+      "chunk-9b455f5116cbb65ab136df8414824b15",
+      "chunk-84eb8b7724a5365f7a84c36850177232",
+      "chunk-24a6cc5b68d0e1759dda4edbccea5c22",
+      "chunk-066f2ad401959c5e1c88ac5bfa06df33",
+      "chunk-df6610cdbe3d68415e3f64b122b86a10"
+    ],
+    "content_summary": "# 利安人寿保险股份有限公司\n\n# 利安利利爱家守护定期寿险\n\n# 费率表\n\n（每10000元基本保险金额）\n\n<table><tr><td>方案一</td><td>基本责任</td></tr><tr><td>方案二</td><td>基本责任+可选责任（猝死关爱保险金、民航班机意外身故或全残保险金、水陆公共\n交通意外身故或全残保险金、公共场所特定事故意外身故或全残保险金）</td></tr></table>\n\n单位：人民币元  \n\n<table><tr><td colspan=\"11\">方案一<...",
+    "content_length": 77300,
+    "created_at": "2025-11-06T06:25:38.194358+00:00",
+    "updated_at": "2025-11-06T07:19:00.704548+00:00",
+    "file_path": "D:\\Codes\\my_project\\AI_Agent\\data\\inputs\\111013_flbe.md",
+    "track_id": "insert_20251106_142538_6a4e9303",
+    "metadata": {
+      "processing_start_time": 1762413060,
+      "processing_end_time": 1762413540
+    }
+  },
+  "111010_flbe.md": {
+    "status": "processed",
+    "chunks_count": 2,
+    "chunks_list": [
+      "chunk-7e77d1284981fb3f116a093c68849800",
+      "chunk-9cf9df2b65f30b96667fd9d048189c6d"
+    ],
     "content_summary": "# 利安人寿保险股份有限公司\n\n# 利安传家鑫享终身寿险\n\n# 基本保险金额表\n\n（每1000元趸交或年交保险费）\n\n单位：人民币元  \n\n<table><tr><td rowspan=\"2\">年龄</td><td colspan=\"6\">男性</td><td colspan=\"6\">女性</td></tr><tr><td>趸交</td><td>3年交</td><td>5年交</td><td>10年交</td><td>15年交</td><td>20年交</td><td>趸交</td><td>3年...",
     "content_length": 12499,
-    "created_at": "2025-10-29T13:54:19.850660+00:00",
-    "updated_at": "2025-10-29T13:54:19.850662+00:00",
-    "file_path": "/Users/ziyu.chen/Desktop/llm_compition/AI_Agent/data/outputs/flbe.md",
-    "track_id": "insert_20251029_215419_d463074a",
-    "chunks_list": []
+    "created_at": "2025-11-06T06:25:38.193103+00:00",
+    "updated_at": "2025-11-06T07:14:00.461898+00:00",
+    "file_path": "D:\\Codes\\my_project\\AI_Agent\\data\\inputs\\111010_flbe.md",
+    "track_id": "insert_20251106_142538_6a4e9303",
+    "metadata": {
+      "processing_start_time": 1762413129,
+      "processing_end_time": 1762413240
+    }
+  },
+  "112013_tk.md": {
+    "status": "processed",
+    "chunks_count": 6,
+    "chunks_list": [
+      "chunk-c4a2c7322b341c46ebc0a10a8b776b90",
+      "chunk-4a7110a6ca88f1e2d3a0fdf4be8db2e1",
+      "chunk-bc8d84dfc0761c37f69ec34f1f5e5862",
+      "chunk-50dc25dc2410a6b47269f153a46e1291",
+      "chunk-9edbb629117e06664e94a170965507a9",
+      "chunk-40989eb61a1f673d22bd0600406a1fd3"
+    ],
+    "content_summary": "# 利安人寿保险股份有限公司利安利利爱家守护两全保险条款\n\n# 阅读指引\n\n本阅读指引有助于您理解条款，对本合同内容的解释以条款为准。\n\n![](images/e0688b63e4b1f7a2bc4049e6041c329693683bf57c89d26209df78959cfb2173.jpg)\n\n# 您拥有的重要权益\n\n签收本合同之日起15日（即犹豫期）内您若要求退保，我们全额退还保险费  \n本合同提供的保障在保险责任条款中列明 2.3  \n您有按本合同约定申请保单质押贷款的权利. 6.2 ...",
+    "content_length": 8023,
+    "created_at": "2025-11-06T06:25:38.194358+00:00",
+    "updated_at": "2025-11-06T07:24:17.123344+00:00",
+    "file_path": "D:\\Codes\\my_project\\AI_Agent\\data\\inputs\\112013_tk.md",
+    "track_id": "insert_20251106_142538_6a4e9303",
+    "metadata": {
+      "processing_start_time": 1762413240,
+      "processing_end_time": 1762413857
+    }
+  },
+  "112012_tk.md": {
+    "status": "processed",
+    "chunks_count": 11,
+    "chunks_list": [
+      "chunk-8674c72cdb30bcbd3d8d4cf9330cf5a6",
+      "chunk-f976804128d54c34acf13d6dbe5357ae",
+      "chunk-619aae85512337b2c8b3558936c39a2c",
+      "chunk-bea6f579355d64f6ec3426a0c033a9e9",
+      "chunk-b90431700f912263dd2e618dafd40c9e",
+      "chunk-a52ce706c78e4c4f16783693e30156bd",
+      "chunk-3bfcf75efc8e8e1c2eac4ce79cae3df1",
+      "chunk-8d788adb30549410043e641734ff0e27",
+      "chunk-4786faebfc6a2e6586b38f8f4af2ee87",
+      "chunk-bdc1e8a4e795c1fc8e6144ecc820b1f6",
+      "chunk-8710da19dde7571d27165be7f308a515"
+    ],
+    "content_summary": "# 利安人寿保险股份有限公司利安利尊稳赢（臻享版）两全保险条款\n\n# 阅读指引\n\n本阅读指引有助于您理解条款，对本合同内容的解释以条款为准。\n\n![](images/01d46bfeea209dece3eb36b9684e7b0d28a34756b17fda83d9cc5a44948a63e6.jpg)\n\n# 您拥有的重要权益\n\n签收本合同次日起15日（即犹豫期）内您若要求退保，我们全额退还保险费  \n本合同提供的保障在保险责任条款中列明 2.3  \n您有按本合同约定申请保单质押贷款的权利. 6...",
+    "content_length": 13569,
+    "created_at": "2025-11-06T06:25:38.194358+00:00",
+    "updated_at": "2025-11-06T07:27:37.541633+00:00",
+    "file_path": "D:\\Codes\\my_project\\AI_Agent\\data\\inputs\\112012_tk.md",
+    "track_id": "insert_20251106_142538_6a4e9303",
+    "metadata": {
+      "processing_start_time": 1762413541,
+      "processing_end_time": 1762414057
+    }
   }
 }
