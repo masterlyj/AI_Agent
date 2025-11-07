@@ -66,9 +66,108 @@ custom_css = """
 }
 
 .gradio-container {
-    max-width: 1600px !important;
+    max-width: 1800px !important;
     margin: 0 auto;
     font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+}
+
+/* 聊天框优化 */
+.chatbot {
+    height: 750px !important;
+    max-height: 750px !important;
+    min-height: 750px !important;
+}
+
+/* 聊天消息容器 */
+.message-wrap {
+    padding: 12px 16px !important;
+}
+
+/* 用户消息气泡 */
+.message.user {
+    background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%) !important;
+    color: white !important;
+    padding: 14px 20px !important;
+    border-radius: 18px 18px 4px 18px !important;
+    margin: 10px 0 !important;
+    max-width: 80% !important;
+    font-size: 15px !important;
+    line-height: 1.65 !important;
+    font-weight: 400 !important;
+    box-shadow: 0 3px 10px rgba(59, 130, 246, 0.25) !important;
+    letter-spacing: 0.2px !important;
+}
+
+/* AI助手消息气泡 */
+.message.bot {
+    background: #ffffff !important;
+    color: #1e293b !important;
+    padding: 16px 20px !important;
+    border-radius: 18px 18px 18px 4px !important;
+    margin: 10px 0 !important;
+    max-width: 85% !important;
+    font-size: 15px !important;
+    line-height: 1.7 !important;
+    border-left: 4px solid var(--primary-color) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+}
+
+/* 聊天框内的文本优化 */
+.message p {
+    margin: 8px 0 !important;
+    font-size: 15px !important;
+    line-height: 1.7 !important;
+}
+
+/* 代码块样式 */
+.message pre {
+    background: #f8fafc !important;
+    padding: 12px !important;
+    border-radius: 8px !important;
+    font-size: 14px !important;
+    overflow-x: auto !important;
+    margin: 12px 0 !important;
+}
+
+/* 思考过程特殊样式 */
+.message.bot:has([class*="thinking"]) {
+    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%) !important;
+    border-left: 4px solid #3b82f6 !important;
+}
+
+/* Markdown标题 */
+.message h1, .message h2, .message h3, .message h4 {
+    margin: 16px 0 8px 0 !important;
+    font-weight: 600 !important;
+}
+
+.message h1 { font-size: 20px !important; }
+.message h2 { font-size: 18px !important; }
+.message h3 { font-size: 16px !important; }
+.message h4 { font-size: 15px !important; }
+
+/* 列表样式 */
+.message ul, .message ol {
+    margin: 8px 0 !important;
+    padding-left: 24px !important;
+}
+
+.message li {
+    margin: 6px 0 !important;
+    line-height: 1.6 !important;
+}
+
+/* 强调文本 */
+.message strong {
+    font-weight: 600 !important;
+    color: #1e40af !important;
+}
+
+/* 分隔线 */
+.message hr {
+    margin: 16px 0 !important;
+    border: none !important;
+    border-top: 2px solid #e2e8f0 !important;
 }
 .header-banner {
     background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
@@ -99,25 +198,31 @@ custom_css = """
     box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
-/* 聊天消息样式 */
-.user-message {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    padding: 12px 16px;
-    border-radius: 18px 18px 4px 18px;
-    margin: 8px 0;
-    max-width: 80%;
-    align-self: flex-end;
+/* 输入框优化 */
+.input-group textarea {
+    font-size: 15px !important;
+    line-height: 1.6 !important;
+    padding: 12px 16px !important;
+    border-radius: 12px !important;
 }
 
-.assistant-message {
-    background: #f1f5f9;
-    color: #1e293b;
-    padding: 12px 16px;
-    border-radius: 18px 18px 18px 4px;
-    margin: 8px 0;
-    max-width: 85%;
-    border-left: 3px solid var(--primary-color);
+/* 按钮优化 */
+button {
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    border-radius: 8px !important;
+    padding: 10px 20px !important;
+}
+
+/* Tab标签优化 */
+.tabs {
+    font-size: 14px !important;
+}
+
+.tab-nav button {
+    padding: 12px 24px !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
 }
 
 /* 检索指标卡片 */
