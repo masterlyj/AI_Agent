@@ -394,6 +394,14 @@ class RAGAgent:
                         "type": "context",
                         "context": context_data
                     }
+                elif chunk_type == "reasoning_chunk":
+                    # 转发思考推理过程
+                    yield {
+                        "type": "reasoning_chunk",
+                        "content": chunk.get("content", ""),
+                        "done": chunk.get("done", False),
+                        "full_reasoning": chunk.get("full_reasoning", "")
+                    }
                 elif chunk_type == "answer_chunk":
                     content = chunk.get("content", "")
                     is_done = chunk.get("done", False)

@@ -297,7 +297,7 @@ class WorkflowNodes:
     async def generate_answer_stream(self, state: QueryState):
         """
         流式生成答案的异步生成器。
-        逐步yield答案的每个token。
+        先流式输出思考推理过程，然后逐步yield答案的每个token。
         """
         logger.info("--- 运行流式生成：generate_answer_stream ---")
         try:
@@ -343,11 +343,137 @@ class WorkflowNodes:
                 }
             }
             
-            # 构建消息列表
-            messages = []
+            # === 第一步：构建并直接显示系统执行信息 ===
+            logger.info("🧠 开始生成思考推理过程...")
             
-            # 添加系统提示
-            system_prompt = f'''你是一个专业的保险文档问答助手。
+            # 构建详细的实体和关系信息
+            entities_info = "\n".join([
+                f"  • {e.get('entity_name', '未知')} ({e.get('entity_type', '未知类型')})"
+                for e in retrieved_entities[:5]
+            ]) if retrieved_entities else "  (无相关实体)"
+            
+            relationships_info = "\n".join([
+                f"  • {r.get('src_id', '?')} → {r.get('tgt_id', '?')}"
+                for r in retrieved_relationships[:3]
+            ]) if retrieved_relationships else "  (无相关关系)"
+            
+            docs_info = "\n".join([
+                f"  • 文档 {i+1}: {doc.metadata.get('file_path', '未知来源').split('/')[-1]} (置信度: {doc.metadata.get('rerank_score', 0):.2f})"
+                for i, doc in enumerate(final_docs[:3])
+            ]) if final_docs else "  (无相关文档)"
+            
+            # 构建系统信息（这部分直接显示，不依赖LLM）
+            system_info = f"""📊 **系统检索信息**
+
+**检索阶段：**
+• 检索到 {len(retrieved_entities)} 个相关实体
+• 检索到 {len(retrieved_relationships)} 条相关关系
+• 初步检索到多个文档片段
+
+**精排阶段：**
+• 精排后保留 {len(final_docs)} 个最相关文档
+• 使用语义相似度重新排序
+
+**关键实体（前5个）：**
+{entities_info}
+
+**关键关系（前3个）：**
+{relationships_info}
+
+**精排文档（前3个）：**
+{docs_info}
+
+---
+
+💭 **推理分析：**
+"""
+            
+            # 直接yield系统信息（保证100%显示）
+            logger.info(f"📋 直接显示系统信息 ({len(system_info)} 字符)")
+            yield {
+                "type": "reasoning_chunk",
+                "content": system_info,
+                "done": False
+            }
+            
+            # === 第二步：让LLM补充推理分析 ===
+            reasoning_messages = []
+            
+            # 简化的系统提示（只要求推理分析，不要求重复系统信息）
+            reasoning_system_prompt = '''你是一个专业的保险文档问答助手。
+系统已经展示了检索和精排的详细信息。
+
+现在请简要说明你的推理分析过程：
+1. 你如何理解用户的问题（1-2句话）
+2. 从检索结果中发现的关键信息（2-3句话）
+3. 你的推理逻辑（2-3句话）
+
+要求：
+- 使用第一人称（"我理解..."、"我发现..."）
+- 简洁明了，总字数100-200字
+- 不要重复系统已展示的信息'''
+            
+            reasoning_messages.append({"role": "system", "content": reasoning_system_prompt})
+            
+            # 添加历史对话
+            if chat_history:
+                for msg in chat_history[-4:]:
+                    reasoning_messages.append({
+                        "role": msg.get("role"),
+                        "content": msg.get("content")
+                    })
+            
+            # 简化的用户消息
+            reasoning_user_message = f"""用户问题: {query}
+
+系统已检索到:
+- {len(retrieved_entities)} 个实体
+- {len(retrieved_relationships)} 条关系
+- {len(final_docs)} 个精排文档
+
+请简要说明你的推理分析（100-200字）。"""
+            
+            reasoning_messages.append({"role": "user", "content": reasoning_user_message})
+            
+            # 流式生成LLM推理部分
+            llm_reasoning = ""
+            chunk_count = 0
+            async for chunk in llm.astream(reasoning_messages):
+                content = chunk.content if hasattr(chunk, 'content') else str(chunk)
+                llm_reasoning += content
+                chunk_count += 1
+                
+                # 每10个chunk打印一次进度
+                if chunk_count % 10 == 0:
+                    logger.info(f"💭 LLM推理进度: 已生成 {len(llm_reasoning)} 字符 ({chunk_count} chunks)")
+                
+                yield {
+                    "type": "reasoning_chunk",
+                    "content": content,
+                    "done": False
+                }
+            
+            # 思考过程完成
+            full_reasoning = system_info + llm_reasoning
+            logger.info(f"✅ 思考推理完成: 系统信息 {len(system_info)} 字符 + LLM推理 {len(llm_reasoning)} 字符 = 总计 {len(full_reasoning)} 字符")
+            yield {
+                "type": "reasoning_chunk",
+                "content": "",
+                "done": True,
+                "full_reasoning": full_reasoning
+            }
+            
+            # === 第二步：基于思考过程生成最终答案 ===
+            logger.info("🤖 开始流式生成最终答案...")
+            logger.info(f"📊 上下文统计:")
+            logger.info(f"   - 实体: {len(retrieved_entities)} 个")
+            logger.info(f"   - 关系: {len(retrieved_relationships)} 条")
+            logger.info(f"   - 文档: {len(final_docs)} 个")
+            
+            answer_messages = []
+            
+            # 答案生成的系统提示
+            answer_system_prompt = f'''你是一个专业的保险文档问答助手。
 请根据下面提供的知识图谱信息和文档内容来回答用户的问题。
 
 知识图谱包含了从文档中提取的实体和关系，提供了结构化的知识视图。
@@ -360,34 +486,34 @@ class WorkflowNodes:
 4. 如果可能，引用具体的实体、关系或文档来源
 5. 如果信息不足，请直接告知'''
             
-            messages.append({"role": "system", "content": system_prompt})
+            answer_messages.append({"role": "system", "content": answer_system_prompt})
             
             # 添加历史对话（最近5轮）
             if chat_history:
                 for msg in chat_history[-10:]:
-                    messages.append({
+                    answer_messages.append({
                         "role": msg.get("role"),
                         "content": msg.get("content")
                     })
             
-            # 添加当前查询（包含上下文）
-            user_message = f"""请基于以下保险知识库信息回答问题:
+            # 添加刚才的思考过程作为上下文
+            answer_messages.append({
+                "role": "assistant",
+                "content": f"【我的分析思路】\n{full_reasoning}"
+            })
+            
+            # 添加当前查询（包含完整上下文）
+            answer_user_message = f"""请基于以下保险知识库信息和你的分析思路，给出详细的答案:
 
 {full_context}
 
 **用户问题:** {query}"""
             
-            messages.append({"role": "user", "content": user_message})
+            answer_messages.append({"role": "user", "content": answer_user_message})
             
-            # 使用流式API调用LLM
-            logger.info("🤖 开始流式生成答案...")
-            logger.info(f"📊 上下文统计:")
-            logger.info(f"   - 实体: {len(retrieved_entities)} 个")
-            logger.info(f"   - 关系: {len(retrieved_relationships)} 条")
-            logger.info(f"   - 文档: {len(final_docs)} 个")
-            
+            # 流式生成最终答案
             full_answer = ""
-            async for chunk in llm.astream(messages):
+            async for chunk in llm.astream(answer_messages):
                 content = chunk.content if hasattr(chunk, 'content') else str(chunk)
                 full_answer += content
                 yield {
@@ -402,7 +528,8 @@ class WorkflowNodes:
                 "type": "answer_chunk",
                 "content": "",
                 "done": True,
-                "full_answer": full_answer
+                "full_answer": full_answer,
+                "full_reasoning": full_reasoning
             }
             
         except Exception as e:

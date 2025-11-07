@@ -412,12 +412,12 @@ async def query_knowledge_async(
     chat_history: List,
     request: gr.Request
 ):
-    """异步查询知识库（支持流式输出）"""
+    """异步查询知识库（支持流式输出，包含思考推理过程）"""
     if not agent_instance:
-        yield chat_history, {}, "", "", ""
+        yield chat_history, {}, "", "", "", "", ""
         return
     if not question.strip():
-        yield chat_history, {}, "", "", ""
+        yield chat_history, {}, "", "", "", "", ""
         return
 
     # 获取用户唯一标识
@@ -455,7 +455,8 @@ async def query_knowledge_async(
 
         # 先添加用户消息到历史
         display_chat_history = session_chat_history + [{"role": "user", "content": question}]
-        yield display_chat_history, {}, "", loading_html, ""
+        # 立即清空查询框（返回空字符串）
+        yield display_chat_history, {}, "", loading_html, "", "", ""
 
         # 使用流式查询
         context_data = {}
@@ -463,6 +464,7 @@ async def query_knowledge_async(
         relationships = []
         documents = []
         raw_context = ""
+        accumulated_reasoning = ""
         accumulated_answer = ""
         
         async for chunk in agent_instance.query_stream(
@@ -512,16 +514,67 @@ async def query_knowledge_async(
                 if show_context:
                     formatted_context = format_context_display(raw_context)
                 
-                # 显示可视化内容（此时答案还在生成中）
-                current_chat = display_chat_history + [{"role": "assistant", "content": ""}]
-                yield current_chat, metrics, formatted_context, kg_html, docs_html
+                # 显示"正在思考..."占位符
+                thinking_placeholder = "🧠 **正在思考...**\n\n_分析问题中..._"
+                current_chat = display_chat_history + [{"role": "assistant", "content": thinking_placeholder}]
+                logger.info("📝 显示思考占位符")
+                yield current_chat, metrics, formatted_context, kg_html, docs_html, "", ""
+                
+            elif chunk_type == "reasoning_chunk":
+                # 流式接收思考推理过程，显示在聊天框中
+                content = chunk.get("content", "")
+                is_done = chunk.get("done", False)
+                
+                logger.info(f"🔍 收到reasoning_chunk: content长度={len(content)}, done={is_done}, 当前accumulated_reasoning长度={len(accumulated_reasoning)}")
+                
+                # 累积内容
+                if content:
+                    accumulated_reasoning += content
+                    logger.info(f"✅ 累积后 accumulated_reasoning长度={len(accumulated_reasoning)}")
+                
+                # 在聊天框中显示思考过程（使用特殊格式标记）
+                if accumulated_reasoning:
+                    thinking_message = f"🧠 **正在思考...**\n\n{accumulated_reasoning}"
+                else:
+                    thinking_message = "🧠 **正在思考...**\n\n_准备中..._"
+                
+                current_chat = display_chat_history + [{"role": "assistant", "content": thinking_message}]
+                
+                rerank_status = "✅ 已精排" if enable_rerank and hasattr(agent_instance, 'reranker') and agent_instance.reranker else "⚠️ 未精排"
+                metrics = {
+                    "查询模式": query_mode,
+                    "实体数量": len(entities),
+                    "关系数量": len(relationships),
+                    "文档片段": len(documents),
+                    "精排状态": rerank_status,
+                    "精排Top-K": rerank_top_k if enable_rerank else "N/A",
+                    "上下文长度": len(raw_context),
+                    "会话ID": session_id[:8] + "...",
+                    "线程ID": thread_id[:8] + "...",
+                    "对话轮数": (len(session_chat_history) + 2) // 2
+                }
+                
+                formatted_context = ""
+                if show_context:
+                    formatted_context = format_context_display(raw_context)
+                
+                kg_html = create_knowledge_graph_html(entities, relationships) if entities or relationships else loading_html
+                docs_html = create_documents_html(documents) if documents else loading_html
+                
+                # 显示思考过程
+                logger.info(f"💭 界面显示思考内容长度: {len(thinking_message)} 字符 (accumulated_reasoning={len(accumulated_reasoning)}, done={is_done})")
+                yield current_chat, metrics, formatted_context, kg_html, docs_html, "", ""
                 
             elif chunk_type == "answer_chunk":
                 # 流式接收答案片段
                 content = chunk.get("content", "")
                 accumulated_answer += content
                 
-                # 实时更新聊天历史显示
+                # 第一次收到答案时，记录日志
+                if len(accumulated_answer) == len(content):
+                    logger.info(f"🎯 开始生成答案，思考过程将被替换 (思考长度: {len(accumulated_reasoning)} 字符)")
+                
+                # 答案开始生成时，思考过程消失，只显示答案
                 current_chat = display_chat_history + [{"role": "assistant", "content": accumulated_answer}]
                 
                 rerank_status = "✅ 已精排" if enable_rerank and hasattr(agent_instance, 'reranker') and agent_instance.reranker else "⚠️ 未精排"
@@ -545,7 +598,8 @@ async def query_knowledge_async(
                 kg_html = create_knowledge_graph_html(entities, relationships) if entities or relationships else loading_html
                 docs_html = create_documents_html(documents) if documents else loading_html
                 
-                yield current_chat, metrics, formatted_context, kg_html, docs_html
+                # 答案生成时不显示思考过程
+                yield current_chat, metrics, formatted_context, kg_html, docs_html, "", ""
                 
             elif chunk_type == "complete":
                 # 查询完成
@@ -579,7 +633,8 @@ async def query_knowledge_async(
                 kg_html = create_knowledge_graph_html(entities, relationships)
                 docs_html = create_documents_html(documents)
                 
-                yield updated_chat_history, metrics, formatted_context, kg_html, docs_html
+                # 完成时不显示思考过程
+                yield updated_chat_history, metrics, formatted_context, kg_html, docs_html, "", ""
                 
             elif chunk_type == "error":
                 # 处理错误
@@ -592,7 +647,7 @@ async def query_knowledge_async(
                 ]
                 user_session["chat_history"] = error_chat_history
                 
-                yield error_chat_history, {}, "", "", ""
+                yield error_chat_history, {}, "", "", "", "", ""
                 return
 
     except Exception as e:
@@ -608,7 +663,7 @@ async def query_knowledge_async(
         ]
         user_session["chat_history"] = error_chat_history
 
-        yield error_chat_history, {}, "", "", ""
+        yield error_chat_history, {}, "", "", "", "", ""
         return
     finally:
         # 恢复查询前的代理设置
@@ -896,7 +951,8 @@ def clear_chat(request: gr.Request):
             "last_active": time.time()
         }
         logger.info(f"🗑️ 已清空用户 {session_id[:8]}... 的会话")
-    return [], {}, "", "<p style='text-align:center; color:#999;'>已清空</p>", "<p style='text-align:center; color:#999;'>已清空</p>"
+    # 返回6个输出：chatbot, retrieval_metrics, context_display, kg_visualization, docs_visualization, reasoning_display
+    return [], {}, "", "<p style='text-align:center; color:#999;'>已清空</p>", "<p style='text-align:center; color:#999;'>已清空</p>", ""
 
 def cleanup_inactive_sessions():
     """定期清理 30 分钟未活动的会话"""
@@ -1022,7 +1078,7 @@ with gr.Blocks(
                 export_btn = gr.Button("💾 导出结果")
             with gr.Accordion("📊 检索质量指标", open=False):
                 retrieval_metrics = gr.JSON(label="实时指标")
-            # ===== 新增: 可视化标签页 =====
+            # ===== 可视化标签页 =====
             with gr.Tabs():
                 with gr.Tab("🕸️ 知识图谱"):
                     kg_visualization = gr.HTML(
@@ -1039,6 +1095,9 @@ with gr.Blocks(
                         label="原始上下文",
                         value="执行查询后将显示原始上下文"
                     )
+            
+            # 隐藏的占位组件（用于兼容事件绑定）
+            reasoning_display = gr.HTML(visible=False)
     gr.Examples(
         examples=[
             ["什么情况下保险公司会豁免保险费?", "hybrid", False, True, 20],
@@ -1076,26 +1135,17 @@ with gr.Blocks(
     query_btn.click(
         fn=query_knowledge_async,
         inputs=[query_input, query_mode, show_context, enable_rerank_checkbox, rerank_top_k_slider, chatbot],
-        outputs=[chatbot, retrieval_metrics, context_display, kg_visualization, docs_visualization]
-    ).then(
-        fn=lambda: "",
-        outputs=[query_input]
-    ).then(
-        fn=lambda: "",
-        outputs=[query_input]
+        outputs=[chatbot, retrieval_metrics, context_display, kg_visualization, docs_visualization, reasoning_display, query_input]
     )
     
     query_input.submit(
         fn=query_knowledge_async,
         inputs=[query_input, query_mode, show_context, enable_rerank_checkbox, rerank_top_k_slider, chatbot],
-        outputs=[chatbot, retrieval_metrics, context_display, kg_visualization, docs_visualization]
-    ).then(
-        fn=lambda: "",
-        outputs=[query_input]
+        outputs=[chatbot, retrieval_metrics, context_display, kg_visualization, docs_visualization, reasoning_display, query_input]
     )
     clear_btn.click(
         fn=clear_chat,
-        outputs=[chatbot, retrieval_metrics, context_display, kg_visualization, docs_visualization]
+        outputs=[chatbot, retrieval_metrics, context_display, kg_visualization, docs_visualization, reasoning_display]
     )
     def export_conversation(history):
         if not history:
