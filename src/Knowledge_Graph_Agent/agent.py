@@ -125,19 +125,45 @@ class RAGAgent:
         if enabled:
             logger.info("🔧 初始化 Reranker 模型...")
             try:
-                model = cfg.get("model", os.getenv("RERANK_MODEL", "maidalun1020/bce-reranker-base_v1").strip())
-                device = cfg.get("device", os.getenv("RERANK_DEVICE", "").strip() or None)
+                # 获取 rerank 类型，默认为 local
+                rerank_type = cfg.get("type", os.getenv("RERANK_TYPE", "local").strip().lower())
                 top_k = int(cfg.get("top_k", os.getenv("RERANK_TOP_K", "20")))
-                use_fp16 = cfg.get("use_fp16", os.getenv("RERANK_USE_FP16", "false").lower() == "true")
                 
-                instance.reranker = RerankerModel(
-                    model_name_or_path=model,
-                    device=device,
-                    top_k=top_k,
-                    use_fp16=use_fp16,
-                )
-                instance.rerank_top_k = top_k
-                logger.info(f"✅ Reranker 模型加载完成 (model={model}, top_k={instance.rerank_top_k})")
+                if rerank_type == "vllm":
+                    # 使用 VLLM Reranker
+                    base_url = cfg.get("base_url", os.getenv("RERANK_BASE_URL", "").strip())
+                    model = cfg.get("model", os.getenv("RERANK_MODEL", "Qwen3-Reranker-0.6B").strip())
+                    api_key = cfg.get("api_key", os.getenv("RERANK_API_KEY", "EMPTY").strip())
+                    timeout = int(cfg.get("timeout", os.getenv("RERANK_TIMEOUT", "60")))
+                    
+                    if not base_url:
+                        logger.error("使用 VLLM Reranker 时必须配置 RERANK_BASE_URL")
+                        instance.reranker = None
+                    else:
+                        from .reranker import VLLMRerankerModel
+                        instance.reranker = VLLMRerankerModel(
+                            base_url=base_url,
+                            model=model,
+                            api_key=api_key,
+                            top_k=top_k,
+                            timeout=timeout
+                        )
+                        instance.rerank_top_k = top_k
+                        logger.info(f"✅ VLLM Reranker 模型加载完成 (model={model}, base_url={base_url}, top_k={instance.rerank_top_k})")
+                else:
+                    # 使用本地 Reranker (默认)
+                    model = cfg.get("model", os.getenv("RERANK_MODEL", "maidalun1020/bce-reranker-base_v1").strip())
+                    device = cfg.get("device", os.getenv("RERANK_DEVICE", "").strip() or None)
+                    use_fp16 = cfg.get("use_fp16", os.getenv("RERANK_USE_FP16", "false").lower() == "true")
+                    
+                    instance.reranker = RerankerModel(
+                        model_name_or_path=model,
+                        device=device,
+                        top_k=top_k,
+                        use_fp16=use_fp16,
+                    )
+                    instance.rerank_top_k = top_k
+                    logger.info(f"✅ 本地 Reranker 模型加载完成 (model={model}, top_k={instance.rerank_top_k})")
             except Exception as e:
                 logger.error(f"❌ 加载 Reranker 模型失败: {e}")
                 instance.reranker = None

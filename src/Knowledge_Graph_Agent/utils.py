@@ -1029,24 +1029,6 @@ def cosine_similarity(v1, v2):
     norm2 = np.linalg.norm(v2)
     return dot_product / (norm1 * norm2)
 
-
-def ngram_jaccard_similarity(text1: str, text2: str, n: int = 1) -> float:
-    def get_ngrams(s, n):
-        s = ''.join(s.split())
-        return {s[i:i+n] for i in range(len(s) - n + 1)}
-    
-    if not text1.strip() or not text2.strip():
-        return 0.0 if text1 != text2 else 1.0
-        
-    g1 = get_ngrams(text1, n)
-    g2 = get_ngrams(text2, n)
-    if not g1 and not g2:
-        return 1.0
-    if not g1 or not g2:
-        return 0.0
-    return len(g1 & g2) / len(g1 | g2)
-
-
 async def handle_cache(
     hashing_kv,
     args_hash,
@@ -2240,50 +2222,7 @@ async def pick_by_vector_similarity(
         # Sort by similarity (highest first) and select top num_of_chunks
         similarities.sort(key=lambda x: x[1], reverse=True)
         
-        # 应用子串重叠率过滤，去除高重叠率的文本块，首先获取所有文本块的内容
-        chunk_contents = {}
-        if all_chunk_ids:
-            try:
-                chunks_data = await text_chunks_storage.get_by_ids(all_chunk_ids)
-                for chunk in chunks_data:
-                    if chunk:
-                        # 兼容两种存储实现：优先使用'id'字段，如果不存在则使用'_id'字段
-                        chunk_id = chunk.get('id') or chunk.get('_id')
-                        if chunk_id and 'content' in chunk:
-                            chunk_contents[chunk_id] = chunk['content']
-            except Exception as e:
-                logger.warning(f"获取块内容失败：{e}")
-        
-        # 过滤高重叠率的文本块
-        filtered_similarities = []
-        overlap_threshold = 0.6  # 重叠率阈值，可根据需要调整
-        
-        for chunk_id, similarity in similarities:
-            if chunk_id not in chunk_contents:
-                filtered_similarities.append((chunk_id, similarity))
-                continue
-                
-            current_content = chunk_contents[chunk_id]
-            is_duplicate = False
-            
-            # 检查与已选文本块的重叠率
-            for selected_id, _ in filtered_similarities:
-                if selected_id in chunk_contents:
-                    selected_content = chunk_contents[selected_id]
-                    overlap = ngram_jaccard_similarity(current_content, selected_content)
-                    if overlap >= overlap_threshold:
-                        is_duplicate = True
-                        break
-            
-            if not is_duplicate:
-                filtered_similarities.append((chunk_id, similarity))
-        
-        # 记录过滤结果
-        total_filtered = len(similarities) - len(filtered_similarities)
-        if total_filtered > 0:
-            logger.info(f"文本块去重过滤: 从 {len(similarities)} 个文本块中过滤了 {total_filtered} 个高重叠率文本块")
-        
-        selected_chunks = [chunk_id for chunk_id, _ in filtered_similarities[:num_of_chunks]]
+        selected_chunks = [chunk_id for chunk_id, _ in similarities[:num_of_chunks]]
 
         logger.debug(
             f"Vector similarity chunk selection: {len(selected_chunks)} chunks from {len(all_chunk_ids)} candidates"
@@ -2505,7 +2444,7 @@ async def process_chunks_unified(
             if not unique_chunks:
                 return []
 
-    # 3. Apply chunk_top_k limiting if specified
+    # 3. 若有指定，应用chunk_top_k限制
     if query_param.chunk_top_k is not None and query_param.chunk_top_k > 0:
         if len(unique_chunks) > query_param.chunk_top_k:
             unique_chunks = unique_chunks[: query_param.chunk_top_k]

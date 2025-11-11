@@ -3568,18 +3568,18 @@ async def _find_related_text_unit_from_entities(
     query_embedding=None,
 ):
     """
-    Find text chunks related to entities using configurable chunk selection method.
+    使用可配置的文本块选择方法查找与实体相关的文本块。
 
-    This function supports two chunk selection strategies:
-    1. WEIGHT: Linear gradient weighted polling based on chunk occurrence count
-    2. VECTOR: Vector similarity-based selection using embedding cosine similarity
+    此函数支持两种文本块选择策略：
+    1. 权重（WEIGHT）：基于文本块出现次数的线性梯度加权轮询
+    2. 向量（VECTOR）：使用嵌入余弦相似度的基于向量相似度的选择
     """
     logger.debug(f"Finding text chunks from {len(node_datas)} entities")
 
     if not node_datas:
         return []
 
-    # Step 1: Collect all text chunks for each entity
+    # 步骤1：为每个实体收集所有文本块
     entities_with_chunks = []
     for entity in node_datas:
         if entity.get("source_id"):
@@ -3606,7 +3606,7 @@ async def _find_related_text_unit_from_entities(
         "related_chunk_number", DEFAULT_RELATED_CHUNK_NUMBER
     )
 
-    # Step 2: Count chunk occurrences and deduplicate (keep chunks from earlier positioned entities)
+    #步骤2：统计区块出现次数并去重（保留来自位置靠前实体的区块）
     chunk_occurrence_count = {}
     for entity_info in entities_with_chunks:
         deduplicated_chunks = []
@@ -3615,15 +3615,15 @@ async def _find_related_text_unit_from_entities(
                 chunk_occurrence_count.get(chunk_id, 0) + 1
             )
 
-            # If this is the first occurrence (count == 1), keep it; otherwise skip (duplicate from later position)
+            # 如果这是首次出现（计数 == 1），则保留它；否则跳过（来自后续位置的重复项）
             if chunk_occurrence_count[chunk_id] == 1:
                 deduplicated_chunks.append(chunk_id)
-            # count > 1 means this chunk appeared in an earlier entity, so skip it
+            # count > 1意味着这个块出现在更早的实体中，所以跳过它
 
-        # Update entity's chunks to deduplicated chunks
+        # 更新实体的文本块为去重后的文本块
         entity_info["chunks"] = deduplicated_chunks
 
-    # Step 3: Sort chunks for each entity by occurrence count (higher count = higher priority)
+    # 步骤3：按出现次数对每个实体的文本块进行排序（出现次数越高，优先级越高）
     total_entity_chunks = 0
     for entity_info in entities_with_chunks:
         sorted_chunks = sorted(
@@ -3636,14 +3636,14 @@ async def _find_related_text_unit_from_entities(
 
     selected_chunk_ids = []  # Initialize to avoid UnboundLocalError
 
-    # Step 4: Apply the selected chunk selection algorithm
-    # Pick by vector similarity:
-    #     The order of text chunks aligns with the naive retrieval's destination.
-    #     When reranking is disabled, the text chunks delivered to the LLM tend to favor naive retrieval.
+    # 步骤4：应用所选文本块选择算法
+    # 根据向量相似度选择文本块：
+    #     文本块的顺序与朴素检索的目标对齐。
+    #     当重新排序被禁用时，LLM收到的文本块倾向于 favor 朴素检索。
     if kg_chunk_pick_method == "VECTOR" and query and chunks_vdb:
         num_of_chunks = int(max_related_chunks * len(entities_with_chunks) / 2)
 
-        # Get embedding function from global config
+        # 从全局配置中获取嵌入函数
         embedding_func_config = text_chunks_db.embedding_func
         if not embedding_func_config:
             logger.warning("No embedding function found, falling back to WEIGHT method")
@@ -3694,13 +3694,13 @@ async def _find_related_text_unit_from_entities(
     if not selected_chunk_ids:
         return []
 
-    # Step 5: Batch retrieve chunk data
+    # 步骤5：批量检索文本块数据
     unique_chunk_ids = list(
         dict.fromkeys(selected_chunk_ids)
     )  # Remove duplicates while preserving order
     chunk_data_list = await text_chunks_db.get_by_ids(unique_chunk_ids)
 
-    # Step 6: Build result chunks with valid data and update chunk tracking
+    # 步骤6：构建包含有效数据的结果文本块，并更新文本块跟踪
     result_chunks = []
     for i, (chunk_id, chunk_data) in enumerate(zip(unique_chunk_ids, chunk_data_list)):
         if chunk_data is not None and "content" in chunk_data:
@@ -3709,7 +3709,7 @@ async def _find_related_text_unit_from_entities(
             chunk_data_copy["chunk_id"] = chunk_id  # Add chunk_id for deduplication
             result_chunks.append(chunk_data_copy)
 
-            # Update chunk tracking if provided
+            # 更新文本块跟踪（如果提供）
             if chunk_tracking is not None:
                 chunk_tracking[chunk_id] = {
                     "source": "E",

@@ -73,9 +73,9 @@ custom_css = """
 
 /* 聊天框优化 */
 .chatbot {
-    height: 750px !important;
-    max-height: 750px !important;
-    min-height: 750px !important;
+    height: 900px !important;
+    max-height: 900px !important;
+    min-height: 900px !important;
 }
 
 /* 聊天消息容器 */
@@ -297,6 +297,254 @@ button {
 .status-ready { background: var(--success-color); }
 .status-indexing { background: var(--warning-color); }
 .status-error { background: var(--danger-color); }
+
+/* 可折叠侧边栏样式 - 完全隐藏 */
+#sidebar-container {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+#sidebar-container.collapsed {
+    width: 0px !important;
+    min-width: 0px !important;
+    max-width: 0px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    opacity: 0;
+}
+
+#sidebar-container.collapsed * {
+    display: none !important;
+}
+
+/* 主内容区域 */
+#main-content {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 侧边栏展开时的样式 */
+#sidebar-container:not(.collapsed) {
+    width: 320px !important;
+    min-width: 320px !important;
+    max-width: 320px !important;
+}
+
+/* 折叠按钮样式 */
+.toggle-sidebar-btn {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
+    color: white !important;
+    font-weight: 600 !important;
+    padding: 12px 16px !important;
+    border-radius: 8px !important;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3) !important;
+    transition: all 0.2s ease !important;
+}
+
+.toggle-sidebar-btn:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4) !important;
+}
+
+/* 深度思考可折叠样式 - 使用HTML原生details/summary */
+details.thinking-container {
+    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+    border-left: 4px solid #3b82f6;
+    border-radius: 12px;
+    padding: 16px;
+    margin: 12px 0;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
+}
+
+details.thinking-container summary.thinking-header {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+    padding: 8px;
+    border-radius: 8px;
+    transition: background 0.2s;
+    list-style: none; /* 隐藏默认的三角形 */
+}
+
+details.thinking-container summary.thinking-header::-webkit-details-marker {
+    display: none; /* 隐藏WebKit浏览器的默认标记 */
+}
+
+details.thinking-container summary.thinking-header:hover {
+    background: rgba(59, 130, 246, 0.1);
+}
+
+.thinking-icon {
+    font-size: 20px;
+    margin-right: 8px;
+    transition: transform 0.3s;
+}
+
+.thinking-title {
+    font-weight: 600;
+    color: #1e40af;
+    font-size: 15px;
+}
+
+.thinking-content {
+    margin-top: 12px;
+    padding: 12px;
+    background: white;
+    border-radius: 8px;
+    font-size: 14px;
+    line-height: 1.7;
+    color: #1e293b;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+/* details展开时旋转图标 */
+details.thinking-container[open] .thinking-icon {
+    transform: rotate(0deg);
+}
+
+/* details关闭时旋转图标 */
+details.thinking-container:not([open]) .thinking-icon {
+    transform: rotate(-90deg);
+}
+
+/* 浮动配置按钮 */
+.floating-config-btn {
+    position: fixed;
+    left: 20px;
+    top: 120px;
+    z-index: 1000;
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 50% !important;
+    width: 56px !important;
+    height: 56px !important;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4) !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 24px !important;
+}
+
+.floating-config-btn:hover {
+    transform: scale(1.1) !important;
+    box-shadow: 0 6px 16px rgba(59, 130, 246, 0.5) !important;
+}
+
+/* Markdown内容样式 */
+.markdown-content {
+    font-family: 'Microsoft YaHei', 'Segoe UI', sans-serif;
+    line-height: 1.7;
+    color: #1e293b;
+}
+
+.markdown-content h1, .markdown-content h2, .markdown-content h3 {
+    margin-top: 24px;
+    margin-bottom: 16px;
+    font-weight: 600;
+    line-height: 1.25;
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 8px;
+}
+
+.markdown-content h1 { font-size: 2em; color: #1e40af; }
+.markdown-content h2 { font-size: 1.5em; color: #1e40af; }
+.markdown-content h3 { font-size: 1.25em; color: #3b82f6; }
+
+.markdown-content p {
+    margin-bottom: 16px;
+}
+
+.markdown-content ul, .markdown-content ol {
+    margin-bottom: 16px;
+    padding-left: 2em;
+}
+
+.markdown-content li {
+    margin-bottom: 8px;
+}
+
+.markdown-content code {
+    background: #f1f5f9;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: 'Consolas', 'Monaco', monospace;
+    font-size: 0.9em;
+    color: #e11d48;
+}
+
+.markdown-content pre {
+    background: #1e293b;
+    color: #e2e8f0;
+    padding: 16px;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin-bottom: 16px;
+}
+
+.markdown-content pre code {
+    background: none;
+    padding: 0;
+    color: inherit;
+}
+
+.markdown-content table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-bottom: 16px;
+}
+
+.markdown-content table th,
+.markdown-content table td {
+    border: 1px solid #e2e8f0;
+    padding: 12px;
+    text-align: left;
+}
+
+.markdown-content table th {
+    background: #f8fafc;
+    font-weight: 600;
+    color: #1e40af;
+}
+
+.markdown-content table tr:nth-child(even) {
+    background: #f8fafc;
+}
+
+.markdown-content blockquote {
+    border-left: 4px solid #3b82f6;
+    padding-left: 16px;
+    margin: 16px 0;
+    color: #64748b;
+    font-style: italic;
+}
+
+.markdown-content a {
+    color: #3b82f6;
+    text-decoration: none;
+}
+
+.markdown-content a:hover {
+    text-decoration: underline;
+}
+
+.markdown-content hr {
+    border: none;
+    border-top: 2px solid #e2e8f0;
+    margin: 24px 0;
+}
+
+.markdown-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin: 16px 0;
+}
 """
 
 # ===== 初始化Agent =====
@@ -463,8 +711,13 @@ def create_knowledge_graph_html(entities, relationships, iframe_height=800):
 
 
 def create_documents_html(documents: List[Dict]) -> str:
-    """创建文档详情可视化HTML"""
+    """创建文档详情可视化HTML，支持Markdown渲染"""
     import html as html_module
+    try:
+        import markdown
+        markdown_available = True
+    except ImportError:
+        markdown_available = False
     
     templates = load_html_templates()
     
@@ -479,11 +732,27 @@ def create_documents_html(documents: List[Dict]) -> str:
         content = doc.get('content', '')
         metadata = doc.get('metadata', {})
         
-        # HTML 转义，防止特殊字符显示异常
+        # HTML 转义文件路径等元数据
         file_path = html_module.escape(metadata.get('file_path', '未知来源'))
         chunk_id = html_module.escape(str(metadata.get('chunk_id', '未知')))
         reference_id = html_module.escape(str(metadata.get('reference_id', 'N/A')))
-        content_escaped = html_module.escape(content)
+        
+        # 尝试将内容渲染为Markdown
+        if markdown_available and content:
+            try:
+                # 使用markdown渲染，支持表格、代码块等
+                content_html = markdown.markdown(
+                    content, 
+                    extensions=['tables', 'fenced_code', 'nl2br']
+                )
+                # 添加样式包装
+                content_rendered = f'<div class="markdown-content">{content_html}</div>'
+            except:
+                # 如果渲染失败，回退到纯文本
+                content_rendered = html_module.escape(content).replace('\n', '<br>')
+        else:
+            # 没有markdown库，使用纯文本
+            content_rendered = html_module.escape(content).replace('\n', '<br>')
         
         rerank_score = metadata.get('rerank_score', 0)
         score_percent = f"{(rerank_score * 100):.2f}%" if isinstance(rerank_score, float) else "0.00%"
@@ -495,7 +764,7 @@ def create_documents_html(documents: List[Dict]) -> str:
                     .replace('{{chunk_id}}', chunk_id)
                     .replace('{{score_percent}}', score_percent)
                     .replace('{{reference_id}}', reference_id)
-                    .replace('{{content}}', content_escaped))
+                    .replace('{{content}}', content_rendered))
         
         docs_html.append(card_html)
     
@@ -630,45 +899,35 @@ async def query_knowledge_async(
                 content = chunk.get("content", "")
                 is_done = chunk.get("done", False)
                 
-                logger.info(f"🔍 收到reasoning_chunk: content长度={len(content)}, done={is_done}, 当前accumulated_reasoning长度={len(accumulated_reasoning)}")
-                
                 # 累积内容
                 if content:
                     accumulated_reasoning += content
-                    logger.info(f"✅ 累积后 accumulated_reasoning长度={len(accumulated_reasoning)}")
                 
-                # 在聊天框中显示思考过程（使用特殊格式标记）
+                 # 在聊天框中显示思考过程（使用HTML原生details/summary标签，流式输出时默认展开）
                 if accumulated_reasoning:
-                    thinking_message = f"🧠 **正在思考...**\n\n{accumulated_reasoning}"
+                    thinking_html = f"""<details class="thinking-container" open>
+<summary class="thinking-header">
+<span class="thinking-icon">🔽</span>
+<span class="thinking-title">深度思考 (实时)</span>
+<span style="margin-left: auto; color: #64748b; font-size: 13px;">{len(accumulated_reasoning)} 字符</span>
+</summary>
+<div class="thinking-content">
+{accumulated_reasoning.replace(chr(10), '<br>')}
+</div>
+</details>"""
+                    thinking_message = thinking_html
                 else:
-                    thinking_message = "🧠 **正在思考...**\n\n_准备中..._"
+                    thinking_message = """<div class="thinking-container">
+<div class="thinking-header">
+<span class="thinking-icon">🧠</span>
+<span class="thinking-title">正在思考...</span>
+</div>
+</div>"""
                 
                 current_chat = display_chat_history + [{"role": "assistant", "content": thinking_message}]
                 
-                rerank_status = "✅ 已精排" if enable_rerank and hasattr(agent_instance, 'reranker') and agent_instance.reranker else "⚠️ 未精排"
-                metrics = {
-                    "查询模式": query_mode,
-                    "实体数量": len(entities),
-                    "关系数量": len(relationships),
-                    "文档片段": len(documents),
-                    "精排状态": rerank_status,
-                    "精排Top-K": rerank_top_k if enable_rerank else "N/A",
-                    "上下文长度": len(raw_context),
-                    "会话ID": session_id[:8] + "...",
-                    "线程ID": thread_id[:8] + "...",
-                    "对话轮数": (len(session_chat_history) + 2) // 2
-                }
-                
-                formatted_context = ""
-                if show_context:
-                    formatted_context = format_context_display(raw_context)
-                
-                kg_html = create_knowledge_graph_html(entities, relationships) if entities or relationships else loading_html
-                docs_html = create_documents_html(documents) if documents else loading_html
-                
-                # 显示思考过程
-                logger.info(f"💭 界面显示思考内容长度: {len(thinking_message)} 字符 (accumulated_reasoning={len(accumulated_reasoning)}, done={is_done})")
-                yield current_chat, metrics, formatted_context, kg_html, docs_html, "", ""
+                # 思考推理阶段，只更新聊天框，其他组件保持不变（使用gr.update()）
+                yield current_chat, gr.update(), gr.update(), gr.update(), gr.update(), "", ""
                 
             elif chunk_type == "answer_chunk":
                 # 流式接收答案片段
@@ -677,34 +936,32 @@ async def query_knowledge_async(
                 
                 # 第一次收到答案时，记录日志
                 if len(accumulated_answer) == len(content):
-                    logger.info(f"🎯 开始生成答案，思考过程将被替换 (思考长度: {len(accumulated_reasoning)} 字符)")
+                    logger.info(f"🎯 开始生成答案，深度思考已完成 (思考长度: {len(accumulated_reasoning)} 字符)")
                 
-                # 答案开始生成时，思考过程消失，只显示答案
-                current_chat = display_chat_history + [{"role": "assistant", "content": accumulated_answer}]
+                # 答案生成时，保留折叠的深度思考，然后显示答案
+                if accumulated_reasoning:
+                    # 生成折叠的深度思考HTML（默认关闭，使用details标签）
+                    thinking_collapsed_html = f"""<details class="thinking-container">
+<summary class="thinking-header">
+<span class="thinking-icon">🔽</span>
+<span class="thinking-title">深度思考</span>
+<span style="margin-left: auto; color: #64748b; font-size: 13px;">{len(accumulated_reasoning)} 字符</span>
+</summary>
+<div class="thinking-content">
+{accumulated_reasoning.replace(chr(10), '<br>')}
+</div>
+</details>
+
+---
+
+{accumulated_answer}"""
+                    current_chat = display_chat_history + [{"role": "assistant", "content": thinking_collapsed_html}]
+                else:
+                    current_chat = display_chat_history + [{"role": "assistant", "content": accumulated_answer}]
                 
-                rerank_status = "✅ 已精排" if enable_rerank and hasattr(agent_instance, 'reranker') and agent_instance.reranker else "⚠️ 未精排"
-                metrics = {
-                    "查询模式": query_mode,
-                    "实体数量": len(entities),
-                    "关系数量": len(relationships),
-                    "文档片段": len(documents),
-                    "精排状态": rerank_status,
-                    "精排Top-K": rerank_top_k if enable_rerank else "N/A",
-                    "上下文长度": len(raw_context),
-                    "会话ID": session_id[:8] + "...",
-                    "线程ID": thread_id[:8] + "...",
-                    "对话轮数": (len(session_chat_history) + 2) // 2
-                }
-                
-                formatted_context = ""
-                if show_context:
-                    formatted_context = format_context_display(raw_context)
-                
-                kg_html = create_knowledge_graph_html(entities, relationships) if entities or relationships else loading_html
-                docs_html = create_documents_html(documents) if documents else loading_html
-                
-                # 答案生成时不显示思考过程
-                yield current_chat, metrics, formatted_context, kg_html, docs_html, "", ""
+                # 答案流式输出时，不重新生成HTML组件，使用gr.update()保持不变
+                # 只更新聊天框，其他组件保持不变
+                yield current_chat, gr.update(), gr.update(), gr.update(), gr.update(), "", ""
                 
             elif chunk_type == "complete":
                 # 查询完成
@@ -712,7 +969,29 @@ async def query_knowledge_async(
                 updated_chat_history = chunk.get("chat_history", [])
                 context_data = chunk.get("context", context_data)
                 
-                # 更新服务器端会话历史
+                # 更新服务器端会话历史，但要保留深度思考+答案的格式
+                if accumulated_reasoning and updated_chat_history:
+                    # 找到最后一条assistant消息，添加深度思考
+                    for i in range(len(updated_chat_history) - 1, -1, -1):
+                        if updated_chat_history[i].get("role") == "assistant":
+                            # 生成折叠的深度思考HTML（默认关闭，使用details标签）
+                            thinking_collapsed_html = f"""<details class="thinking-container">
+<summary class="thinking-header">
+<span class="thinking-icon">🔽</span>
+<span class="thinking-title">深度思考</span>
+<span style="margin-left: auto; color: #64748b; font-size: 13px;">{len(accumulated_reasoning)} 字符</span>
+</summary>
+<div class="thinking-content">
+{accumulated_reasoning.replace(chr(10), '<br>')}
+</div>
+</details>
+
+---
+
+{updated_chat_history[i].get('content', '')}"""
+                            updated_chat_history[i]["content"] = thinking_collapsed_html
+                            break
+                
                 user_session["chat_history"] = updated_chat_history
                 user_session["last_active"] = time.time()
                 
@@ -738,7 +1017,7 @@ async def query_knowledge_async(
                 kg_html = create_knowledge_graph_html(entities, relationships)
                 docs_html = create_documents_html(documents)
                 
-                # 完成时不显示思考过程
+                # 完成时显示深度思考的完整内容
                 yield updated_chat_history, metrics, formatted_context, kg_html, docs_html, "", ""
                 
             elif chunk_type == "error":
@@ -834,34 +1113,40 @@ def extract_metrics_from_context(raw_context: str, mode: str) -> Dict:
     return metrics
 
 def format_context_display(raw_context: str) -> str:
-    """格式化上下文用于显示"""
+    """格式化原始上下文显示，支持Markdown渲染"""
+    try:
+        import markdown
+        markdown_available = True
+    except ImportError:
+        markdown_available = False
+    
     templates = load_html_templates()
     
     if not raw_context:
         return templates['empty_state']['no_context']
     
-    # 尝试解析JSON格式的上下文
-    try:
-        import json
-        if raw_context.strip().startswith('{') or raw_context.strip().startswith('['):
-            context_data = json.loads(raw_context)
-            
-            # 如果是字典格式，提取实体和关系
-            if isinstance(context_data, dict):
-                entities = context_data.get("entities", [])
-                relationships = context_data.get("relationships", [])
-                return _create_context_html(entities, relationships)
-            # 如果是列表格式，假设是文档列表
-            elif isinstance(context_data, list):
-                return _create_documents_html(context_data)
-    except (json.JSONDecodeError, Exception):
-        pass
-    
-    # 如果不是JSON格式，使用原始显示方式
     raw_template = templates['context_display']['raw_context_template']
+    
+    # 尝试将内容渲染为Markdown
+    if markdown_available and raw_context:
+        try:
+            # 使用markdown渲染，支持表格、代码块等
+            content_html = markdown.markdown(
+                raw_context, 
+                extensions=['tables', 'fenced_code', 'nl2br', 'codehilite']
+            )
+            # 添加样式包装
+            content_rendered = f'<div class="markdown-content">{content_html}</div>'
+        except:
+            # 如果渲染失败，回退到纯文本
+            content_rendered = html.escape(raw_context).replace('\n', '<br>')
+    else:
+        # 没有markdown库，使用纯文本
+        content_rendered = html.escape(raw_context).replace('\n', '<br>')
+    
     return (raw_template
            .replace('{{char_count}}', str(len(raw_context)))
-           .replace('{{content}}', html.escape(raw_context)))
+           .replace('{{content}}', content_rendered))
 
 def _create_context_html(entities: List[Dict], relationships: List[Dict]) -> str:
     """创建实体和关系的HTML显示"""
@@ -1085,14 +1370,23 @@ with gr.Blocks(
     theme=gr.themes.Soft(primary_hue="blue"),
     css=custom_css
 ) as demo:
+    # 简洁的标题栏
     gr.HTML("""
-    <div class="header-banner">
-        <h1>🦙 保险文档智能检索系统</h1>
-        <p>基于 LightRAG + LangGraph 的混合检索引擎 | 支持向量检索 + 知识图谱推理</p>
+    <div style="text-align: center; padding: 20px 0; margin-bottom: 20px;">
+        <h1 style="margin: 0; font-size: 28px; font-weight: 600; color: #1e293b;">🦙 保险智能问答</h1>
+        <p style="margin: 8px 0 0 0; color: #64748b; font-size: 14px;">基于知识图谱的智能检索系统</p>
     </div>
     """)
+    
     with gr.Row():
-        with gr.Column(scale=3):
+        # 浮动配置按钮
+        toggle_sidebar_btn = gr.Button("⚙️", elem_classes=["floating-config-btn"], visible=True)
+        
+        with gr.Column(scale=1, visible=False) as sidebar_column:
+            # 侧边栏标题
+            gr.Markdown("## ⚙️ 系统配置")
+            close_sidebar_btn = gr.Button("✕ 关闭配置", elem_id="close-sidebar-btn", variant="secondary")
+            
             with gr.Accordion("📁 文档库管理", open=True):
                 gr.Markdown("### 索引新文档")
                 file_input = gr.File(
@@ -1159,12 +1453,11 @@ with gr.Blocks(
                 - **关系聚焦检索**: 全图推理，适合复杂关联查询
                 - **混合检索**: 结合local和global两种策略
                 """)
-        with gr.Column(scale=7):
-            gr.Markdown("### 💬 智能问答")
+        with gr.Column(scale=7, elem_id="main-content"):
             chatbot = gr.Chatbot(
-                label="对话历史",
-                height=400,
+                height=900,
                 type="messages",
+                show_label=False,
                 avatar_images=(
                     "https://api.dicebear.com/7.x/initials/svg?seed=User",
                     "https://api.dicebear.com/7.x/bottts/svg?seed=AI"
@@ -1172,12 +1465,12 @@ with gr.Blocks(
             )
             with gr.Row():
                 query_input = gr.Textbox(
-                    label="输入问题",
-                    placeholder="例如: 什么情况下保险公司会豁免保险费?",
+                    placeholder="输入问题，例如: 什么情况下保险公司会豁免保险费?",
                     lines=2,
-                    scale=8
+                    scale=8,
+                    show_label=False
                 )
-                query_btn = gr.Button("🔍 查询", variant="primary", scale=1)
+                query_btn = gr.Button("🔍", variant="primary", scale=1)
             with gr.Row():
                 clear_btn = gr.Button("🗑️ 清空对话")
                 export_btn = gr.Button("💾 导出结果")
@@ -1264,6 +1557,19 @@ with gr.Blocks(
         fn=export_conversation,
         inputs=[chatbot],
         outputs=[query_input]
+    )
+    
+    # 侧边栏折叠/展开事件 - 优化响应速度
+    toggle_sidebar_btn.click(
+        fn=lambda: (gr.update(visible=True), gr.update(visible=False)),
+        outputs=[sidebar_column, toggle_sidebar_btn],
+        queue=False
+    )
+    
+    close_sidebar_btn.click(
+        fn=lambda: (gr.update(visible=False), gr.update(visible=True)),
+        outputs=[sidebar_column, toggle_sidebar_btn],
+        queue=False
     )
 
 # ===== 启动逻辑 =====

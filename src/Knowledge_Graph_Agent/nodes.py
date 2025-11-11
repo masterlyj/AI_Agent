@@ -1,5 +1,4 @@
-from typing import Dict, Any, TypedDict, Literal, Optional, List
-#新增Document导入
+from typing import Dict, Any, TypedDict, Literal, Optional, List, Tuple, Set
 from langchain_core.documents import Document
 from .light_graph_rag import LightRAG
 from .state import IndexingState, QueryState
@@ -23,7 +22,7 @@ class WorkflowNodes:
                 ids=state.get("ids"),
                 file_paths=state.get("file_paths")
             )
-            logger.info(f"✅ 索引任务已提交,Track ID: {track_id}")
+            logger.info(f"✅ 实体与关系抽取任务已提交,Track ID: {track_id}")
             return {
                 "track_id": track_id,
                 "status_message": "Document indexing started successfully."
@@ -44,27 +43,19 @@ class WorkflowNodes:
         try:
             query = state["query"]
             query_mode = state.get("query_mode", "hybrid")
-            # # 🔧 调试日志：检查 state 中的关键信息
-            # logger.info(f"📦 State 信息:")
-            # logger.info(f"   - query: {query}")
-            # logger.info(f"   - query_mode: {query_mode}")
-            # logger.info(f"   - reranker 存在: {'reranker' in state}")
-            # logger.info(f"   - reranker 值: {state.get('reranker')}")
-            
-            # 调用 LightRAG 的 aquery_data 方法，它只检索数据而不调用 LLM
-            # 我们检索更多的文档（例如 20 个）以供精排
+
             logger.info(f"正在以 '{query_mode}' 模式为查询进行粗排检索...")
             retrieval_result = await self.rag.aquery_data(
                 query,
-                param=QueryParam(mode=query_mode, chunk_top_k=20)
+                param=QueryParam(mode=query_mode)
             )
-            
+
             # 从返回的结构化数据中提取所有信息
             data = retrieval_result.get("data", {})
             retrieved_chunks_data = data.get("chunks", [])
             retrieved_entities = data.get("entities", [])
             retrieved_relationships = data.get("relationships", [])
-            
+
             # 将字典格式的 chunks 转换为 LangChain 的 Document 对象，以便后续处理
             retrieved_docs = [
                 Document(
@@ -76,45 +67,18 @@ class WorkflowNodes:
                     }
                 ) for chunk in retrieved_chunks_data
             ]
-            
+
             logger.info(f"✅ 粗排检索完成:")
             logger.info(f"   - 文档块: {len(retrieved_docs)} 个")
             logger.info(f"   - 实体: {len(retrieved_entities)} 个")
             logger.info(f"   - 关系: {len(retrieved_relationships)} 条")
-            
-            # # 打印实体信息
-            # if retrieved_entities:
-            #     logger.info("\n" + "=" * 60)
-            #     logger.info("📊 检索到的实体")
-            #     logger.info("=" * 60)
-            #     for idx, entity in enumerate(retrieved_entities[:5], 1):  # 只显示前5个
-            #         logger.info(f"  [{idx}] {entity.get('entity_name', '未知')}")
-            #         logger.info(f"      类型: {entity.get('entity_type', '未知')}")
-            #         logger.info(f"      描述: {entity.get('description', '无')[:100]}")
-            #     if len(retrieved_entities) > 5:
-            #         logger.info(f"  ... 及其他 {len(retrieved_entities) - 5} 个实体")
-            #     logger.info("=" * 60 + "\n")
-            
-            # # 打印关系信息
-            # if retrieved_relationships:
-            #     logger.info("\n" + "=" * 60)
-            #     logger.info("🔗 检索到的关系")
-            #     logger.info("=" * 60)
-            #     for idx, rel in enumerate(retrieved_relationships[:5], 1):  # 只显示前5条
-            #         logger.info(f"  [{idx}] {rel.get('src_id', '?')} → {rel.get('tgt_id', '?')}")
-            #         logger.info(f"      关系: {rel.get('description', '无')[:100]}")
-            #         logger.info(f"      权重: {rel.get('weight', 0):.2f}")
-            #     if len(retrieved_relationships) > 5:
-            #         logger.info(f"  ... 及其他 {len(retrieved_relationships) - 5} 条关系")
-            #     logger.info("=" * 60 + "\n")
-            
-            # 将原始文档列表和知识图谱信息放入 state，传递给 rerank 节点
+
             return {
                 "retrieved_docs": retrieved_docs,
                 "retrieved_entities": retrieved_entities,
                 "retrieved_relationships": retrieved_relationships
             }
-            
+
         except Exception as e:
             logger.error(f"❌ 上下文检索失败: {e}")
             return {
@@ -126,26 +90,17 @@ class WorkflowNodes:
     async def rerank_context(self, state: QueryState) -> Dict[str, Any]:
         """
         节点: 使用 BCE Reranker 对检索到的文档进行精排，并打印分数。
+        精排后选取 top_k 文档。
         """
         logger.info("--- 运行节点：rerank_context (精排) ---")
-
-        # # 🔧 详细调试日志
-        # logger.info(f"📦 精排节点接收到的 State 信息:")
-        # logger.info(f"   - State keys: {list(state.keys())}")
-        # logger.info(f"   - 'reranker' in state: {'reranker' in state}")
-        # logger.info(f"   - state.get('reranker'): {state.get('reranker')}")
-        # logger.info(f"   - type(state.get('reranker')): {type(state.get('reranker'))}")
-        # logger.info(f"   - 'retrieved_docs' in state: {'retrieved_docs' in state}")
-        # logger.info(f"   - retrieved_docs 数量: {len(state.get('retrieved_docs', []))}")
-
         reranker = state.get("reranker")
         docs_to_rerank = state.get("retrieved_docs", [])
 
-        # 🔧 增强判断逻辑
+        # 增强判断逻辑
         if reranker is None:
             logger.warning("⚠️ Reranker 未配置 (state['reranker'] is None)，跳过精排步骤。")
             return {"final_docs": docs_to_rerank}  # 直接将原始文档传递下去
-        
+
         if not docs_to_rerank:
             logger.warning("⚠️ 没有检索到文档 (retrieved_docs 为空)，跳过精排步骤。")
             return {"final_docs": []}
@@ -153,43 +108,32 @@ class WorkflowNodes:
         try:
             query = state["query"]
             passages = [doc.page_content for doc in docs_to_rerank]
-            
+
             logger.info(f"🎯 开始精排: 对 {len(passages)} 个文档进行重新排序...")
-            
+
             # 调用 reranker 模型进行计算
             results = reranker.rerank(query, passages)
             rerank_ids = results.get('rerank_ids', [])
             rerank_scores = results.get('rerank_scores', [])
-            
+
             if not rerank_ids:
                 logger.warning("⚠️ Reranker 未返回有效结果，使用原始文档。")
                 return {"final_docs": docs_to_rerank}
-            
+
             reranked_docs = [docs_to_rerank[i] for i in rerank_ids]
 
-            # --- 打印排序结果 ---
-            logger.info("\n" + "=" * 60)
-            logger.info("🎯 Reranker 打分结果 (置信度从高到低)")
-            logger.info("=" * 60)
-            for idx, (doc, score) in enumerate(zip(reranked_docs, rerank_scores), 1):
-                # 将 rerank 分数添加到元数据中，方便追踪
+            for doc, score in zip(reranked_docs, rerank_scores):
                 doc.metadata['rerank_score'] = score
-                content_snippet = doc.page_content[:100].replace("\n", " ")
-                if len(doc.page_content) > 100:
-                    content_snippet += "..."
-                logger.info(f"  [{idx}] 分数: {score:.4f} | 来源: {doc.metadata.get('file_path', '未知')}")
-                logger.info(f"      内容: {content_snippet}")
-            logger.info("=" * 60 + "\n")
-            
-            # 从 reranker 配置中获取 top_k，如果没有则默认为 3
-            top_k = getattr(reranker, 'rerank_top_k', 3)
+
+            top_k = state.get("rerank_top_k") or getattr(reranker, 'rerank_top_k', 20)
+
+            # 直接选取 top_k
             final_docs = reranked_docs[:top_k]
-            
-            logger.info(f"✅ 精排完成，选取 Top {len(final_docs)} 文档传递给生成节点。")
-            
-            # 将精排后的最终文档列表放入 state
+
+            logger.info(f"✅ 精排完成，选取 Top {len(final_docs)} 文档传递给生成节点 (用户设置: {state.get('rerank_top_k', '未设置')})。")
+
             return {"final_docs": final_docs}
-            
+
         except Exception as e:
             logger.error(f"❌ 精排过程出错: {e}")
             import traceback
@@ -197,7 +141,6 @@ class WorkflowNodes:
             logger.warning("⚠️ 精排失败，使用原始检索文档。")
             return {"final_docs": docs_to_rerank}
 
-    # --- 步骤3: 修改 generate_answer 节点，使其只负责生成 ---
     async def generate_answer(self, state: QueryState) -> Dict[str, Any]:
         """
         节点: 基于精排后的上下文生成最终答案。
@@ -206,28 +149,32 @@ class WorkflowNodes:
         logger.info("--- 运行节点：generate_answer (生成答案) ---")
         try:
             query = state["query"]
-            # 从 state 中获取由 rerank 节点提供的最终文档
             final_docs = state.get("final_docs", [])
-            # 获取实体和关系信息
             retrieved_entities = state.get("retrieved_entities", [])
             retrieved_relationships = state.get("retrieved_relationships", [])
-            
+            chat_history = state.get("chat_history", [])
+            llm = state.get("llm")
+            if not llm:
+                raise ValueError("❌ LLM 实例未在 state 中配置")
+
             if not final_docs and not retrieved_entities and not retrieved_relationships:
                 logger.warning("⚠️ 没有上下文可供生成答案。")
                 return {
-                    "answer": "抱歉，根据可用信息我无法回答您的问题。",
+                    "answer": "抱歉,根据可用信息我无法回答您的问题。",
+                    "chat_history": chat_history + [
+                        {"role": "user", "content": query},
+                        {"role": "assistant", "content": "抱歉,根据可用信息我无法回答您的问题。"}
+                    ],
                     "context": {
                         "raw_context": "",
                         "query_mode": state.get("query_mode", "hybrid"),
                     }
                 }
-            
-            # 构建完整的上下文
+
             full_context = self._build_context(
                 final_docs, retrieved_entities, retrieved_relationships
             )
-            
-            # 构建发送给 LLM 的提示词
+
             system_prompt = f'''你是一个专业的保险文档问答助手。
 请根据下面提供的知识图谱信息和文档内容来回答用户的问题。
 
@@ -245,24 +192,21 @@ class WorkflowNodes:
 {full_context}
 --- 上下文结束 ---
 '''
-            
+
             logger.info("🤖 开始调用 LLM 生成答案...")
             logger.info(f"📊 上下文统计:")
             logger.info(f"   - 实体: {len(retrieved_entities)} 个")
             logger.info(f"   - 关系: {len(retrieved_relationships)} 条")
             logger.info(f"   - 文档: {len(final_docs)} 个")
-            
-            # 使用 'bypass' 模式调用 aquery_llm，这会跳过 LightRAG 内部的检索
-            # 直接将我们的 system_prompt 和 query 发送给 LLM
+
             result = await self.rag.aquery_llm(
                 query,
-                param=QueryParam(mode="bypass"),  # 关键: 跳过内部检索
-                system_prompt=system_prompt       # 关键: 注入我们的上下文
+                param=QueryParam(mode="bypass"),
+                system_prompt=system_prompt
             )
-            
-            # 从返回的复杂字典中提取最终答案
+
             answer = result.get("llm_response", {}).get("content", "生成答案时出错，未收到有效回复。")
-            
+
             logger.info(f"✅ 答案生成完成 (长度: {len(answer)} 字符)")
             
             return {
@@ -284,7 +228,7 @@ class WorkflowNodes:
                     ]
                 }
             }
-            
+
         except Exception as e:
             logger.error(f"❌ 答案生成失败: {e}")
             import traceback
@@ -343,75 +287,45 @@ class WorkflowNodes:
                 }
             }
             
-            # === 第一步：构建并直接显示系统执行信息 ===
-            logger.info("🧠 开始生成思考推理过程...")
+            # === 深度思考：让LLM看完整文档内容判断上下文是否充分 ===
+            logger.info("🧠 开始深度思考推理过程...")
             
-            # 构建详细的实体和关系信息
-            entities_info = "\n".join([
-                f"  • {e.get('entity_name', '未知')} ({e.get('entity_type', '未知类型')})"
-                for e in retrieved_entities[:5]
-            ]) if retrieved_entities else "  (无相关实体)"
-            
-            relationships_info = "\n".join([
-                f"  • {r.get('src_id', '?')} → {r.get('tgt_id', '?')}"
-                for r in retrieved_relationships[:3]
-            ]) if retrieved_relationships else "  (无相关关系)"
-            
-            docs_info = "\n".join([
-                f"  • 文档 {i+1}: {doc.metadata.get('file_path', '未知来源').split('/')[-1]} (置信度: {doc.metadata.get('rerank_score', 0):.2f})"
-                for i, doc in enumerate(final_docs[:3])
-            ]) if final_docs else "  (无相关文档)"
-            
-            # 构建系统信息（这部分直接显示，不依赖LLM）
-            system_info = f"""📊 **系统检索信息**
-
-**检索阶段：**
-• 检索到 {len(retrieved_entities)} 个相关实体
-• 检索到 {len(retrieved_relationships)} 条相关关系
-• 初步检索到多个文档片段
-
-**精排阶段：**
-• 精排后保留 {len(final_docs)} 个最相关文档
-• 使用语义相似度重新排序
-
-**关键实体（前5个）：**
-{entities_info}
-
-**关键关系（前3个）：**
-{relationships_info}
-
-**精排文档（前3个）：**
-{docs_info}
-
----
-
-💭 **推理分析：**
-"""
-            
-            # 直接yield系统信息（保证100%显示）
-            logger.info(f"📋 直接显示系统信息 ({len(system_info)} 字符)")
-            yield {
-                "type": "reasoning_chunk",
-                "content": system_info,
-                "done": False
-            }
-            
-            # === 第二步：让LLM补充推理分析 ===
+            # 获取深度思考参数（默认只进行1次二次检索）
+            max_requery_depth = state.get("max_requery_depth", 1)
+            current_depth = 0
             reasoning_messages = []
             
-            # 简化的系统提示（只要求推理分析，不要求重复系统信息）
+            # 要求LLM看完整文档判断上下文是否充分
             reasoning_system_prompt = '''你是一个专业的保险文档问答助手。
-系统已经展示了检索和精排的详细信息。
 
-现在请简要说明你的推理分析过程：
-1. 你如何理解用户的问题（1-2句话）
-2. 从检索结果中发现的关键信息（2-3句话）
-3. 你的推理逻辑（2-3句话）
+请仔细阅读下面提供的所有文档内容，分析是否足以回答用户的问题。
 
-要求：
+**重要：文档格式说明**
+文档内容可能包含表格数据，其格式如下：
+- `[SOURCE:__TABLE_ENTITY_X__]` 表示该块对应的表格占位符，X为表格编号
+- `[CONTEXT]` 后面是与该表格相关的上下文文本，可能包含多个其他表格占位符，但请只关注当前SOURCE对应的表格
+- `[HTML_TABLE]` 后面是真实表格的HTML内容，包含了表格的详细数据
+
+在分析时，请理解表格占位符与实际HTML表格的对应关系，从HTML表格中提取准确的数值、条款、费率等关键信息。
+
+**任务流程：**
+
+1. **理解问题**：说明你如何理解用户的问题（1-2句话）
+
+2. **评估上下文**：判断当前文档和知识图谱信息是否包含足够的答案依据（2-3句话）
+
+3. **决策**：
+   - 如果上下文**充分**：说明你的推理逻辑（2-3句话），并在最后一行输出：`[CONTEXT_SUFFICIENT]`
+   - 如果上下文**不足**：
+     a) 先总结当前上下文中的关键信息（2-3句话）
+     b) 说明还缺少什么关键信息（1-2句话）
+     c) 在最后一行输出：`[CONTEXT_SUMMARY: 你的总结] | [NEW_QUERY: 你生成的新查询语句]`
+
+**要求：**
 - 使用第一人称（"我理解..."、"我发现..."）
-- 简洁明了，总字数100-200字
-- 不要重复系统已展示的信息'''
+- 仔细阅读所有文档内容，不要仅看预览
+- 总字数200-400字
+- 必须在最后一行明确输出决策标记'''
             
             reasoning_messages.append({"role": "system", "content": reasoning_system_prompt})
             
@@ -423,44 +337,171 @@ class WorkflowNodes:
                         "content": msg.get("content")
                     })
             
-            # 简化的用户消息
-            reasoning_user_message = f"""用户问题: {query}
+            # 提供完整的上下文内容给LLM分析
+            reasoning_user_message = f"""**用户问题：** {query}
 
-系统已检索到:
-- {len(retrieved_entities)} 个实体
-- {len(retrieved_relationships)} 条关系
-- {len(final_docs)} 个精排文档
+{full_context}
 
-请简要说明你的推理分析（100-200字）。"""
+请仔细阅读上述所有内容，分析上下文是否充分，并给出你的推理分析和决策。"""
             
             reasoning_messages.append({"role": "user", "content": reasoning_user_message})
             
             # 流式生成LLM推理部分
+            import asyncio
             llm_reasoning = ""
             chunk_count = 0
+            buffer = ""  # 缓冲区，累积小chunk
+            buffer_size = 0
+            
             async for chunk in llm.astream(reasoning_messages):
                 content = chunk.content if hasattr(chunk, 'content') else str(chunk)
                 llm_reasoning += content
+                buffer += content
+                buffer_size += len(content)
                 chunk_count += 1
                 
-                # 每10个chunk打印一次进度
-                if chunk_count % 10 == 0:
-                    logger.info(f"💭 LLM推理进度: 已生成 {len(llm_reasoning)} 字符 ({chunk_count} chunks)")
-                
+                # 当缓冲区达到一定大小（例如20字符）或每5个chunk时才yield
+                if buffer_size >= 20 or chunk_count % 5 == 0:
+                    yield {
+                        "type": "reasoning_chunk",
+                        "content": buffer,
+                        "done": False
+                    }
+                    buffer = ""
+                    buffer_size = 0
+                    # 释放事件循环，避免阻塞
+                    await asyncio.sleep(0.01)
+            
+            # 发送剩余缓冲区内容
+            if buffer:
                 yield {
                     "type": "reasoning_chunk",
-                    "content": content,
+                    "content": buffer,
                     "done": False
                 }
             
             # 思考过程完成
-            full_reasoning = system_info + llm_reasoning
-            logger.info(f"✅ 思考推理完成: 系统信息 {len(system_info)} 字符 + LLM推理 {len(llm_reasoning)} 字符 = 总计 {len(full_reasoning)} 字符")
+            full_reasoning = llm_reasoning
+            logger.info(f"✅ 思考推理完成: LLM推理 {len(llm_reasoning)} 字符")
+            
+            # === 判断是否需要二次检索 ===
+            need_requery = False
+            new_query = None
+            context_summary = ""
+            
+            # 检查是否需要二次检索且未超过深度限制
+            if "[CONTEXT_SUMMARY:" in llm_reasoning and "[NEW_QUERY:" in llm_reasoning:
+                if current_depth < max_requery_depth:
+                    # 提取总结和新查询
+                    import re
+                    summary_match = re.search(r'\[CONTEXT_SUMMARY:\s*(.+?)\]\s*\|', llm_reasoning, re.DOTALL)
+                    query_match = re.search(r'\[NEW_QUERY:\s*(.+?)\]', llm_reasoning)
+                    
+                    if summary_match and query_match:
+                        context_summary = summary_match.group(1).strip()
+                        new_query = query_match.group(1).strip()
+                        need_requery = True
+                        current_depth += 1
+                        
+                        logger.info(f"🔄 LLM判断需要二次检索 (深度 {current_depth}/{max_requery_depth})")
+                        logger.info(f"📝 当前上下文总结: {context_summary[:100]}...")
+                        logger.info(f"🔍 新查询: {new_query}")
+                        
+                        # 显示二次检索提示
+                        requery_notice = f"\n\n---\n\n🔄 **深度思考：需要二次检索** (深度 {current_depth}/{max_requery_depth})\n\n**当前上下文总结：**\n{context_summary}\n\n**优化查询：** `{new_query}`\n\n正在进行二次检索...\n\n"
+                        yield {
+                            "type": "reasoning_chunk",
+                            "content": requery_notice,
+                            "done": False
+                        }
+                        
+                        # === 执行二次检索 ===
+                        logger.info("🔍 开始二次检索...")
+                        try:
+                            # 调用检索节点
+                            requery_state = {
+                                "query": new_query,
+                                "query_mode": state.get("query_mode", "hybrid")
+                            }
+                            retrieval_result = await self.retrieve_context(requery_state)
+                            
+                            # 调用精排节点
+                            rerank_state = {
+                                "query": new_query,
+                                "retrieved_docs": retrieval_result.get("retrieved_docs", []),
+                                "reranker": state.get("reranker"),
+                                "rerank_top_k": state.get("rerank_top_k")
+                            }
+                            rerank_result = await self.rerank_context(rerank_state)
+                            
+                            # 获取新上下文
+                            new_final_docs = rerank_result.get("final_docs", [])
+                            new_entities = retrieval_result.get("retrieved_entities", [])
+                            new_relationships = retrieval_result.get("retrieved_relationships", [])
+                            
+                            # 构建新上下文
+                            new_context = self._build_context(
+                                new_final_docs, new_entities, new_relationships
+                            )
+                            
+                            logger.info(f"✅ 二次检索完成: {len(new_final_docs)} 个文档, {len(new_entities)} 个实体, {len(new_relationships)} 条关系")
+                            
+                            # 拼接总结与新上下文
+                            full_context = f"""## 原始上下文总结
+
+{context_summary}
+
+---
+
+## 二次检索的新增上下文
+
+{new_context}"""
+                            
+                            # 更新状态变量
+                            final_docs = new_final_docs
+                            retrieved_entities = new_entities
+                            retrieved_relationships = new_relationships
+                            
+                            # 显示二次检索结果
+                            requery_result_notice = f"\n✅ **二次检索完成**\n- 新增文档: {len(new_final_docs)} 个\n- 新增实体: {len(new_entities)} 个\n- 新增关系: {len(new_relationships)} 条\n\n已将原始总结与新上下文拼接，正在生成增强回答...\n\n"
+                            yield {
+                                "type": "reasoning_chunk",
+                                "content": requery_result_notice,
+                                "done": False
+                            }
+                            
+                            # 更新reasoning记录
+                            full_reasoning += requery_notice + requery_result_notice
+                            
+                        except Exception as e:
+                            logger.error(f"❌ 二次检索失败: {e}")
+                            error_notice = f"\n\n⚠️ 二次检索失败: {str(e)}\n将使用原始检索结果生成答案。\n\n"
+                            yield {
+                                "type": "reasoning_chunk",
+                                "content": error_notice,
+                                "done": False
+                            }
+                            full_reasoning += error_notice
+                else:
+                    logger.info(f"⚠️  已达最大检索深度 ({max_requery_depth})，不再进行二次检索")
+                    depth_limit_notice = f"\n\n⚠️  已达最大深度思考次数 ({max_requery_depth})，将基于当前上下文生成答案。\n\n"
+                    yield {
+                        "type": "reasoning_chunk",
+                        "content": depth_limit_notice,
+                        "done": False
+                    }
+                    full_reasoning += depth_limit_notice
+            
+            # 标记推理完成
             yield {
                 "type": "reasoning_chunk",
                 "content": "",
                 "done": True,
-                "full_reasoning": full_reasoning
+                "full_reasoning": full_reasoning,
+                "need_requery": need_requery,
+                "new_query": new_query,
+                "context_summary": context_summary,
+                "requery_depth": current_depth
             }
             
             # === 第二步：基于思考过程生成最终答案 ===
@@ -479,9 +520,17 @@ class WorkflowNodes:
 知识图谱包含了从文档中提取的实体和关系，提供了结构化的知识视图。
 文档内容是经过精排的相关文本片段，按相关性从高到低排序。
 
+**重要：文档格式说明**
+文档内容可能包含表格数据，其格式如下：
+- `[SOURCE:__TABLE_ENTITY_X__]` 表示该块对应的表格占位符，X为表格编号
+- `[CONTEXT]` 后面是与该表格相关的上下文文本，可能包含多个其他表格占位符，但请只关注当前SOURCE对应的表格
+- `[HTML_TABLE]` 后面是真实表格的HTML内容，包含了表格的详细数据
+
+在回答时，请理解表格占位符与实际HTML表格的对应关系，从HTML表格中提取准确的数值、条款、费率等关键信息，确保数据的准确性。
+
 回答时请：
 1. 优先利用知识图谱的结构化信息理解实体间的关系
-2. 结合文档内容提供详细的上下文支持
+2. 结合文档内容（包括表格数据）提供详细的上下文支持
 3. 使用清晰、专业的语气
 4. 如果可能，引用具体的实体、关系或文档来源
 5. 如果信息不足，请直接告知'''
@@ -513,12 +562,34 @@ class WorkflowNodes:
             
             # 流式生成最终答案
             full_answer = ""
+            answer_buffer = ""
+            answer_buffer_size = 0
+            answer_chunk_count = 0
+            
             async for chunk in llm.astream(answer_messages):
                 content = chunk.content if hasattr(chunk, 'content') else str(chunk)
                 full_answer += content
+                answer_buffer += content
+                answer_buffer_size += len(content)
+                answer_chunk_count += 1
+                
+                # 当缓冲区达到一定大小（例如30字符）或每3个chunk时才yield
+                if answer_buffer_size >= 30 or answer_chunk_count % 3 == 0:
+                    yield {
+                        "type": "answer_chunk",
+                        "content": answer_buffer,
+                        "done": False
+                    }
+                    answer_buffer = ""
+                    answer_buffer_size = 0
+                    # 释放事件循环，避免阻塞
+                    await asyncio.sleep(0.01)
+            
+            # 发送剩余缓冲区内容
+            if answer_buffer:
                 yield {
                     "type": "answer_chunk",
-                    "content": content,
+                    "content": answer_buffer,
                     "done": False
                 }
             
@@ -544,31 +615,27 @@ class WorkflowNodes:
     
     def _build_context(self, final_docs, retrieved_entities, retrieved_relationships):
         """构建完整上下文字符串（供流式和非流式版本共用）"""
-        # 构建知识图谱上下文（实体和关系）
         kg_context_parts = []
-        
-        # 添加实体信息
+
         if retrieved_entities:
             entity_context = "### 相关实体\n\n"
-            for idx, entity in enumerate(retrieved_entities[:10], 1):  # 限制前10个
+            for idx, entity in enumerate(retrieved_entities, 1):
                 entity_name = entity.get('entity_name', '未知')
                 entity_type = entity.get('entity_type', '未知')
                 description = entity.get('description', '无描述')
                 entity_context += f"{idx}. **{entity_name}** ({entity_type})\n   {description}\n\n"
             kg_context_parts.append(entity_context)
-        
-        # 添加关系信息
+
         if retrieved_relationships:
             relation_context = "### 相关关系\n\n"
-            for idx, rel in enumerate(retrieved_relationships[:10], 1):  # 限制前10条
+            for idx, rel in enumerate(retrieved_relationships, 1):
                 src = rel.get('src_id', '?')
                 tgt = rel.get('tgt_id', '?')
                 desc = rel.get('description', '无描述')
                 weight = rel.get('weight', 0)
                 relation_context += f"{idx}. {src} → {tgt} (权重: {weight:.2f})\n   {desc}\n\n"
             kg_context_parts.append(relation_context)
-        
-        # 将最终文档格式化为高质量的上下文字符串
+
         doc_context_parts = []
         if final_docs:
             doc_context_parts.append("### 相关文档\n")
@@ -577,7 +644,7 @@ class WorkflowNodes:
                 score_str = f"{rerank_score:.4f}" if isinstance(rerank_score, float) else str(rerank_score)
                 chunk_id = doc.metadata.get('chunk_id', '未知')
                 file_path = doc.metadata.get('file_path', '未知')
-                
+
                 doc_context_parts.append(
                     f"【文档 {idx}】\n"
                     f"Chunk ID: {chunk_id}\n"
@@ -585,16 +652,14 @@ class WorkflowNodes:
                     f"置信度: {score_str}\n"
                     f"内容:\n{doc.page_content}\n"
                 )
-        
-        # 组合所有上下文
+
         kg_context_str = "\n".join(kg_context_parts) if kg_context_parts else ""
         doc_context_str = "\n" + ("-" * 60 + "\n").join(doc_context_parts) if doc_context_parts else ""
-        
-        # 构建完整上下文
+
         full_context = ""
         if kg_context_str:
             full_context += "## 知识图谱信息\n\n" + kg_context_str + "\n"
         if doc_context_str:
             full_context += "## 文档内容\n" + doc_context_str
-        
+
         return full_context

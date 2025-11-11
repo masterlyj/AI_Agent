@@ -6,6 +6,9 @@ from transformers import AutoTokenizer, AutoModelForSequenceClassification
 from BCEmbedding.utils import logger_wrapper
 import os
 from pathlib import Path
+import requests
+import json
+
 logger = logger_wrapper('BCEmbedding.models.RerankerModel')
 
 class RerankerModel:
@@ -108,8 +111,7 @@ class RerankerModel:
                 scores = torch.sigmoid(scores)
                 scores_collection.extend(scores.cpu().numpy().tolist())
 
-        if len(scores_collection) == 1:
-            return scores_collection[0]
+        # 始终返回列表，即使只有一个元素
         return scores_collection
 
     def rerank(
@@ -132,6 +134,10 @@ class RerankerModel:
 
         # 2. 使用 compute_score 方法直接计算所有配对的分数
         all_scores = self.compute_score(sentence_pairs, batch_size=batch_size, **kwargs)
+        
+        # 确保 all_scores 是列表
+        if not isinstance(all_scores, list):
+            all_scores = [all_scores]
 
         # 3. 根据分数进行排序
         # np.argsort 返回的是排序后的原始索引
@@ -141,6 +147,170 @@ class RerankerModel:
         sorted_passages = [passages[i] for i in sorted_indices]
         sorted_scores = [all_scores[i] for i in sorted_indices]
 
+        return {
+            'rerank_passages': sorted_passages,
+            'rerank_scores': sorted_scores,
+            'rerank_ids': sorted_indices
+        }
+
+
+class VLLMRerankerModel:
+    """基于vLLM API的Rerank模型，支持Qwen3-Reranker instruction格式"""
+    
+    def __init__(
+            self,
+            base_url: str,
+            model: str,
+            api_key: str = "EMPTY",
+            top_k: int = 20,
+            timeout: int = 60,
+            instruction: str = "给定一个查询，检索能回答该查询的相关文档",
+            **kwargs
+    ):
+        """
+        初始化vLLM Reranker
+        
+        Args:
+            base_url: vLLM服务的base URL，例如 "http://localhost:18890/v1"
+            model: 模型名称
+            api_key: API密钥（可选，默认为"EMPTY"）
+            top_k: 返回的top-k结果数量
+            timeout: 请求超时时间（秒）
+            instruction: Rerank指令，用于Qwen3-Reranker等模型
+        """
+        self.base_url = base_url.rstrip('/')
+        self.model = model
+        self.api_key = api_key
+        self.rerank_top_k = top_k
+        self.timeout = timeout
+        self.instruction = instruction
+        
+        # 检查是否为Qwen3-Reranker模型
+        self.is_qwen3_reranker = "qwen3-reranker" in model.lower()
+        
+        logger.info(f"✅ 初始化vLLM Reranker: {model} (base_url={base_url})")
+        if self.is_qwen3_reranker:
+            logger.info(f"📝 使用Qwen3-Reranker指令格式: {instruction}")
+    
+    def compute_score(
+            self,
+            sentence_pairs: Union[List[Tuple[str, str]], Tuple[str, str]],
+            **kwargs
+    ) -> List[float]:
+        """
+        计算句子对的相关性分数
+        
+        Args:
+            sentence_pairs: 句子对列表，每个元素为 [query, passage]
+        
+        Returns:
+            分数列表，与输入文档顺序严格对应
+        """
+        if isinstance(sentence_pairs[0], str):
+            sentence_pairs = [sentence_pairs]
+        
+        num_docs = len(sentence_pairs)
+        logger.info(f"📊 vLLM Rerank: 一次性处理 {num_docs} 个文档")
+        
+        try:
+            # 调用vLLM rerank API
+            url = f"{self.base_url}/rerank"
+            
+            headers = {
+                "Content-Type": "application/json",
+                "Authorization": f"Bearer {self.api_key}"
+            }
+            
+            # 提取query和documents
+            query = sentence_pairs[0][0] if len(sentence_pairs) > 0 else ""
+            documents = [pair[1] for pair in sentence_pairs]
+            
+            # 为Qwen3-Reranker添加instruction和Document前缀
+            if self.is_qwen3_reranker:
+                query_with_instruction = f"<Instruct>: {self.instruction}\n<Query>: {query}"
+                documents_with_prefix = [f"<Document>: {doc}" for doc in documents]
+            else:
+                query_with_instruction = query
+                documents_with_prefix = documents
+            
+            payload = {
+                "model": self.model,
+                "query": query_with_instruction,
+                "documents": documents_with_prefix
+            }
+            
+            response = requests.post(
+                url,
+                headers=headers,
+                json=payload,
+                timeout=self.timeout
+            )
+            
+            if response.status_code == 200:
+                result = response.json()
+                results_list = result.get("results", [])
+                
+                # 重要：vLLM返回的results是按score排序的，需要按index重新排序
+                # 以确保分数列表与输入documents列表顺序一致
+                sorted_results = sorted(results_list, key=lambda x: x["index"])
+                scores = [item["relevance_score"] for item in sorted_results]
+                
+                # 验证返回的分数数量与输入文档数量一致
+                if len(scores) != num_docs:
+                    logger.error(f"❌ API返回的结果数量 ({len(scores)}) 与输入文档数量 ({num_docs}) 不匹配")
+                    return [0.0] * num_docs
+                
+                logger.info(f"✅ vLLM Rerank 完成: {num_docs} 个文档")
+                return scores
+            else:
+                logger.error(f"❌ vLLM Rerank API错误: {response.status_code} - {response.text}")
+                return [0.0] * num_docs
+                
+        except requests.Timeout:
+            logger.error(f"❌ vLLM Rerank API超时")
+            return [0.0] * num_docs
+        except Exception as e:
+            logger.error(f"❌ 调用vLLM Rerank API失败: {e}")
+            return [0.0] * num_docs
+    
+    def rerank(
+            self,
+            query: str,
+            passages: List[str],
+            **kwargs
+    ):
+        """
+        对给定的查询和段落列表进行重新排序
+        
+        Args:
+            query: 查询文本
+            passages: 段落列表
+        
+        Returns:
+            包含重排序结果的字典
+        """
+        # 过滤掉无效的段落
+        passages = [p for p in passages if isinstance(p, str) and len(p) > 0]
+        if not query or not passages:
+            return {'rerank_passages': [], 'rerank_scores': [], 'rerank_ids': []}
+        
+        # 创建查询和段落的配对
+        sentence_pairs = [[query, passage] for passage in passages]
+        
+        # 计算分数（一次性处理所有文档）
+        all_scores = self.compute_score(sentence_pairs, **kwargs)
+        
+        # 确保 all_scores 是列表
+        if not isinstance(all_scores, list):
+            all_scores = [all_scores]
+        
+        # 根据分数进行排序
+        sorted_indices = np.argsort(all_scores)[::-1].tolist()
+        
+        # 根据排序后的索引重新组织段落和分数
+        sorted_passages = [passages[i] for i in sorted_indices]
+        sorted_scores = [all_scores[i] for i in sorted_indices]
+        
         return {
             'rerank_passages': sorted_passages,
             'rerank_scores': sorted_scores,

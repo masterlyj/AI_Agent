@@ -10,12 +10,13 @@ def get_llm():
     从 .env 环境变量读取 LLM 配置并初始化模型
     
     环境变量:
-        LLM_PROVIDER: 指定 LLM 提供商 (google_genai | deepseek)
+        LLM_PROVIDER: 指定 LLM 提供商 (google_genai | deepseek | vllm)
         LLM_MODEL: 模型名称
         LLM_TEMPERATURE: 温度参数
         GOOGLE_API_KEY: Google API Key
         DEEPSEEK_API_KEY: DeepSeek API Key
-        LLM_BASE_URL: DeepSeek API Base URL
+        LLM_BASE_URL: API Base URL (用于 deepseek 和 vllm)
+        VLLM_API_KEY: vLLM API Key (可选，默认为"EMPTY")
     """
     provider = os.getenv("LLM_PROVIDER", "").strip()
     model = os.getenv("LLM_MODEL", "").strip()
@@ -47,8 +48,24 @@ def get_llm():
             base_url=base_url,
             temperature=temperature,
         )
+    
+    if provider == "vllm":
+        base_url = os.getenv("LLM_BASE_URL")
+        if not base_url:
+            raise ValueError("LLM_PROVIDER=vllm 但未配置 LLM_BASE_URL")
+        if not model:
+            raise ValueError("LLM_PROVIDER=vllm 但未配置 LLM_MODEL")
+        api_key = os.getenv("VLLM_API_KEY", "EMPTY")
+        print(f"✅ 使用 vLLM 模型: {model} (base_url={base_url})")
+        return init_chat_model(
+            model=model,
+            model_provider="openai",
+            api_key=api_key,
+            base_url=base_url,
+            temperature=temperature,
+        )
 
-    # 未指定 provider 时的回退（兼容旧逻辑）
+    # 未指定 provider 时的回退
     google_api_key = os.getenv("GOOGLE_API_KEY")
     if google_api_key:
         print(f"✅ 使用 Google Gemini 模型: {model or 'gemini-2.5-flash'} (自动选择)")
@@ -73,6 +90,7 @@ def get_llm():
 
     raise ValueError(
         "未检测到可用的 LLM 配置。请在 .env 文件中设置:\n"
-        "  - LLM_PROVIDER (google_genai 或 deepseek)\n"
-        "  - 对应的 API Key (GOOGLE_API_KEY 或 DEEPSEEK_API_KEY)"
+        "  - LLM_PROVIDER (google_genai, deepseek 或 vllm)\n"
+        "  - 对应的 API Key 和配置\n"
+        "  - vLLM需要: LLM_MODEL, LLM_BASE_URL"
     )
