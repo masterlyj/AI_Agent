@@ -21,7 +21,8 @@ load_dotenv()
 
 # --- RAGAgent with Real LLM and Embedding ---
 class RAGAgent:
-    def __init__(self):
+    def __init__(self, working_dir: str):
+        self.working_dir = working_dir
         self.rag: Optional[LightRAG] = None
         self.nodes: Optional[WorkflowNodes] = None
         self.indexing_graph = None
@@ -29,28 +30,37 @@ class RAGAgent:
         self.smart_indexer: Optional[SmartDocumentIndexer] = None
         self.reranker: Optional[RerankerModel] = None
         self.langchain_llm = None
+        self.model_name = None  # 保存模型名称，用于判断是否需要深度思考
         self.rerank_top_k = 20
 
     @classmethod
-    async def create(cls, working_dir: str = "data/rag_storage", rerank_config: dict = None, storage_mode: str = "database"):
+    async def create(cls, working_dir: str = None, rerank_config: dict = None, storage_mode: str = "database"):
         """
-        创建RAGAgent实例
+        异步工厂方法，创建并初始化 RAGAgent 实例。
         
         Args:
-            working_dir: 工作目录路径
-            rerank_config: 重排序配置
-            storage_mode: 存储模式，可选"memory"（内存管理）或"database"（数据库存储）
+            working_dir: 工作目录
+            rerank_config: Reranker配置
+            storage_mode: 存储模式 ("database" 或 "memory")
         """
-        instance = cls()
-        instance.working_dir = working_dir
-        instance.storage_mode = storage_mode  # 存储存储模式
+        instance = cls(working_dir or os.getenv("WORKING_DIR", "data/rag_storage"))
+        
+        # 如果未提供rerank_config，则从环境变量读取
+        if rerank_config is None:
+            rerank_config = {}
+            rerank_config['model_path'] = os.getenv("RERANK_MODEL_PATH", "maidalun1020/bce-reranker-base_v1")
+            rerank_config['device'] = os.getenv("RERANK_DEVICE", "cpu")
+            rerank_config['top_k'] = int(os.getenv("RERANK_TOP_K", "20"))
+            rerank_config['use_fp16'] = os.getenv("RERANK_USE_FP16", "false").lower() == "true"
+        
         os.makedirs(working_dir, exist_ok=True)
         
-        # === 1. 获取 LangChain LLM 实例 ===
-        langchain_llm = get_llm() 
+        # === 1. 获取 LangChain LLM 实例和模型名称 ===
+        langchain_llm, model_name = get_llm() 
         
         # LLM 实例
         instance.langchain_llm = langchain_llm
+        instance.model_name = model_name
         logger.info(f"✅ LangChain LLM 已加载用于问答生成")
         
         # === 2. 包装为 LightRAG 兼容的异步函数 ===
@@ -64,7 +74,7 @@ class RAGAgent:
         etype = os.getenv("EMBEDDING_TYPE", "ollama").strip()
         
         if etype == "hf":
-            model_name = os.getenv("HF_EMBEDDING_MODEL_NAME", "BAAI/bge-m3").strip()
+            emb_model_name = os.getenv("HF_EMBEDDING_MODEL_NAME", "BAAI/bge-m3").strip()
             model_kwargs = {}
             device = os.getenv("HF_EMBEDDING_DEVICE", "").strip()
             if device:
@@ -75,13 +85,13 @@ class RAGAgent:
             
             embedding_config = {
                 "type": "hf",
-                "model_name": model_name,
+                "model_name": emb_model_name,
                 "model_kwargs": model_kwargs,
                 "encode_kwargs": {},
                 "show_progress": os.getenv("HF_EMBEDDING_SHOW_PROGRESS", "false").lower() == "true",
                 "multi_process": os.getenv("HF_EMBEDDING_MULTI_PROCESS", "false").lower() == "true",
             }
-            logger.info(f"✅ 配置 HuggingFace Embedding: {model_name}")
+            logger.info(f"✅ 配置 HuggingFace Embedding: {emb_model_name}")
         
         elif etype == "ollama":
             embedding_config = {
@@ -307,6 +317,7 @@ class RAGAgent:
             "query": question,
             "query_mode": mode,
             "llm": self.langchain_llm,
+            "model_name": self.model_name,  # 传递模型名称
             "reranker": self.reranker if enable_rerank else None,
             "rerank_top_k": rerank_top_k if rerank_top_k is not None else self.rerank_top_k,
             "chat_history": chat_history or [],
@@ -373,6 +384,7 @@ class RAGAgent:
             "query": question,
             "query_mode": mode,
             "llm": self.langchain_llm,
+            "model_name": self.model_name,  # 传递模型名称
             "reranker": self.reranker if enable_rerank else None,
             "rerank_top_k": rerank_top_k if rerank_top_k is not None else self.rerank_top_k,
             "chat_history": chat_history or [],

@@ -250,6 +250,46 @@ button {
     color: #1e293b;
 }
 
+/* 深度思考区域样式 */
+.thinking-container {
+    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+    border: 2px solid #3b82f6;
+    border-radius: 12px;
+    padding: 16px;
+    margin: 12px 0;
+}
+
+.thinking-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    color: #1e40af;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+.thinking-icon {
+    font-size: 18px;
+}
+
+.thinking-title {
+    flex: 1;
+}
+
+/* 简化的深度思考内容样式 - 直接显示最新50行 */
+.thinking-content-simple {
+    margin-top: 12px;
+    padding: 12px;
+    background: white;
+    border-radius: 8px;
+    font-size: 14px;
+    line-height: 1.6;
+    color: #334155;
+    max-height: none;
+    word-wrap: break-word;
+}
+
 /* 上下文展示 */
 .context-section {
     background: #fefce8;
@@ -905,14 +945,23 @@ async def query_knowledge_async(
                 
                  # 在聊天框中显示思考过程（使用HTML原生details/summary标签，流式输出时默认展开）
                 if accumulated_reasoning:
+                    # 将内容分行并反向显示，让最新的内容在顶部
+                    lines = accumulated_reasoning.split('\n')
+                    # 只显示最后50行，避免内容过长
+                    display_lines = lines[-50:] if len(lines) > 50 else lines
+                    display_content = '<br>'.join(display_lines)
+                    
                     thinking_html = f"""<details class="thinking-container" open>
 <summary class="thinking-header">
 <span class="thinking-icon">🔽</span>
-<span class="thinking-title">深度思考 (实时)</span>
-<span style="margin-left: auto; color: #64748b; font-size: 13px;">{len(accumulated_reasoning)} 字符</span>
+<span class="thinking-title">深度思考 (实时 - 最新50行)</span>
+<span style="margin-left: auto; color: #64748b; font-size: 13px;">{len(accumulated_reasoning)} 字符 / {len(lines)} 行</span>
 </summary>
-<div class="thinking-content">
-{accumulated_reasoning.replace(chr(10), '<br>')}
+<div class="thinking-content-simple">
+{display_content}
+<div style="margin-top: 8px; padding: 8px; background: #f0f9ff; border-radius: 4px; font-size: 12px; color: #64748b; text-align: center;">
+⬇️ 最新内容 ⬇️
+</div>
 </div>
 </details>"""
                     thinking_message = thinking_html
@@ -934,9 +983,9 @@ async def query_knowledge_async(
                 content = chunk.get("content", "")
                 accumulated_answer += content
                 
-                # 第一次收到答案时，记录日志
-                if len(accumulated_answer) == len(content):
-                    logger.info(f"🎯 开始生成答案，深度思考已完成 (思考长度: {len(accumulated_reasoning)} 字符)")
+                # # 第一次收到答案时，记录日志
+                # if len(accumulated_answer) == len(content):
+                #     logger.info(f"🎯 开始生成答案，深度思考已完成 (思考长度: {len(accumulated_reasoning)} 字符)")
                 
                 # 答案生成时，保留折叠的深度思考，然后显示答案
                 if accumulated_reasoning:
@@ -969,11 +1018,20 @@ async def query_knowledge_async(
                 updated_chat_history = chunk.get("chat_history", [])
                 context_data = chunk.get("context", context_data)
                 
-                # 更新服务器端会话历史，但要保留深度思考+答案的格式
-                if accumulated_reasoning and updated_chat_history:
-                    # 找到最后一条assistant消息，添加深度思考
-                    for i in range(len(updated_chat_history) - 1, -1, -1):
-                        if updated_chat_history[i].get("role") == "assistant":
+                # 【关键修复】：保存纯文本历史到session（用于后端LLM推理）
+                # 不要将深度思考HTML保存到chat_history中，避免传递给LLM造成干扰
+                user_session["chat_history"] = updated_chat_history
+                user_session["last_active"] = time.time()
+                
+                # 【显示用】：生成包含深度思考的HTML版本，仅用于前端显示
+                display_updated_history = []
+                for msg in updated_chat_history:
+                    display_updated_history.append(msg.copy())
+                
+                # 如果有深度思考，在最后一条assistant消息前添加深度思考HTML（仅用于显示）
+                if accumulated_reasoning and display_updated_history:
+                    for i in range(len(display_updated_history) - 1, -1, -1):
+                        if display_updated_history[i].get("role") == "assistant":
                             # 生成折叠的深度思考HTML（默认关闭，使用details标签）
                             thinking_collapsed_html = f"""<details class="thinking-container">
 <summary class="thinking-header">
@@ -988,12 +1046,9 @@ async def query_knowledge_async(
 
 ---
 
-{updated_chat_history[i].get('content', '')}"""
-                            updated_chat_history[i]["content"] = thinking_collapsed_html
+{display_updated_history[i].get('content', '')}"""
+                            display_updated_history[i]["content"] = thinking_collapsed_html
                             break
-                
-                user_session["chat_history"] = updated_chat_history
-                user_session["last_active"] = time.time()
                 
                 # 最终更新
                 rerank_status = "✅ 已精排" if enable_rerank and hasattr(agent_instance, 'reranker') and agent_instance.reranker else "⚠️ 未精排"
@@ -1017,8 +1072,8 @@ async def query_knowledge_async(
                 kg_html = create_knowledge_graph_html(entities, relationships)
                 docs_html = create_documents_html(documents)
                 
-                # 完成时显示深度思考的完整内容
-                yield updated_chat_history, metrics, formatted_context, kg_html, docs_html, "", ""
+                # 完成时显示深度思考的完整内容（使用包含深度思考HTML的显示版本）
+                yield display_updated_history, metrics, formatted_context, kg_html, docs_html, "", ""
                 
             elif chunk_type == "error":
                 # 处理错误

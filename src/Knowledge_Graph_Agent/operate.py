@@ -2587,14 +2587,38 @@ async def extract_keywords_only(
     )
 
     # 4. Call the LLM for keyword extraction
-    if param.model_func:
-        use_model_func = param.model_func
+    # 使用快速模型（deepseek-chat）进行关键词提取，避免deepseek-reasoner耗时太长
+    import os
+    current_model = os.getenv("LLM_MODEL", "").strip().lower()
+    
+    # 如果当前使用的是 deepseek-reasoner，则临时切换到 deepseek-chat 进行关键词提取
+    if "reasoner" in current_model:
+        logger.info("🚀 关键词提取使用快速模型 (deepseek-chat) 以提升速度...")
+        from openai import AsyncOpenAI
+        
+        fast_client = AsyncOpenAI(
+            api_key=os.getenv("DEEPSEEK_API_KEY"),
+            base_url=os.getenv("LLM_BASE_URL", "https://api.deepseek.com/v1")
+        )
+        
+        # 使用 deepseek-chat 进行关键词提取
+        response = await fast_client.chat.completions.create(
+            model="deepseek-chat",
+            messages=[{"role": "user", "content": kw_prompt}],
+            temperature=0
+        )
+        result = response.choices[0].message.content
+        logger.info(f"✅ 快速关键词提取完成")
     else:
-        use_model_func = global_config["llm_model_func"]
-        # Apply higher priority (5) to query relation LLM function
-        use_model_func = partial(use_model_func, _priority=5)
-
-    result = await use_model_func(kw_prompt, keyword_extraction=True)
+        # 使用原有的 model_func
+        if param.model_func:
+            use_model_func = param.model_func
+        else:
+            use_model_func = global_config["llm_model_func"]
+            # Apply higher priority (5) to query relation LLM function
+            use_model_func = partial(use_model_func, _priority=5)
+        
+        result = await use_model_func(kw_prompt, keyword_extraction=True)
 
     # 5. Parse out JSON from the LLM response
     result = remove_think_tags(result)
